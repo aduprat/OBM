@@ -490,8 +490,6 @@ public abstract class EventChangeMailerTest {
 		icsToCheck.add("ATTENDEE;CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED;RSVP=TRUE;CN=Matthieu BAECHLE\r\n R;ROLE=OPT-P" +
 				"ARTICIPANT:mailto:mbaechler@linagora.com");
 		icsToCheck.add("COMMENT:This is a random comment");
-		icsToCheck.remove("DURATION:PT45M");
-		icsToCheck.add("DTEND:20101108T104500Z");
 		checkIcs(parts, icsToCheck);
 	}
 	
@@ -521,8 +519,6 @@ public abstract class EventChangeMailerTest {
 		assertThat(parts.textCalendar.getContentType()).isEqualTo("text/calendar; charset=UTF-8; method=CANCEL;");
 		icsToCheck.add("METHOD:CANCEL");
 		icsToCheck.add("DTSTART:20101108T100000Z");
-		icsToCheck.remove("DURATION:PT45M");
-		icsToCheck.add("DTEND:20101108T104500Z");
 		checkIcs(parts, icsToCheck);
 	}
 	
@@ -552,8 +548,6 @@ public abstract class EventChangeMailerTest {
 		icsToCheck.add("METHOD:CANCEL");
 		icsToCheck.add("DTSTART:20101108T100000Z");
 		icsToCheck.add("RRULE:FREQ=WEEKLY;UNTIL=20121123T120000;INTERVAL=2;BYDAY=TH,MO,WE");
-		icsToCheck.remove("DURATION:PT45M");
-		icsToCheck.add("DTEND:20101108T104500Z");
 		checkIcs(parts, icsToCheck);
 	}
 
