@@ -31,9 +31,16 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.icalendar;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -106,8 +113,11 @@ import org.obm.sync.calendar.ParticipationRole;
 import org.obm.sync.calendar.RecurrenceDay;
 import org.obm.sync.calendar.RecurrenceDays;
 import org.obm.sync.calendar.RecurrenceKind;
+import org.obm.sync.calendar.SimpleAttendeeService;
+import org.obm.sync.calendar.UserAttendee;
 import org.obm.sync.date.DateProvider;
 import org.obm.sync.exception.IllegalRecurrenceKindException;
+import org.obm.sync.services.AttendeeService;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -165,13 +175,15 @@ public class Ical4jHelperTest {
 	
 	private Ical4jHelper ical4jHelper;
 	private DateProvider dateProvider;
+	private AttendeeService attendeeService;
 	private Date now;
 
 	@Before
 	public void setUp() {
 		now = getCalendarPrecisionOfSecond().getTime();
 		dateProvider = createMock(DateProvider.class);
-		ical4jHelper = new Ical4jHelper(dateProvider);
+		attendeeService = new SimpleAttendeeService();
+		ical4jHelper = new Ical4jHelper(dateProvider, attendeeService);
 		
 		expect(dateProvider.getDate()).andReturn(now).anyTimes();
 		replay(dateProvider);
@@ -923,11 +935,13 @@ public class Ical4jHelperTest {
 
 	@Test
 	public void testGetRole() {
-		Attendee at = new Attendee();
-		at.setDisplayName("adrien");
-		at.setEmail("adrien@zz.com");
-		at.setParticipation(Participation.accepted());
-		at.setParticipationRole(ParticipationRole.CHAIR);
+		Attendee at = UserAttendee
+				.builder()
+				.displayName("adrien")
+				.email("adrien@zz.com")
+				.participation(Participation.accepted())
+				.participationRole(ParticipationRole.CHAIR)
+				.build();
 
 		Role role = ical4jHelper.getRole(at);
 		assertEquals(role, Role.CHAIR);
@@ -935,8 +949,10 @@ public class Ical4jHelperTest {
 
 	@Test
 	public void testGetCn() {
-		Attendee at = new Attendee();
-		at.setDisplayName("adrien");
+		Attendee at = UserAttendee
+				.builder()
+				.displayName("adrien")
+				.build();
 
 		Cn cn = ical4jHelper.getCn(at);
 		assertEquals("adrien", cn.getValue());
@@ -944,11 +960,13 @@ public class Ical4jHelperTest {
 
 	@Test
 	public void testGetPartStat() {
-		Attendee at = new Attendee();
-		at.setDisplayName("adrien");
-		at.setEmail("adrien@zz.com");
-		at.setParticipation(Participation.accepted());
-		at.setParticipationRole(ParticipationRole.CHAIR);
+		Attendee at = UserAttendee
+				.builder()
+				.displayName("adrien")
+				.email("adrien@zz.com")
+				.participation(Participation.accepted())
+				.participationRole(ParticipationRole.CHAIR)
+				.build();
 
 		PartStat ps = ical4jHelper.getPartStat(at);
 		assertEquals(ps, PartStat.ACCEPTED);
@@ -1068,30 +1086,41 @@ public class Ical4jHelperTest {
 		event.setDuration(3600);
 		event.setLocation("obm loca");
 		
-		final Attendee at1 = new Attendee();
-		at1.setDisplayName("OBM ORGANIZER");
-		at1.setEmail("obm@obm.org");
-		at1.setParticipation(Participation.accepted());
-		at1.setParticipationRole(ParticipationRole.CHAIR);
-		at1.setOrganizer(true);
+		final Attendee at1 = UserAttendee
+				.builder()
+				.displayName("OBM ORGANIZER")
+				.email("obm@obm.org")
+				.participation(Participation.accepted())
+				.participationRole(ParticipationRole.CHAIR)
+				.asOrganizer()
+				.build();
 		
-		final Attendee at2 = new Attendee();
-		at2.setDisplayName("OBM USER 2");
-		at2.setEmail("obm2@obm.org");
-		at2.setParticipation(Participation.accepted());
-		at2.setParticipationRole(ParticipationRole.REQ);
+		final Attendee at2 = UserAttendee
+				.builder()
+				.displayName("OBM USER 2")
+				.email("obm2@obm.org")
+				.participation(Participation.accepted())
+				.participationRole(ParticipationRole.REQ)
+				.asOrganizer()
+				.build();
 		
-		final Attendee at3 = new Attendee();
-		at3.setDisplayName("OBM USER 3");
-		at3.setEmail("obm3@obm.org");
-		at3.setParticipation(Participation.accepted());
-		at3.setParticipationRole(ParticipationRole.REQ);
+		final Attendee at3 = UserAttendee
+				.builder()
+				.displayName("OBM USER 3")
+				.email("obm3@obm.org")
+				.participation(Participation.accepted())
+				.participationRole(ParticipationRole.REQ)
+				.asOrganizer()
+				.build();
 		
-		final Attendee at4 = new Attendee();
-		at4.setDisplayName("OBM USER 4");
-		at4.setEmail("obm4@obm.org");
-		at4.setParticipation(Participation.declined());
-		at4.setParticipationRole(ParticipationRole.REQ);
+		final Attendee at4 = UserAttendee
+				.builder()
+				.displayName("OBM USER 4")
+				.email("obm4@obm.org")
+				.participation(Participation.declined())
+				.participationRole(ParticipationRole.REQ)
+				.asOrganizer()
+				.build();
 		
 		event.addAttendee(at1);
 		event.addAttendee(at2);
@@ -1137,9 +1166,12 @@ public class Ical4jHelperTest {
 	@Test
 	public void testInvitationRequestWithLongAttendee() {
 		Event event = buildEvent();
-		Attendee superLongAttendee = new Attendee();
-		superLongAttendee.setDisplayName("my attendee is more than 75 characters long");
-		superLongAttendee.setEmail("so-we-just-give-him-a-very-long-email-address@test.com");
+		Attendee superLongAttendee = UserAttendee
+				.builder()
+				.displayName("my attendee is more than 75 characters long")
+				.email("so-we-just-give-him-a-very-long-email-address@test.com")
+				.build();
+		
 		event.addAttendee(superLongAttendee);
 		AccessToken token = new AccessToken(0, "OBM");
 
@@ -1255,8 +1287,7 @@ public class Ical4jHelperTest {
 		EventRecurrence eventRecurrence = new EventRecurrence();
 		eventRecurrence.setKind(RecurrenceKind.daily);
 		eventRecurrence.setEnd(DateUtils.date("2012-03-30T11:00:00Z"));
-		Attendee attendee = new Attendee();
-		attendee.setEmail("foo@fr");
+		Attendee attendee = UserAttendee.builder().email("foo@fr").build();
 
 		event.addAttendee(attendee);
 		event.setRecurrence(eventRecurrence);
@@ -1342,9 +1373,9 @@ public class Ical4jHelperTest {
 		
 		assertThat(events.size()).isEqualTo(1);
 		assertThat(events.get(0).getAttendees()).containsOnly(
-				Attendee.builder().email("usera@obm.lng.org").build(),
-				Attendee.builder().email("userb@obm.lng.org").build(),
-				Attendee.builder().email("userc@obm.lng.org").build());
+				UserAttendee.builder().email("usera@obm.lng.org").build(),
+				UserAttendee.builder().email("userb@obm.lng.org").build(),
+				UserAttendee.builder().email("userc@obm.lng.org").build());
 	}
 	
 	@Test
@@ -1354,8 +1385,8 @@ public class Ical4jHelperTest {
 		
 		assertThat(events.size()).isEqualTo(1);
 		assertThat(events.get(0).getAttendees()).containsOnly(
-				Attendee.builder().email("usera@obm.lng.org").build(),
-				Attendee.builder().email("userb@obm.lng.org").build());
+				UserAttendee.builder().email("usera@obm.lng.org").build(),
+				UserAttendee.builder().email("userb@obm.lng.org").build());
 	}
 
 	@Test

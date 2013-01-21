@@ -60,6 +60,7 @@ import org.obm.sync.auth.AccessToken;
 import org.obm.sync.calendar.Attendee;
 import org.obm.sync.calendar.Event;
 import org.obm.sync.calendar.EventObmId;
+import org.obm.sync.calendar.UserAttendee;
 import org.obm.sync.date.DateProvider;
 import org.obm.sync.solr.SolrManager;
 
@@ -177,7 +178,7 @@ public class CalendarDaoJdbcImplTest {
 	}
 	
 	private Attendee getAttendee(String email) {
-		return Attendee.builder().email(email).build();
+		return UserAttendee.builder().email(email).build();
 	}
 
 	private void expectgetJDBCObjects() throws Exception {

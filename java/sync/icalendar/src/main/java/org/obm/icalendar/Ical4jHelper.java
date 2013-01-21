@@ -119,6 +119,7 @@ import net.fortuna.ical4j.model.property.XProperty;
 import org.apache.commons.lang.StringUtils;
 import org.obm.sync.auth.AccessToken;
 import org.obm.sync.calendar.Attendee;
+import org.obm.sync.calendar.CalendarUserType;
 import org.obm.sync.calendar.Event;
 import org.obm.sync.calendar.EventExtId;
 import org.obm.sync.calendar.EventOpacity;
@@ -135,6 +136,7 @@ import org.obm.sync.calendar.RecurrenceDays;
 import org.obm.sync.calendar.RecurrenceKind;
 import org.obm.sync.date.DateProvider;
 import org.obm.sync.exception.IllegalRecurrenceKindException;
+import org.obm.sync.services.AttendeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,6 +160,7 @@ import fr.aliacom.obm.common.domain.ObmDomain;
 @Singleton
 public class Ical4jHelper {
 	
+	private static final String MAILTO = "mailto:";
 	private static final int MAX_FOLD_LENGTH = 74; 
 	private static final int SECONDS_IN_DAY = 43200000;
 	private static final String X_OBM_DOMAIN = "X-OBM-DOMAIN";
@@ -177,11 +180,13 @@ public class Ical4jHelper {
 			.put(RecurrenceKind.yearly, Recur.YEARLY).put(RecurrenceKind.yearlybyday, Recur.YEARLY).build();
 	
 	private final DateProvider dateProvider;
+	private final AttendeeService attendeeService;
 	
 	@Inject
 	@VisibleForTesting
-	public Ical4jHelper(DateProvider obmHelper) {
+	public Ical4jHelper(DateProvider obmHelper, AttendeeService attendeeService) {
 		this.dateProvider = obmHelper;
+		this.attendeeService = attendeeService;
 	}
 
 	public String buildIcsInvitationRequest(Ical4jUser iCal4jUser, Event event, AccessToken token) {
@@ -590,14 +595,14 @@ public class Ical4jHelper {
 			}
 
 			int mailToIndex = organizer.getValue().toLowerCase()
-					.indexOf("mailto:");
+					.indexOf(MAILTO);
 			if (mailToIndex != -1) {
 				event.setOwnerEmail(organizer.getValue().substring(
-						mailToIndex + "mailto:".length()));
+						mailToIndex + MAILTO.length()));
 				
 				if (StringUtils.isEmpty(event.getOwner())) {
 					event.setOwner(organizer.getValue().substring(
-							mailToIndex + "mailto:".length()));
+							mailToIndex + MAILTO.length()));
 				}
 			}
 		}
@@ -1001,7 +1006,7 @@ public class Ical4jHelper {
 			Attendee attendee) {
 		net.fortuna.ical4j.model.property.Attendee att = new net.fortuna.ical4j.model.property.Attendee();
 
-		att.getParameters().add(CuType.INDIVIDUAL);
+		att.getParameters().add(new CuType(attendee.getCalendarUserType().name()));
 
 		PartStat ps = getPartStat(attendee);
 		att.getParameters().add(ps);
@@ -1015,7 +1020,7 @@ public class Ical4jHelper {
 		att.getParameters().add(role);
 
 		try {
-			att.setValue("mailto:" + attendee.getEmail());
+			att.setValue(MAILTO + attendee.getEmail());
 		} catch (URISyntaxException e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -1297,45 +1302,15 @@ public class Ical4jHelper {
 
 	private void appendAttendees(Event event, Component vEvent) {
 		Map<String, Attendee> emails = new HashMap<String, Attendee>();
+		
 		for (Property prop : getProperties(vEvent, Property.ATTENDEE)) {
-			Attendee att = new Attendee();
-			Parameter param = prop.getParameter(Parameter.CN);
-			if (param != null) {
-				att.setDisplayName(param.getValue());
-			}
-
-			int mailIndex = prop.getValue().toLowerCase().indexOf("mailto:");
-			if (mailIndex != -1) {
-				att.setEmail(prop.getValue().substring(
-						mailIndex + "mailto:".length()));
-			}
-
-			param = prop.getParameter(Parameter.ROLE);
-			if (param != null) {
-				int index = param.getValue().indexOf("-");
-				if (index != -1) {
-					att.setParticipationRole(ParticipationRole.valueOf(param.getValue()
-							.substring(0, index).replace("-", "")));
-				}
-			}
-
-			PartStat partStat = (PartStat) prop
-					.getParameter(Parameter.PARTSTAT);
-			if (partStat != null) {
-				if (partStat.equals(PartStat.IN_PROCESS)) {
-					att.setParticipation(Participation.inProgress());
-				} else {
-					att.setParticipation(Participation.getValueOf(partStat.getValue()));
-				}
-			} else {
-				//rfc5545 : 3.2.12, if PART-STAT is missing, default is NEEDS-ACTION
-				att.setParticipation(Participation.needsAction());
-			}
-			if (att.getEmail() != null && 
-					!attendeeAlreadyExist(emails, att)) {
+			Attendee att = convertAttendeePropertyToAttendee(prop);
+			
+			if (att.getEmail() != null && !attendeeAlreadyExist(emails, att)) {
 				emails.put(att.getEmail(), att);
 			}
 		}
+		
 		appendOrganizer(emails, vEvent);
 		event.addAttendees(new ArrayList<Attendee>(emails.values()));
 	}
@@ -1356,30 +1331,33 @@ public class Ical4jHelper {
 				if(organizer != null){
 					organizer.setOrganizer(true);
 				} else {
-					organizer = new Attendee();
-					organizer.setEmail(email);
-					Parameter cnParam = orga.getParameter(Parameter.CN);
-					if(cnParam != null){
-						Cn cn = (Cn) cnParam;
-						organizer.setDisplayName(cn.getValue());
-					}
+					organizer = convertAttendeePropertyToAttendee(prop);
+					
 					organizer.setParticipationRole(ParticipationRole.REQ);
 					organizer.setParticipation(Participation.accepted());
 					organizer.setOrganizer(true);
+					
 					emails.put(organizer.getEmail(), organizer);
 				}
 			}
 		}
 	}
 
-	private String removeMailto(Organizer orga) {
-		String ret = orga.getValue();
-		int mailIndex = ret.toLowerCase().indexOf("mailto:");
+	private String removeMailto(Property prop) {
+		String email = extractEmail(prop);
+		
+		return email != null ? email : prop.getValue();
+	}
+	
+	private String extractEmail(Property prop) {
+		String value = prop.getValue();
+		int mailIndex = value.toLowerCase().indexOf(MAILTO);
+		
 		if (mailIndex != -1) {
-			ret = orga.getValue().substring(
-					mailIndex + "mailto:".length());
+			return value.substring(mailIndex + MAILTO.length());
 		}
-		return ret;
+		
+		return null;
 	}
 
 	private Calendar initCalendar() {
@@ -1445,7 +1423,7 @@ public class Ical4jHelper {
 				orga.getParameters().add(new Cn(owner));
 			}
 			if (ownerEmail != null && !"".equals(ownerEmail)) {
-				orga.setValue("mailto:" + ownerEmail);
+				orga.setValue(MAILTO + ownerEmail);
 			}
 		} catch (URISyntaxException e) {
 			logger.error(e.getMessage(), e);
@@ -1586,44 +1564,91 @@ public class Ical4jHelper {
 			fb.setEnd(vFreeBusy.getEndDate().getDate());
 		}
 
-		appendAttendee(fb, vFreeBusy);
+		appendAttendees(fb, vFreeBusy);
 		return fb;
 	}
+	
+	private String getParameterValue(Parameter parameter) {
+		if (parameter != null) {
+			return parameter.getValue();
+		}
+		
+		return null;
+	}
+	
+	private Attendee findAttendeeUsingCuType(String name, String email, String cuType) {
+		Attendee attendee = null;
+		
+		if (cuType == null) {
+			return attendeeService.findAttendee(name, email, true);
+		} else {
+			CalendarUserType type = CalendarUserType.valueOf(cuType);
+			
+			switch (type) {
+				case GROUP:
+					return null;
+				case INDIVIDUAL:
+					attendee = attendeeService.findUserAttendee(name, email);
+					// User not found, we'll fallback to a contact and create it if needed
+					if (attendee == null) {
+						attendee = attendeeService.findContactAttendee(name, email, true);
+					}
+					
+					break;
+				case ROOM:
+				case RESOURCE:
+					attendee = attendeeService.findResourceAttendee(name, email);
+					
+					break;
+				case UNKNOWN:
+					attendee = attendeeService.findAttendee(name, email, true);
+			}
+		}
+		
+		return attendee;
+	}
+	
+	private Attendee convertAttendeePropertyToAttendee(Property prop) {
+		String email = removeMailto(prop);
+		String cn = getParameterValue(prop.getParameter(Parameter.CN));
+		String cuType = getParameterValue(prop.getParameter(Parameter.CUTYPE));
+		
+		Attendee attendee = findAttendeeUsingCuType(cn, email, cuType);
+		
+		String role = getParameterValue(prop.getParameter(Parameter.ROLE));
+		String partStat = getParameterValue(prop.getParameter(Parameter.PARTSTAT));
+		
+		if (cn != null) {
+			attendee.setDisplayName(cn);
+		}
 
-	private void appendAttendee(FreeBusyRequest fb, VFreeBusy vFreeBusy) {
+		if (role != null) {
+			int dashIndex = role.indexOf("-");
+			
+			if (dashIndex != -1) {
+				attendee.setParticipationRole(ParticipationRole.valueOf(role.substring(0, dashIndex)));
+			}
+		}
+
+		if (partStat != null) {
+			if (partStat.equals(PartStat.IN_PROCESS.getValue())) {
+				attendee.setParticipation(Participation.inProgress());
+			} else {
+				attendee.setParticipation(Participation.getValueOf(partStat));
+			}
+		} else {
+			//rfc5545 : 3.2.12, if PART-STAT is missing, default is NEEDS-ACTION
+			attendee.setParticipation(Participation.needsAction());
+		}
+		
+		return attendee;
+	}
+
+	private void appendAttendees(FreeBusyRequest fb, VFreeBusy vFreeBusy) {
 		List<Property> props = getProperties(vFreeBusy, Property.ATTENDEE);
+		
 		for (Property prop : props) {
-			Attendee att = new Attendee();
-			Parameter param = prop.getParameter(Parameter.CN);
-			if (param != null) {
-				att.setDisplayName(param.getValue());
-			}
-
-			int mailIndex = prop.getValue().toLowerCase().indexOf("mailto:");
-			if (mailIndex != -1) {
-				att.setEmail(prop.getValue().substring(
-						mailIndex + "mailto:".length()));
-			}
-
-			param = prop.getParameter(Parameter.ROLE);
-			if (param != null) {
-				int index = param.getValue().indexOf("-");
-				if (index != -1) {
-					att.setParticipationRole(ParticipationRole.valueOf(param.getValue()
-							.substring(0, index).replace("-", "")));
-				}
-			}
-
-			PartStat partStat = (PartStat) prop
-					.getParameter(Parameter.PARTSTAT);
-			if (partStat != null) {
-				if (partStat.equals(PartStat.IN_PROCESS)) {
-					att.setParticipation(Participation.inProgress());
-				} else {
-					att.setParticipation(Participation.getValueOf(partStat.getValue()));
-				}
-			}
-			fb.addAttendee(att);
+			fb.addAttendee(convertAttendeePropertyToAttendee(prop));
 		}
 	}
 
@@ -1639,10 +1664,10 @@ public class Ical4jHelper {
 				fb.setOwner(cnOrganizer);
 			} else {
 				int mailToIndex = organizer.getValue().toLowerCase()
-						.indexOf("mailto:");
+						.indexOf(MAILTO);
 				if (mailToIndex != -1) {
 					fb.setOwner(organizer.getValue().substring(
-							mailToIndex + "mailto:".length()));
+							mailToIndex + MAILTO.length()));
 				}
 			}
 		}

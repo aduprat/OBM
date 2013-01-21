@@ -60,9 +60,10 @@ import org.obm.sync.calendar.EventOpacity;
 import org.obm.sync.calendar.EventPrivacy;
 import org.obm.sync.calendar.EventRecurrence;
 import org.obm.sync.calendar.EventType;
-import org.obm.sync.calendar.ParticipationRole;
 import org.obm.sync.calendar.Participation;
+import org.obm.sync.calendar.ParticipationRole;
 import org.obm.sync.calendar.RecurrenceKind;
+import org.obm.sync.calendar.UserAttendee;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -280,23 +281,36 @@ public class MSEventToObmEventConverterImpl implements MSEventToObmEventConverte
 		return Participation.needsAction();
 	}
 
-	private boolean isOrganizer(MSEvent event, MSAttendee at) {
+	private boolean isOrganizer(MSEvent event, MSAttendee at, Event eventFromDB) {
 		if(at.getEmail() != null  && at.getEmail().equals(event.getOrganizerEmail())){
 			return true;
 		} else if(at.getName() != null  && at.getName().equals(event.getOrganizerName())){
 			return true;
 		}
-		return false;
+		return isOrganizerEmail(at.getEmail(), eventFromDB);
 	}
 	
+	@VisibleForTesting boolean isOrganizerEmail(String email, Event eventFromDB) {
+		if (email == null || eventFromDB == null) {
+			return false;
+		}
+		
+		Attendee organizer = eventFromDB.findOrganizer();
+		if (organizer != null && email.equals(organizer.getEmail())) {
+			return true;
+		}
+		return false;
+	}
+
 	private Attendee getOrganizer(String email, String displayName) {
-		Attendee att = new Attendee();
-		att.setEmail(email);
-		att.setDisplayName(displayName);
-		att.setParticipation(Participation.accepted());
-		att.setParticipationRole(ParticipationRole.REQ);
-		att.setOrganizer(true);
-		return att;
+		return UserAttendee
+				.builder()
+				.email(email)
+				.displayName(displayName)
+				.participation(Participation.accepted())
+				.participationRole(ParticipationRole.REQ)
+				.asOrganizer()
+				.build();
 	}	
 	
 	private EventPrivacy convertSensitivityToPrivacy(MSEventCommon msEvent) {
@@ -615,18 +629,16 @@ public class MSEventToObmEventConverterImpl implements MSEventToObmEventConverte
 			throw new ConversionException("Attendees.Attendee.Email is required");
 		}
 		
-		Attendee ret = new Attendee();
-		ret.setEmail(msAttendee.getEmail());
-		ret.setDisplayName(msAttendee.getName());
-		ret.setParticipationRole( 
-				getParticipationRole(msAttendee.getAttendeeType()) );
+		Attendee ret = UserAttendee
+				.builder()
+				.email(msAttendee.getEmail())
+				.displayName(msAttendee.getName())
+				.participationRole(getParticipationRole(msAttendee.getAttendeeType()))
+				.participation(getParticipation(getAttendeeState(eventFromDB, msAttendee) , msAttendee.getAttendeeStatus()))
+				.build();
 		
-		Participation status = getParticipation(
-				getAttendeeState(eventFromDB, msAttendee) , msAttendee.getAttendeeStatus() );
+		ret.setOrganizer(isOrganizer(msEvent, msAttendee, eventFromDB));
 		
-		ret.setParticipation(status);
-		
-		ret.setOrganizer( isOrganizer(msEvent, msAttendee) );
 		return ret;
 	}
 
@@ -781,7 +793,7 @@ public class MSEventToObmEventConverterImpl implements MSEventToObmEventConverte
 			return Participation.accepted();
 		}
 	}
-
+	
 	@Override
 	public boolean isInternalEvent(Event event, boolean defaultValue){
 		return event != null ? event.isInternalEvent() : defaultValue;

@@ -31,7 +31,9 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.push.calendar;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 
 import java.util.Date;
 
@@ -40,20 +42,24 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.obm.icalendar.Ical4jHelper;
 import org.obm.push.exception.ConversionException;
+import org.obm.sync.calendar.SimpleAttendeeService;
 import org.obm.sync.date.DateProvider;
+import org.obm.sync.services.AttendeeService;
 
 
 public class ConvertObmEventByICSLoopTest extends ConvertObmEventToMsEventIntegrityTest {
 	
 	private Ical4jHelper ical4jHelper;
 	private DateProvider dateProvider;
+	private AttendeeService attendeeService;
 	private Date now;
 
 	@Before
 	public void setUp() {
 		now = new Date();
 		dateProvider = createMock(DateProvider.class);
-		ical4jHelper = new Ical4jHelper(dateProvider);
+		attendeeService = new SimpleAttendeeService();
+		ical4jHelper = new Ical4jHelper(dateProvider, attendeeService);
 		
 		expect(dateProvider.getDate()).andReturn(now).anyTimes();		
 		replay(dateProvider);

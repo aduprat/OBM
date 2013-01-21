@@ -55,7 +55,9 @@ import org.junit.Test;
 import org.obm.icalendar.Ical4jHelper;
 import org.obm.icalendar.Ical4jUser;
 import org.obm.sync.calendar.Event;
+import org.obm.sync.calendar.SimpleAttendeeService;
 import org.obm.sync.date.DateProvider;
+import org.obm.sync.services.AttendeeService;
 import org.obm.sync.services.ICalendar;
 
 import com.google.inject.Injector;
@@ -76,17 +78,19 @@ public class ResourceServletTest {
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private DateProvider dateProvider;
+	private AttendeeService attendeeService;
 	private Date now;
 	
 	@Before
 	public void setUp() {
 		now = new Date();
 		dateProvider = createMock(DateProvider.class);
-		helper = new Ical4jHelper(dateProvider);
+		attendeeService = new SimpleAttendeeService();
+		helper = new Ical4jHelper(dateProvider, attendeeService);
 		iCalUser = Ical4jUser.Factory.create().createIcal4jUser("toto@toto.com",
 				ToolBox.getDefaultObmDomain());
 		resourceServlet = new ResourceServlet();
-
+		
 		servletConfig = createMock(ServletConfig.class);
 		servletContext = createMock(ServletContext.class);
 		injector = createMock(Injector.class);

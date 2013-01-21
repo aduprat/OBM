@@ -70,6 +70,7 @@ import org.obm.sync.auth.AccessToken;
 import org.obm.sync.calendar.Attendee;
 import org.obm.sync.calendar.Event;
 import org.obm.sync.calendar.Participation;
+import org.obm.sync.calendar.UserAttendee;
 import org.obm.sync.server.mailer.EventChangeMailer;
 
 import com.google.common.collect.ImmutableList;
@@ -1109,13 +1110,11 @@ public class EventNotificationServiceTest {
 			EventNotificationServiceImpl eventNotificationService = new EventNotificationServiceImpl(
 					null, null, null, null, null);
 
-			Attendee attendee1 = new Attendee();
-			attendee1.setEmail(email);
+			Attendee attendee1 = UserAttendee.builder().email(email).build();
 			Event event1 = new Event();
 			event1.setAttendees(ImmutableList.of(attendee1));
 
-			Attendee attendee2 = new Attendee();
-			attendee2.setEmail(email);
+			Attendee attendee2 = UserAttendee.builder().email(email).build();
 			Event event2 = new Event();
 			event2.setAttendees(ImmutableList.of(attendee2));
 
@@ -1132,17 +1131,13 @@ public class EventNotificationServiceTest {
 			EventNotificationServiceImpl eventNotificationService = new EventNotificationServiceImpl(
 					null, null, null, null, null);
 
-			Attendee attendee1 = new Attendee();
-			attendee1.setEmail(email);
+			Attendee attendee1 = UserAttendee.builder().email(email).build();
 			Event event1 = new Event();
 			event1.setAttendees(ImmutableList.of(attendee1));
 
-			Attendee attendee2 = new Attendee();
-			attendee2.setEmail(email);
-			Attendee attendee3 = new Attendee();
-			attendee3.setEmail("another email");
-			Attendee attendee4 = new Attendee();
-			attendee4.setEmail("yet another email");
+			Attendee attendee2 = UserAttendee.builder().email(email).build();
+			Attendee attendee3 = UserAttendee.builder().email("another email").build();
+			Attendee attendee4 = UserAttendee.builder().email("yet another email").build();
 			Event event2 = new Event();
 			event2.setAttendees(ImmutableList.of(attendee2, attendee3, attendee4));
 

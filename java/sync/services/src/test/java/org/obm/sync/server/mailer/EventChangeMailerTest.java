@@ -31,7 +31,14 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.sync.server.mailer;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.obm.DateUtils.date;
 
@@ -72,8 +79,11 @@ import org.obm.sync.calendar.Participation;
 import org.obm.sync.calendar.RecurrenceDay;
 import org.obm.sync.calendar.RecurrenceDays;
 import org.obm.sync.calendar.RecurrenceKind;
+import org.obm.sync.calendar.SimpleAttendeeService;
+import org.obm.sync.calendar.UserAttendee;
 import org.obm.sync.date.DateProvider;
 import org.obm.sync.server.template.ITemplateLoader;
+import org.obm.sync.services.AttendeeService;
 import org.slf4j.Logger;
 
 import com.google.common.base.Charsets;
@@ -98,6 +108,7 @@ public class EventChangeMailerTest {
 	private ObmUser obmUser;
 	private Ical4jHelper ical4jHelper;
 	private DateProvider dateProvider;
+	private AttendeeService attendeeService;
 	private Date now;
 	private Logger logger;
 	
@@ -105,7 +116,8 @@ public class EventChangeMailerTest {
 	public void setup() {
 		now = new Date();
 		dateProvider = createMock(DateProvider.class);
-		ical4jHelper = new Ical4jHelper(dateProvider);
+		attendeeService = new SimpleAttendeeService();
+		ical4jHelper = new Ical4jHelper(dateProvider, attendeeService);
 		
 		accessToken = new AccessToken(1, "unitTest");
 		obmUser = ServicesToolBox.getDefaultObmUser();
@@ -136,10 +148,7 @@ public class EventChangeMailerTest {
 	}
 	
 	private static Attendee createAttendee(String name, String email) {
-		Attendee attendee = new Attendee();
-		attendee.setEmail(email);
-		attendee.setDisplayName(name);
-		return attendee;
+		return UserAttendee.builder().displayName(name).email(email).build();
 	}
 
 	private List<InternetAddress> createAddressList(String addresses) throws AddressException {
