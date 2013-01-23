@@ -199,7 +199,7 @@ public class ContactsBackend extends ObmSyncBackend implements PIMBackend {
 				.from(removedCollections.pathKeys())
 				.filter(Predicates.in(lastKnownCollections))
 				.filter(Predicates.not(Predicates.in(changedCollections.pathKeys())))
-				.toImmutableSet();
+				.toSet();
 	}
 
 	@VisibleForTesting PathsToCollections changedCollections(UserDataRequest udr, FolderChanges folderChanges) {
