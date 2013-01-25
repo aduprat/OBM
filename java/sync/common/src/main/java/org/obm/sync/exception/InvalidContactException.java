@@ -29,56 +29,15 @@
  * OBM connectors. 
  * 
  * ***** END LICENSE BLOCK ***** */
-package org.obm.sync.book;
+package org.obm.sync.exception;
 
-import java.io.Serializable;
+public class InvalidContactException extends Exception {
 
-import org.apache.commons.validator.routines.EmailValidator;
-
-import com.google.common.base.Objects;
-
-public class Email implements IMergeable, Serializable {
-
-	public Email(String email) {
-		super();
-		this.email = email;
+	public InvalidContactException(String message) {
+		super(message);
 	}
 
-	private String email;
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public boolean hasAnEmptyEmail() {
-		return email.isEmpty();
-	}
-
-	public boolean isValid() {
-		EmailValidator emailValidator = EmailValidator.getInstance();
-		return emailValidator.isValid(email);
-	}
-
-	@Override
-	public void merge(IMergeable previous) {
-		//do nothing on merge
-	}
-
-	@Override
-	public final int hashCode(){
-		return Objects.hashCode(email);
-	}
-
-	@Override
-	public final boolean equals(Object object){
-		if (object instanceof Email) {
-			Email that = (Email) object;
-			return Objects.equal(this.email, that.email);
-			}
-		return false;
+	public InvalidContactException(String message, String field) {
+		super(message + " : {" + field + "}");
 	}
 }

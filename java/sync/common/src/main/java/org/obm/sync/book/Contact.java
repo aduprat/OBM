@@ -215,8 +215,8 @@ public class Contact implements Serializable {
 		imIdentifiers.put(lbl, imid);
 	}
 
-	public void addEmail(String lbl, Email email) {
-		emails.put(lbl, email);
+	public void addEmail(String label, Email email) {
+		emails.put(label, email);
 	}
 
 	public Integer getEntityId() {
@@ -329,6 +329,16 @@ public class Contact implements Serializable {
 	
 	public void updateWebSites(HashSet<Website> websites) {
 		this.websites = websites;
+	}
+
+	public boolean hasInvalidEmail() {
+		for (Email email: emails.values()) {
+			if (!email.hasAnEmptyEmail() && !email.isValid()) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
