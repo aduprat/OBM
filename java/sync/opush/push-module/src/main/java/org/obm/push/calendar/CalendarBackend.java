@@ -274,7 +274,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 			logger.info("Event changes LastSync [ {} ]", changes.getLastSync().toString());
 		
 			DataDelta delta = 
-					buildDataDelta(udr, collection.getCollectionId(), token, changes);
+					buildDataDelta(udr, collection.getCollectionId(), token, changes, newSyncKey);
 			
 			logger.info("getContentChanges( {}, {}, lastSync = {} ) => {}",
 				new Object[]{calendar, collectionPath, newState.getSyncDate(), delta.statistics()});
@@ -290,7 +290,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 	}
 
 	@VisibleForTesting DataDelta buildDataDelta(UserDataRequest udr, Integer collectionId,
-			AccessToken token, EventChanges changes) throws ServerFault,
+			AccessToken token, EventChanges changes, SyncKey newSyncKey) throws ServerFault,
 			DaoException, ConversionException {
 		final String userEmail = calendarClient.getUserEmail(token);
 		Preconditions.checkNotNull(userEmail, "User has no email address");
@@ -299,6 +299,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 				.changes(addOrUpdateEventFilter(changes.getUpdated(), userEmail, collectionId, udr))
 				.deletions(removeEventFilter(changes.getDeletedEvents(), collectionId))
 				.syncDate(changes.getLastSync())
+				.syncKey(newSyncKey)
 				.build();
 	}
 

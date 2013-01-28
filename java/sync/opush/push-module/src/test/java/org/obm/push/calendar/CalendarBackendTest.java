@@ -831,6 +831,7 @@ public class CalendarBackendTest {
 	@Test
 	public void buildDeltaDataMustNotTransformDeclinedEventIntoRemoved() throws ServerFault, DaoException, ConversionException {
 		int collectionId = 1;
+		SyncKey syncKey = new SyncKey("1324");
 		EventObmId eventObmId = new EventObmId(132453);
 		EventExtId eventExtId = new EventExtId("event-ext-id-bla-bla");
 		Attendee attendee = UserAttendee.builder().email(user.getLoginAtDomain()).participation(Participation.declined()).build();
@@ -852,7 +853,7 @@ public class CalendarBackendTest {
 		
 		mockControl.replay();
 		
-		DataDelta dataDelta = calendarBackend.buildDataDelta(userDataRequest, collectionId, token, eventChanges);
+		DataDelta dataDelta = calendarBackend.buildDataDelta(userDataRequest, collectionId, token, eventChanges, syncKey);
 		
 		mockControl.verify();
 		assertThat(dataDelta.getDeletions()).hasSize(1).containsOnly(
