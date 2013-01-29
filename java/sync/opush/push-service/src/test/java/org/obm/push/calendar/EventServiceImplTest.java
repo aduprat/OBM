@@ -72,6 +72,8 @@ import org.obm.sync.services.AttendeeService;
 
 import com.google.common.io.ByteStreams;
 
+import fr.aliacom.obm.common.domain.ObmDomain;
+
 
 public class EventServiceImplTest {
 	private Ical4jHelper ical4jHelper;
@@ -106,7 +108,7 @@ public class EventServiceImplTest {
 		CalendarDao calendarDao = mocksControl.createMock(CalendarDao.class);
 		expect(calendarDao.getMSEventUidFor(anyObject(EventExtId.class), anyObject(Device.class))).andReturn(new MSEventUid("uid"));
 		Factory factory = mocksControl.createMock(Ical4jUser.Factory.class);
-		expect(factory.createIcal4jUser("user@domain", null)).andReturn(null);
+		expect(factory.createIcal4jUser("user@domain", null)).andReturn(Ical4jUser.Factory.create().createIcal4jUser("user@domain", new ObmDomain()));
 
 		
 		mocksControl.replay();

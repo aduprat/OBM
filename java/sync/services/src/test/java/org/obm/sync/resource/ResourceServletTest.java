@@ -90,7 +90,7 @@ public class ResourceServletTest {
 		iCalUser = Ical4jUser.Factory.create().createIcal4jUser("toto@toto.com",
 				ToolBox.getDefaultObmDomain());
 		resourceServlet = new ResourceServlet();
-		
+
 		servletConfig = createMock(ServletConfig.class);
 		servletContext = createMock(ServletContext.class);
 		injector = createMock(Injector.class);
@@ -123,7 +123,7 @@ public class ResourceServletTest {
 		resourceServlet.init(servletConfig);
 
 		String ics = resourceServlet.getResourceICS("resource@domain");
-		Assertions.assertThat(helper.parseICS(ics, iCalUser)).isNotNull().hasSize(collectionSize);
+		Assertions.assertThat(helper.parseICS(ics, iCalUser, 0)).isNotNull().hasSize(collectionSize);
 		verify(mocks);
 	}
 
@@ -156,7 +156,7 @@ public class ResourceServletTest {
 
 		verify(mocks);
 		String ics = stringWriter.toString();
-		Assertions.assertThat(helper.parseICS(ics, iCalUser)).isNotNull().hasSize(collectionSize);
+		Assertions.assertThat(helper.parseICS(ics, iCalUser, 0)).isNotNull().hasSize(collectionSize);
 	}
 
 	@Test

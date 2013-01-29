@@ -148,7 +148,7 @@ public class EventChangeMailerTest {
 	}
 	
 	private static Attendee createAttendee(String name, String email) {
-		return UserAttendee.builder().displayName(name).email(email).build();
+		return UserAttendee.builder().email(email).displayName(name).build();
 	}
 
 	private List<InternetAddress> createAddressList(String addresses) throws AddressException {
