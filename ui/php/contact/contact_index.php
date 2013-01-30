@@ -530,6 +530,22 @@ if (($action == 'ext_get_ids') || ($action == 'ext_get_id')) {
     $subTemplate['contacts'] = new OBM_Template('contacts');
     $subTemplate['contacts']->set('offset', $params['offset']);
     $subTemplate['contacts']->set('fields', get_display_pref($GLOBALS['obm']['uid'], 'contact'));
+  } elseif ($action == 'searchSimilar') {
+  ///////////////////////////////////////////////////////////////////////////////
+    $addressbooks = OBM_AddressBook::searchOwnAddressBooks($obm['uid']);
+    $patternstring = ( $params['firstname'] != '' ) ? "firstname: \"".escapeSolrValue($params['firstname'])."\" AND " : '';
+    $patternstring .= ( $params['lastname'] != '' ) ? "lastname: \"".escapeSolrValue($params['lastname'])."\" AND " : '';
+    $patternstring .= " -is: archive";
+
+    $contacts = $addressbooks->searchContacts($patternstring, 0, 100);
+
+    $contacts_id = array();
+    foreach($contacts as $contact){
+      $contacts_id[] = $contact->id;
+    }
+    
+    echo(json_encode($contacts_id));
+    exit();
   } elseif ($action == 'countContact') {
   ///////////////////////////////////////////////////////////////////////////////
     if(isset($params['searchpattern'])) {

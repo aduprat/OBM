@@ -148,11 +148,42 @@ Obm.Contact.AddressBook = new Class ({
   },  
 
   storeContact: function(form, id) {
-    $('informationGrid').show(); 
-    this.dataRequest.write(form);
-    $('dataGrid').removeClass('expanded');
-    $('dataGrid').addClass('shrinked');
-  },    
+    var self = this;
+    function callback(contacts) {
+      if ( contacts.length <= 0  || ( contacts.length > 0 && confirm(obm.vars.labels.confirmAddHomonym) ) ) {
+        self.storeContactRequest(form);
+      }
+    }
+    if (id != '') {
+      $('informationGrid').show();
+      this.storeContactRequest(form);
+    } else {
+      this.searchSimilarContact(form.firstname.value, form.lastname.value, callback);
+    }
+  },
+
+  storeContactRequest: function(form){
+      $('informationGrid').show();
+      this.dataRequest.write(form);
+      $('dataGrid').removeClass('expanded');
+      $('dataGrid').addClass('shrinked');
+  },
+
+  searchSimilarContact: function(firstname, lastname, callback){
+    var similarContactRequest = new Request.JSON({
+      url: obm.vars.consts.obmUrl + '/contact/contact_index.php',
+      secure: false,
+      async: true,
+      onSuccess: callback
+    });
+
+    similarContactRequest.get({
+      ajax: 1,
+      action: 'searchSimilar',
+      firstname: firstname,
+      lastname: lastname
+    });
+  },
 
   deleteContact: function(id, name) {
     if(confirm(obm.vars.labels.confirmDeleteContact+' \''+name+'\' ?')){
