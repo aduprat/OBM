@@ -50,6 +50,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.obm.filter.SlowFilterRunner;
+import org.obm.push.backend.BackendWindowingService;
 import org.obm.push.backend.CollectionPath;
 import org.obm.push.backend.CollectionPath.Builder;
 import org.obm.push.backend.DataDelta;
@@ -129,6 +130,7 @@ public class CalendarBackendTest {
 	private LoginService loginService;
 	private Provider<CollectionPath.Builder> collectionPathBuilderProvider;
 	private ConsistencyEventChangesLogger consistencyLogger;
+	private BackendWindowingService backendWindowingService;
 	
 	private CalendarBackend calendarBackend;
 	private IMocksControl mockControl;
@@ -151,6 +153,7 @@ public class CalendarBackendTest {
 		this.loginService = mockControl.createMock(LoginService.class);
 		this.collectionPathBuilderProvider = mockControl.createMock(Provider.class);
 		this.consistencyLogger = mockControl.createMock(ConsistencyEventChangesLogger.class);
+		this.backendWindowingService = mockControl.createMock(BackendWindowingService.class);
 		
 		consistencyLogger.log(anyObject(Logger.class), anyObject(EventChanges.class));
 		expectLastCall().anyTimes();
@@ -160,7 +163,8 @@ public class CalendarBackendTest {
 				eventConverter, 
 				eventService, 
 				loginService, 
-				collectionPathBuilderProvider, consistencyLogger);
+				collectionPathBuilderProvider, consistencyLogger,
+				backendWindowingService);
 	}
 	
 	@Test
@@ -575,7 +579,7 @@ public class CalendarBackendTest {
 		collection.setOptions(syncCollectionOptions);
 		collection.setWindowSize(windowSize);
 		
-		DataDelta dataDelta = calendarBackend.getChanged(userDataRequest, collection, syncKey);
+		DataDelta dataDelta = calendarBackend.getAllChanges(userDataRequest, lastKnownState, collection, syncKey);
 		
 		mockControl.verify();
 		
@@ -869,7 +873,7 @@ public class CalendarBackendTest {
 	}
 	
 	@Test (expected=HierarchyChangedException.class)
-	public void testGetChangedThrowsHierarchyChangedException() throws Exception {
+	public void testGetAllChangesThrowsHierarchyChangedException() throws Exception {
 		int windowSize = 10;
 		Date currentDate = DateUtils.getCurrentDate();
 		SyncKey syncKey = new SyncKey("1234567890a");
@@ -898,7 +902,7 @@ public class CalendarBackendTest {
 		collection.setOptions(syncCollectionOptions);
 		collection.setWindowSize(windowSize);
 		
-		calendarBackend.getChanged(userDataRequest, collection, syncKey);
+		calendarBackend.getAllChanges(userDataRequest, lastKnownState, collection, syncKey);
 	}
 	
 	@Test (expected=HierarchyChangedException.class)
