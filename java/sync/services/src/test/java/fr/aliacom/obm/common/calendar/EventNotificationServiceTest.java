@@ -31,10 +31,10 @@
  * ***** END LICENSE BLOCK ***** */
 package fr.aliacom.obm.common.calendar;
 
-import static fr.aliacom.obm.ToolBox.getDefaultObmDomain;
-import static fr.aliacom.obm.ToolBox.getDefaultObmUser;
 import static fr.aliacom.obm.ServicesToolBox.getDefaultSettings;
 import static fr.aliacom.obm.ServicesToolBox.getDefaultSettingsService;
+import static fr.aliacom.obm.ToolBox.getDefaultObmDomain;
+import static fr.aliacom.obm.ToolBox.getDefaultObmUser;
 import static fr.aliacom.obm.common.calendar.EventNotificationServiceTestTools.after;
 import static fr.aliacom.obm.common.calendar.EventNotificationServiceTestTools.compareCollections;
 import static fr.aliacom.obm.common.calendar.EventNotificationServiceTestTools.createRequiredAttendee;
@@ -43,6 +43,7 @@ import static fr.aliacom.obm.common.calendar.EventNotificationServiceTestTools.l
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -59,7 +60,6 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.obm.filter.SlowFilterRule;
