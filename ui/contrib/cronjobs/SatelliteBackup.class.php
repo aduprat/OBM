@@ -217,14 +217,11 @@ class SatelliteBackup extends CronJob {
   }
 
   protected function getDomainUsers($domain_id) {
-    global $backup_deactivated_mail;
-
     $users = array();
     $obm_q = new DB_OBM;
-    $userobm_mail_perms = ( $backup_deactivated_mail ) ? ' AND userobm_mail_perms=1 ' : '';
     $query = "SELECT userobm_id, userobm_login
       FROM UserObm
-      WHERE userobm_archive=0 AND userobm_domain_id=$domain_id $userobm_mail_perms";
+      WHERE userobm_archive=0 AND userobm_domain_id=$domain_id AND userobm_mail_perms=1";
     $this->logger->core($query);
     $obm_q->query($query);
 
