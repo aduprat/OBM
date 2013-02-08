@@ -410,7 +410,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 				setSequence(oldEvent, event);
 				updateCalendarEntity(calendarClient, token, collectionPath, oldEvent, event);
 			} else {
-				eventId = createCalendarEntity(udr, calendarClient, token, collectionPath, event, data);
+				eventId = createCalendarEntity(udr, calendarClient, token, collectionPath, event, clientId, data);
 			}
 		} catch (org.obm.sync.NotAllowedException e) {
 			throw new HierarchyChangedException(e);
@@ -448,11 +448,11 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 	}
 
 	private EventObmId createCalendarEntity(UserDataRequest udr, ICalendar cc,
-			AccessToken token, String collectionPath, Event event, IApplicationData data)
+			AccessToken token, String collectionPath, Event event, String clientId, IApplicationData data)
 			throws ServerFault, EventAlreadyExistException, DaoException, org.obm.sync.NotAllowedException {
 		switch (event.getType()) {
 		case VEVENT:
-			return createEvent(udr, cc, token, collectionPath, event, (MSEvent) data);
+			return createEvent(udr, cc, token, collectionPath, event, clientId, (MSEvent) data);
 		case VTODO:
 			return createTodo(cc, token, collectionPath, event);
 		default:
@@ -467,15 +467,15 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 	}
 
 	private EventObmId createEvent(UserDataRequest udr, ICalendar cc,
-			AccessToken token, String collectionPath, Event event, MSEvent msEvent)
+			AccessToken token, String collectionPath, Event event, String clientId, MSEvent msEvent)
 			throws ServerFault, EventAlreadyExistException, DaoException, org.obm.sync.NotAllowedException {
 		EventExtId eventExtId = generateExtId();
 		event.setExtId(eventExtId);
 		eventService.trackEventExtIdMSEventUidTranslation(eventExtId, msEvent.getUid(), udr.getDevice());
-		EventObmId eventId = cc.createEvent(token, parseCalendarName(collectionPath), event, true, null);
+		EventObmId eventId = cc.createEvent(token, parseCalendarName(collectionPath), event, true, getHashClientId(udr, clientId));
 		return eventId;
 	}
-
+	
 	private EventExtId generateExtId() {
 		UUID uuid = UUID.randomUUID();
 		return new EventExtId(uuid.toString());
