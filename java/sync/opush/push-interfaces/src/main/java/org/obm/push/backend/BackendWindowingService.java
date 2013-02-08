@@ -32,13 +32,14 @@
 package org.obm.push.backend;
 
 import org.obm.push.bean.SyncCollection;
+import org.obm.push.bean.SyncKey;
 import org.obm.push.bean.UserDataRequest;
 import org.obm.push.bean.change.client.SyncClientCommands;
 
 public interface BackendWindowingService {
 	
 	DataDelta windowedChanges(UserDataRequest udr, SyncCollection collection, 
-			SyncClientCommands clientCommands, BackendChangesProvider backendChangesProvider);
+			SyncClientCommands clientCommands, SyncKey newSyncKey, BackendChangesProvider backendChangesProvider);
 	
 	public interface BackendChangesProvider {
 		DataDelta getAllChanges() ;

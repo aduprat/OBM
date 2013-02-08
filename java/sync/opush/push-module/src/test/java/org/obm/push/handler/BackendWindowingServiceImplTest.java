@@ -41,6 +41,8 @@ import java.util.List;
 import org.easymock.IMocksControl;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.obm.filter.SlowFilterRunner;
 import org.obm.push.backend.BackendWindowingService.BackendChangesProvider;
 import org.obm.push.backend.DataDelta;
 import org.obm.push.bean.Credentials;
@@ -59,7 +61,7 @@ import org.obm.push.bean.change.item.ItemDeletion;
 
 import com.google.common.collect.ImmutableList;
 
-
+@RunWith(SlowFilterRunner.class)
 public class BackendWindowingServiceImplTest {
 
 	private IMocksControl mocks;
@@ -88,41 +90,56 @@ public class BackendWindowingServiceImplTest {
 	@Test(expected=NullPointerException.class)
 	public void testRequireUserDataRequest() {
 		int collectionId = 15;
+		SyncKey syncKey = new SyncKey("456");
 		UserDataRequest userDataRequest = null;
 		SyncCollection syncCollection = new SyncCollection(collectionId, "obm:\\\\test@test\\email\\INBOX");
 		SyncClientCommands clientCommands = SyncClientCommands.empty();
 		BackendChangesProvider backendChangesProvider = mocks.createMock(BackendChangesProvider.class);
 
-		testee.windowedChanges(userDataRequest, syncCollection, clientCommands, backendChangesProvider);
+		testee.windowedChanges(userDataRequest, syncCollection, clientCommands, syncKey, backendChangesProvider);
 	}
 
 	@Test(expected=NullPointerException.class)
 	public void testRequireSyncCollection() {
+		SyncKey syncKey = new SyncKey("456");
 		SyncCollection syncCollection = null;
 		SyncClientCommands clientCommands = SyncClientCommands.empty();
 		BackendChangesProvider backendChangesProvider = mocks.createMock(BackendChangesProvider.class);
 
-		testee.windowedChanges(udr, syncCollection, clientCommands, backendChangesProvider);
+		testee.windowedChanges(udr, syncCollection, clientCommands, syncKey, backendChangesProvider);
 	}
 
 	@Test(expected=NullPointerException.class)
 	public void testRequireClientCommands() {
 		int collectionId = 15;
+		SyncKey syncKey = new SyncKey("456");
 		SyncCollection syncCollection = new SyncCollection(collectionId, "obm:\\\\test@test\\email\\INBOX");
 		SyncClientCommands clientCommands = null;
 		BackendChangesProvider backendChangesProvider = mocks.createMock(BackendChangesProvider.class);
 
-		testee.windowedChanges(udr, syncCollection, clientCommands, backendChangesProvider);
+		testee.windowedChanges(udr, syncCollection, clientCommands, syncKey, backendChangesProvider);
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void testRequireSyncKey() {
+		int collectionId = 15;
+		SyncKey syncKey = null;
+		SyncCollection syncCollection = new SyncCollection(collectionId, "obm:\\\\test@test\\email\\INBOX");
+		SyncClientCommands clientCommands = SyncClientCommands.empty();
+		BackendChangesProvider backendChangesProvider = mocks.createMock(BackendChangesProvider.class);
+
+		testee.windowedChanges(udr, syncCollection, clientCommands, syncKey, backendChangesProvider);
 	}
 
 	@Test(expected=NullPointerException.class)
 	public void testRequireBackendChangesProvider() {
 		int collectionId = 15;
+		SyncKey syncKey = new SyncKey("456");
 		SyncCollection syncCollection = new SyncCollection(collectionId, "obm:\\\\test@test\\email\\INBOX");
 		SyncClientCommands clientCommands = SyncClientCommands.empty();
 		BackendChangesProvider backendChangesProvider = null;
 
-		testee.windowedChanges(udr, syncCollection, clientCommands, backendChangesProvider);
+		testee.windowedChanges(udr, syncCollection, clientCommands, syncKey, backendChangesProvider);
 	}
 
 	@Test
@@ -158,7 +175,7 @@ public class BackendWindowingServiceImplTest {
 		expect(responseWindowingService.hasPendingResponse(credentials, device, collectionId)).andReturn(false);
 		
 		mocks.replay();
-		DataDelta dataDelta = testee.windowedChanges(udr, syncCollection, clientCommands, backendChangesProvider);
+		DataDelta dataDelta = testee.windowedChanges(udr, syncCollection, clientCommands, allocatedSyncKey, backendChangesProvider);
 		mocks.verify();
 		
 		assertThat(dataDelta.getSyncDate()).isEqualTo(date("2012-05-04T12:22:53"));
@@ -203,7 +220,7 @@ public class BackendWindowingServiceImplTest {
 		expect(responseWindowingService.hasPendingResponse(credentials, device, collectionId)).andReturn(true);
 	
 		mocks.replay();
-		DataDelta dataDelta = testee.windowedChanges(udr, syncCollection, clientCommands, backendChangesProvider);
+		DataDelta dataDelta = testee.windowedChanges(udr, syncCollection, clientCommands, allocatedSyncKey, backendChangesProvider);
 		mocks.verify();
 		
 		assertThat(dataDelta.getSyncDate()).isEqualTo(date("2012-05-04T12:22:53"));
@@ -217,6 +234,7 @@ public class BackendWindowingServiceImplTest {
 	public void testWindowedChangesWhenPendingResponseFittingWindowSize() {
 		int collectionId = 15;
 		int windowSize = 10;
+		SyncKey allocatedSyncKey = new SyncKey("456");
 		SyncKey syncKey = new SyncKey("123");
 		ItemSyncState syncState = ItemSyncState.builder()
 				.syncDate(date("2012-05-04T11:22:53"))
@@ -232,7 +250,7 @@ public class BackendWindowingServiceImplTest {
 
 		expect(responseWindowingService.hasPendingResponse(credentials, device, collectionId)).andReturn(true);
 		
-		DataDelta continueWindowingDelta = DataDelta.newEmptyDelta(syncState.getSyncDate(), syncKey);
+		DataDelta continueWindowingDelta = DataDelta.newEmptyDelta(syncState.getSyncDate(), allocatedSyncKey);
 		BackendChangesProvider backendChangesProvider = mocks.createMock(BackendChangesProvider.class);
 		
 		expect(responseWindowingService.windowChanges(syncCollection, continueWindowingDelta, udr, clientCommands))
@@ -242,11 +260,11 @@ public class BackendWindowingServiceImplTest {
 		expect(responseWindowingService.hasPendingResponse(credentials, device, collectionId)).andReturn(false);
 		
 		mocks.replay();
-		DataDelta dataDelta = testee.windowedChanges(udr, syncCollection, clientCommands, backendChangesProvider);
+		DataDelta dataDelta = testee.windowedChanges(udr, syncCollection, clientCommands, allocatedSyncKey, backendChangesProvider);
 		mocks.verify();
 		
 		assertThat(dataDelta.getSyncDate()).isEqualTo(syncState.getSyncDate());
-		assertThat(dataDelta.getSyncKey()).isEqualTo(syncKey);
+		assertThat(dataDelta.getSyncKey()).isEqualTo(allocatedSyncKey);
 		assertThat(dataDelta.getChanges()).containsOnly(new ItemChange("123"));
 		assertThat(dataDelta.getDeletions()).containsOnly(ItemDeletion.builder().serverId("456").build());
 		assertThat(dataDelta.hasMoreAvailable()).isFalse();
@@ -256,6 +274,7 @@ public class BackendWindowingServiceImplTest {
 	public void testWindowedChangesWhenPendingResponseNotFittingWindowSize() {
 		int collectionId = 15;
 		int windowSize = 1;
+		SyncKey allocatedSyncKey = new SyncKey("456");
 		SyncKey syncKey = new SyncKey("123");
 		ItemSyncState syncState = ItemSyncState.builder()
 				.syncDate(date("2012-05-04T11:22:53"))
@@ -271,7 +290,7 @@ public class BackendWindowingServiceImplTest {
 
 		expect(responseWindowingService.hasPendingResponse(credentials, device, collectionId)).andReturn(true);
 		
-		DataDelta continueWindowingDelta = DataDelta.newEmptyDelta(syncState.getSyncDate(), syncKey);
+		DataDelta continueWindowingDelta = DataDelta.newEmptyDelta(syncState.getSyncDate(), allocatedSyncKey);
 		BackendChangesProvider backendChangesProvider = mocks.createMock(BackendChangesProvider.class);
 		
 		expect(responseWindowingService.windowChanges(syncCollection, continueWindowingDelta, udr, clientCommands))
@@ -281,11 +300,11 @@ public class BackendWindowingServiceImplTest {
 		expect(responseWindowingService.hasPendingResponse(credentials, device, collectionId)).andReturn(true);
 		
 		mocks.replay();
-		DataDelta dataDelta = testee.windowedChanges(udr, syncCollection, clientCommands, backendChangesProvider);
+		DataDelta dataDelta = testee.windowedChanges(udr, syncCollection, clientCommands, allocatedSyncKey, backendChangesProvider);
 		mocks.verify();
 		
 		assertThat(dataDelta.getSyncDate()).isEqualTo(syncState.getSyncDate());
-		assertThat(dataDelta.getSyncKey()).isEqualTo(syncKey);
+		assertThat(dataDelta.getSyncKey()).isEqualTo(allocatedSyncKey);
 		assertThat(dataDelta.getChanges()).containsOnly(new ItemChange("123"));
 		assertThat(dataDelta.getDeletions()).isEmpty();
 		assertThat(dataDelta.hasMoreAvailable()).isTrue();

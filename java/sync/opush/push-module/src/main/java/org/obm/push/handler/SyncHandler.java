@@ -240,10 +240,11 @@ public class SyncHandler extends WbxmlRequestHandler implements IContinuationHan
 	}
 
 	private ItemSyncState doUpdates(UserDataRequest udr, SyncCollection c,	SyncClientCommands clientCommands, 
-			SyncCollectionResponse syncCollectionResponse) throws DaoException, CollectionNotFoundException, 
-			UnexpectedObmSyncServerException, ProcessingEmailException, ConversionException, FilterTypeChangedException, HierarchyChangedException {
+			SyncCollectionResponse syncCollectionResponse, SyncKey newSyncKey)
+		throws DaoException, CollectionNotFoundException, UnexpectedObmSyncServerException, ProcessingEmailException,
+			ConversionException, FilterTypeChangedException, HierarchyChangedException {
 
-		DataDelta delta = contentsExporter.getChanged(udr, c, clientCommands, syncKeyFactory.randomSyncKey());
+		DataDelta delta = contentsExporter.getChanged(udr, c, clientCommands, newSyncKey);
 
 		syncCollectionResponse.setItemChanges(delta.getChanges());
 		syncCollectionResponse.setItemChangesDeletion(delta.getDeletions());
@@ -424,21 +425,19 @@ public class SyncHandler extends WbxmlRequestHandler implements IContinuationHan
 		} else if (syncCollection.isValidToProcess()) {
 			syncCollection.setItemSyncState(st);
 			Date syncDate = null;
-			SyncKey treatmentSyncKey = null;
+			SyncKey newSyncKey = syncKeyFactory.randomSyncKey();
 			if (syncCollection.getFetchIds().isEmpty()) {
-				ItemSyncState itemSyncState = doUpdates(udr, syncCollection, clientCommands, syncCollectionResponse);
+				ItemSyncState itemSyncState = doUpdates(udr, syncCollection, clientCommands, syncCollectionResponse, newSyncKey);
 				syncDate = itemSyncState.getSyncDate();
-				treatmentSyncKey = itemSyncState.getSyncKey();
 			} else {
-				treatmentSyncKey = syncKeyFactory.randomSyncKey();
 				syncDate = st.getSyncDate();
 				syncCollectionResponse.setItemChanges(
-						contentsExporter.fetch(udr, syncCollection, treatmentSyncKey));
+						contentsExporter.fetch(udr, syncCollection, newSyncKey));
 			}
 			
 			identifyNewItems(syncCollectionResponse, st);
-			allocateSyncStateIfNew(udr, syncCollection, syncCollectionResponse, syncDate, treatmentSyncKey);
-			syncCollectionResponse.setNewSyncKey(treatmentSyncKey);
+			allocateSyncStateIfNew(udr, syncCollection, syncCollectionResponse, syncDate, newSyncKey);
+			syncCollectionResponse.setNewSyncKey(newSyncKey);
 		}
 	}
 

@@ -587,9 +587,14 @@ public class CalendarBackendTest {
 		
 		mockControl.verify();
 		
-		assertThat(dataDelta.getSyncDate()).isEqualTo(currentDate);
-		assertThat(dataDelta.getDeletions()).hasSize(2);
-		assertThat(dataDelta.getChanges()).hasSize(2);
+		assertThat(dataDelta).isEqualTo(DataDelta.builder()
+				.changes(ImmutableList.of(new ItemChange("21"), new ItemChange("22")))
+				.deletions(ImmutableList.of(
+						ItemDeletion.builder().serverId("1:11").build(),
+						ItemDeletion.builder().serverId("1:12").build()))
+				.syncDate(currentDate)
+				.syncKey(syncKey)
+				.build());
 	}
 
 	private EventChanges expectTwoDeletedAndTwoUpdatedEventChanges(Date currentDate, MappingService mappingService, int collectionId) {

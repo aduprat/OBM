@@ -290,7 +290,7 @@ public class ContactsBackend extends ObmSyncBackend implements PIMBackend {
 			final SyncClientCommands clientCommands, final SyncKey newSyncKey)
 		throws UnexpectedObmSyncServerException, DaoException, CollectionNotFoundException {
 
-		return backendWindowingService.windowedChanges(udr, collection, clientCommands, new BackendChangesProvider() {
+		return backendWindowingService.windowedChanges(udr, collection, clientCommands, newSyncKey, new BackendChangesProvider() {
 			
 			@Override
 			public DataDelta getAllChanges() {

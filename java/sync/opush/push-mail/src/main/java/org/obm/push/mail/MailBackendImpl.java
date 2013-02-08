@@ -308,7 +308,8 @@ public class MailBackendImpl extends OpushBackend implements MailBackend {
 			WindowingIndexKey key = new WindowingIndexKey(udr.getUser(), udr.getDevId(), collection.getCollectionId());
 			
 			if (windowingService.hasPendingElements(key, requestSyncKey)) {
-				return continueWindowing(udr, collection, key, collection.getItemSyncState().getSyncDate(), requestSyncKey);
+				snapshotService.actualizeSnapshot(udr.getDevId(), requestSyncKey, collection.getCollectionId(), newSyncKey);
+				return continueWindowing(udr, collection, key, collection.getItemSyncState().getSyncDate(), newSyncKey);
 			} else {
 				return startWindowing(udr, collection, key, newSyncKey);
 			}
@@ -339,7 +340,7 @@ public class MailBackendImpl extends OpushBackend implements MailBackend {
 			Date dataDelaSyncDate, SyncKey dataDeltaSyncKey)
 		throws DaoException, EmailViewPartsFetcherException {
 		
-		EmailChanges pendingChanges = windowingService.popNextPendingElements(key, collection.getWindowSize());
+		EmailChanges pendingChanges = windowingService.popNextPendingElements(key, collection.getWindowSize(), dataDeltaSyncKey);
 		return fetchChanges(udr, collection, key, dataDelaSyncDate, dataDeltaSyncKey, pendingChanges);
 	}
 
