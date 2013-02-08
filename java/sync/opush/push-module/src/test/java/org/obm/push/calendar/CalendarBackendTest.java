@@ -970,7 +970,7 @@ public class CalendarBackendTest {
 		expect(calendarClient.getEventFromId(token, userDataRequest.getUser().getLoginAtDomain(), new EventObmId(serverId)))
 			.andReturn(null).once();
 	
-		expect(calendarClient.createEvent(token, "test", event, true))
+		expect(calendarClient.createEvent(token, "test", event, true, null))
 			.andThrow(new NotAllowedException("Not allowed")).once();
 
 		expect(eventConverter.isInternalEvent(null, true))
@@ -1004,7 +1004,7 @@ public class CalendarBackendTest {
 		expect(calendarClient.getEventFromId(token, userDataRequest.getUser().getLoginAtDomain(), new EventObmId(serverId)))
 			.andReturn(null).once();
 	
-		expect(calendarClient.createEvent(token, "test", event, true))
+		expect(calendarClient.createEvent(token, "test", event, true, null))
 			.andThrow(new EventAlreadyExistException("Already exist")).once();
 
 		expect(calendarClient.getEventObmIdFromExtId(eq(token), eq("test"), anyObject(EventExtId.class)))
