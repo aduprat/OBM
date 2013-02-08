@@ -1,3 +1,9 @@
+obm-satellite (2.4.2.1~1) stable; urgency=low
+
+  * New upstream release.
+
+ -- Thomas Sarboni <tsarboni@linagora.com>  Fri,  8 Feb 2013 15:28:11 +0000
+
 obm-satellite (2.4.2.1~0.rc2) stable; urgency=low
 
   * New upstream release.
