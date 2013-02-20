@@ -83,7 +83,7 @@ import org.obm.push.bean.change.item.ItemDeletion;
 import org.obm.push.exception.ConversionException;
 import org.obm.push.exception.DaoException;
 import org.obm.push.exception.activesync.CollectionNotFoundException;
-import org.obm.push.exception.activesync.HierarchyChangedException;
+import org.obm.push.exception.activesync.ItemNotFoundException;
 import org.obm.push.service.EventService;
 import org.obm.push.service.impl.MappingService;
 import org.obm.push.utils.DateUtils;
@@ -872,7 +872,7 @@ public class CalendarBackendTest {
 				.build();
 	}
 	
-	@Test (expected=HierarchyChangedException.class)
+	@Test 
 	public void testGetAllChangesThrowsHierarchyChangedException() throws Exception {
 		int windowSize = 10;
 		Date currentDate = DateUtils.getCurrentDate();
@@ -902,10 +902,11 @@ public class CalendarBackendTest {
 		collection.setOptions(syncCollectionOptions);
 		collection.setWindowSize(windowSize);
 		
-		calendarBackend.getAllChanges(userDataRequest, lastKnownState, collection, syncKey);
+		DataDelta allChanges = calendarBackend.getAllChanges(userDataRequest, lastKnownState, collection, syncKey);
+		assertThat(allChanges).isNull();
 	}
 	
-	@Test (expected=HierarchyChangedException.class)
+	@Test (expected=ItemNotFoundException.class)
 	public void testCreateOrUpdateThrowsHierarchyChangedException() throws Exception {
 		int collectionId = 1;
 		String serverId = "2";
@@ -926,7 +927,7 @@ public class CalendarBackendTest {
 		calendarBackend.createOrUpdate(userDataRequest, collectionId, serverId, clientId, data);
 	}
 	
-	@Test (expected=HierarchyChangedException.class)
+	@Test (expected=ItemNotFoundException.class)
 	public void testCreateOrUpdateThrowsHierarchyChangedExceptionOnUpdateCalendarEntity() throws Exception {
 		int collectionId = 1;
 		String serverId = "2";
@@ -953,7 +954,7 @@ public class CalendarBackendTest {
 		calendarBackend.createOrUpdate(userDataRequest, collectionId, serverId, clientId, data);
 	}
 	
-	@Test (expected=HierarchyChangedException.class)
+	@Test (expected=ItemNotFoundException.class)
 	public void testCreateOrUpdateThrowsHierarchyChangedExceptionOnCreateCalendarEntity() throws Exception {
 		int collectionId = 1;
 		String serverId = "2";
@@ -987,7 +988,7 @@ public class CalendarBackendTest {
 		calendarBackend.createOrUpdate(userDataRequest, collectionId, null, clientId, data);
 	}
 	
-	@Test (expected=HierarchyChangedException.class)
+	@Test (expected=ItemNotFoundException.class)
 	public void testCreateOrUpdateThrowsHierarchyChangedExceptionOnEventAlreadyExist() throws Exception {
 		int collectionId = 1;
 		String serverId = "2";
@@ -1024,7 +1025,7 @@ public class CalendarBackendTest {
 		calendarBackend.createOrUpdate(userDataRequest, collectionId, null, clientId, data);
 	}
 	
-	@Test (expected=HierarchyChangedException.class)
+	@Test (expected=ItemNotFoundException.class)
 	public void testHandleMettingResponseThrowsHierarchyChangedException() throws Exception {
 		String calendarDisplayName = userDataRequest.getUser().getLoginAtDomain();
 		String defaultCalendarName = "obm:\\\\test@test\\calendar\\" + calendarDisplayName;
@@ -1064,7 +1065,7 @@ public class CalendarBackendTest {
 		calendarBackend.handleMeetingResponse(userDataRequest, invitation, AttendeeStatus.ACCEPT);
 	}
 	
-	@Test (expected=HierarchyChangedException.class)
+	@Test 
 	public void testFetchThrowsHierarchyChangedException() throws Exception {
 		String serverId = "1:1";
 		Integer itemId = 1;
@@ -1083,6 +1084,8 @@ public class CalendarBackendTest {
 		
 		List<String> itemIds = ImmutableList.<String> of(serverId);
 
-		calendarBackend.fetch(userDataRequest, 1, itemIds, null, null, null);
+		List<ItemChange> fetch = calendarBackend.fetch(userDataRequest, 1, itemIds, null, null, null);
+		
+		assertThat(fetch).isEmpty();
 	}
 }

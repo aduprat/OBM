@@ -38,12 +38,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.obm.push.backend.BackendWindowingService;
+import org.obm.push.backend.BackendWindowingService.BackendChangesProvider;
 import org.obm.push.backend.CollectionPath;
 import org.obm.push.backend.DataDelta;
 import org.obm.push.backend.OpushCollection;
 import org.obm.push.backend.PIMBackend;
 import org.obm.push.backend.PathsToCollections;
-import org.obm.push.backend.BackendWindowingService.BackendChangesProvider;
 import org.obm.push.backend.PathsToCollections.Builder;
 import org.obm.push.bean.AttendeeStatus;
 import org.obm.push.bean.FolderSyncState;
@@ -280,6 +280,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 		String collectionPath = mappingService.getCollectionPathFor(collection.getCollectionId());
 		String calendar = parseCalendarName(collectionPath);
 		
+		DataDelta delta = null;
 		ItemSyncState newState = state.newWindowedSyncState(collection.getOptions().getFilterType());
 		try {
 			
@@ -294,15 +295,15 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 			logger.info("Event changes [ {} ]", changes.getUpdated().size());
 			logger.info("Event changes LastSync [ {} ]", changes.getLastSync().toString());
 			
-			DataDelta delta = 
-					buildDataDelta(udr, collection.getCollectionId(), token, changes, newSyncKey);
+			delta = buildDataDelta(udr, collection.getCollectionId(), token, changes, newSyncKey);
 			
 			logger.info("getContentChanges( {}, {}, lastSync = {} ) => {}",
 					new Object[]{calendar, collectionPath, newState.getSyncDate(), delta.statistics()});
 			
 			return delta;
 		} catch (org.obm.sync.NotAllowedException e) {
-			throw new HierarchyChangedException(e);
+			logger.warn(e.getMessage(), e);
+			return delta;
 		} catch (ServerFault e) {
 			throw new UnexpectedObmSyncServerException(e);
 		} finally {
@@ -413,7 +414,8 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 				eventId = createCalendarEntity(udr, calendarClient, token, collectionPath, event, clientId, data);
 			}
 		} catch (org.obm.sync.NotAllowedException e) {
-			throw new HierarchyChangedException(e);
+			logger.warn(e.getMessage(), e);
+			throw new ItemNotFoundException(e);
 		} catch (ServerFault e) {
 			throw new UnexpectedObmSyncServerException(e);
 		} catch (EventAlreadyExistException e) {
@@ -421,7 +423,8 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 				eventId = getEventIdFromExtId(token, collectionPath, calendarClient, event);
 			}
 			catch (org.obm.sync.NotAllowedException nae) {
-				throw new HierarchyChangedException(nae);
+				logger.warn(e.getMessage(), e);
+				throw new ItemNotFoundException(e);
 			}
 		} catch (EventNotFoundException e) {
 			throw new ItemNotFoundException(e);
@@ -523,7 +526,8 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 			} catch (EventNotFoundException e) {
 				throw new ItemNotFoundException(e);
 			} catch (org.obm.sync.NotAllowedException e) {
-				logger.error(e.getMessage(), e);
+				logger.warn(e.getMessage(), e);
+				throw new ItemNotFoundException(e);
 			} finally {
 				logout(token);
 			}
@@ -542,7 +546,8 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 			event.setObmSequence(obmEvent.getSequence());
 			return updateUserStatus(udr, event, obmEvent, status, calendarClient, at);
 		} catch (org.obm.sync.NotAllowedException e) {
-			throw new HierarchyChangedException(e);
+			logger.warn(e.getMessage(), e);
+			throw new ItemNotFoundException(e);
 		} catch (UnexpectedObmSyncServerException e) {
 			throw e;
 		} catch (EventNotFoundException e) {
@@ -636,7 +641,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 					ret.add(ic);
 				}
 			} catch (org.obm.sync.NotAllowedException e) {
-				throw new HierarchyChangedException(e);
+				logger.warn(e.getMessage(), e);
 			} catch (EventNotFoundException e) {
 				logger.error("event from serverId {} not found.", serverId);
 			} catch (ServerFault e1) {
