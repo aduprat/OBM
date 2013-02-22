@@ -56,8 +56,6 @@ import org.obm.icalendar.Ical4jHelper;
 import org.obm.icalendar.Ical4jUser;
 import org.obm.sync.NotAllowedException;
 import org.obm.sync.Right;
-import org.obm.sync.addition.CommitedElement;
-import org.obm.sync.addition.Kind;
 import org.obm.sync.auth.AccessToken;
 import org.obm.sync.auth.EventAlreadyExistException;
 import org.obm.sync.auth.EventNotFoundException;
@@ -97,7 +95,6 @@ import com.google.common.collect.Ordering;
 import com.google.inject.Inject;
 
 import fr.aliacom.obm.common.FindException;
-import fr.aliacom.obm.common.addition.CommitedOperationDao;
 import fr.aliacom.obm.common.domain.DomainService;
 import fr.aliacom.obm.common.domain.ObmDomain;
 import fr.aliacom.obm.common.user.ObmUser;
@@ -114,7 +111,6 @@ public class CalendarBindingImpl implements ICalendar {
 	
 	private final CalendarDao calendarDao;
 	private final CategoryDao categoryDao;
-	private final CommitedOperationDao commitedOperationDao;
 	
 	private final DomainService domainService;
 	private final UserService userService;
@@ -143,16 +139,13 @@ public class CalendarBindingImpl implements ICalendar {
 	protected CalendarBindingImpl(EventChangeHandler eventChangeHandler,
 			DomainService domainService, UserService userService,
 			CalendarDao calendarDao,
-			CategoryDao categoryDao,
-			CommitedOperationDao commitedOperationDao,
-			HelperService helperService, 
+			CategoryDao categoryDao, HelperService helperService, 
 			Ical4jHelper ical4jHelper, ICalendarFactory calendarFactory, AttendeeService attendeeService) {
 		this.eventChangeHandler = eventChangeHandler;
 		this.domainService = domainService;
 		this.userService = userService;
 		this.calendarDao = calendarDao;
 		this.categoryDao = categoryDao;
-		this.commitedOperationDao = commitedOperationDao;
 		this.helperService = helperService;
 		this.ical4jHelper = ical4jHelper;
 		this.calendarFactory = calendarFactory;
@@ -626,38 +619,19 @@ public class CalendarBindingImpl implements ICalendar {
 
 	@Override
 	@Transactional
-	public EventObmId createEvent(AccessToken token, String calendar, Event event, boolean notification, String clientId)
+	public EventObmId createEvent(AccessToken token, String calendar, Event event, boolean notification)
 			throws ServerFault, EventAlreadyExistException, NotAllowedException {
 
-		try {
-			assertCanCreateEvent(token, calendar, event);
-			convertAttendees(event, calendar, token.getDomain());
-			assignDelegationRightsOnAttendees(token, event);
-			Event ev = null;
-			ev = commitedOperationDao.findAsEvent(token, clientId);
-			if (ev == null) {
-				if (event.isInternalEvent()) {
-					ev = createInternalEvent(token, calendar, event, notification);
-				} else {
-					ev = createExternalEvent(token, calendar, event, notification);
-				}
-			}
-			
-			Integer entityId = ev.getEntityId();
-			if (clientId != null && entityId != null) {
-				commitedOperationDao.store(token, 
-						CommitedElement.builder()
-							.clientId(clientId)
-							.entityId(entityId)
-							.kind(Kind.VEVENT)
-							.build());
-			}
-			
-			return ev.getObmId();
-		} catch (SQLException e) {
-			logger.error(LogUtils.prefix(token) + e.getMessage(), e);
-			throw new ServerFault(e.getMessage());
+		assertCanCreateEvent(token, calendar, event);
+		convertAttendees(event, calendar, token.getDomain());
+		assignDelegationRightsOnAttendees(token, event);
+		Event ev = null;
+		if (event.isInternalEvent()) {
+			ev = createInternalEvent(token, calendar, event, notification);
+		} else {
+			ev = createExternalEvent(token, calendar, event, notification);
 		}
+		return ev.getObmId();
 	}
 
 	private void assertCanCreateEvent(AccessToken token, String calendar,
@@ -699,9 +673,7 @@ public class CalendarBindingImpl implements ICalendar {
 		}
 	}
 
-	private Event createExternalEvent(AccessToken token, String calendar, Event event, boolean notification) 
-			throws ServerFault {
-		
+	private Event createExternalEvent(AccessToken token, String calendar, Event event, boolean notification) throws ServerFault {
 		try {
 			Attendee attendee = calendarOwnerAsAttendee(token, calendar, event);
 			if (attendee == null) {
@@ -728,9 +700,7 @@ public class CalendarBindingImpl implements ICalendar {
 		}
 	}
 	
-	private Event createEventAsDeleted(AccessToken token, String calendar, Event event) 
-			throws SQLException, FindException, ServerFault {
-		
+	private Event createEventAsDeleted(AccessToken token, String calendar, Event event) throws SQLException, FindException, ServerFault {
 		Event ev = calendarDao.createEvent(token, calendar, event, false);
 		return calendarDao.removeEvent(token, ev, event.getType(), event.getSequence());
 	}
@@ -765,13 +735,11 @@ public class CalendarBindingImpl implements ICalendar {
 	
 	private void notifyOrganizerForExternalEvent(AccessToken token, String calendar, Event ev,
 			boolean notification) throws FindException {
-		
 		Attendee calendarOwnerAsAttendee = calendarOwnerAsAttendee(token, calendar, ev);
 		notifyOrganizerForExternalEvent(token, calendar, ev, calendarOwnerAsAttendee.getParticipation(), notification);
 	}
 
-	@VisibleForTesting protected Event createInternalEvent(AccessToken token, String calendar, Event event, boolean notification) 
-			throws ServerFault {
+	@VisibleForTesting protected Event createInternalEvent(AccessToken token, String calendar, Event event, boolean notification) throws ServerFault {
 		try{
 			event.updateParticipation();
 			Event ev = calendarDao.createEvent(token, calendar, event, true);
@@ -785,7 +753,7 @@ public class CalendarBindingImpl implements ICalendar {
 			throw new ServerFault(e.getMessage());
 		}
 	}
-
+	
 	@VisibleForTesting
 	protected void assignDelegationRightsOnAttendees(AccessToken token, Event event) {
 		applyDelegationRightsOnAttendeesToEvent(token, event);
@@ -1414,8 +1382,8 @@ public class CalendarBindingImpl implements ICalendar {
 
 	@Override
 	@Transactional
-	public int importICalendar(final AccessToken token, final String calendar, final String ics, String clientId) 
-			throws ImportICalendarException, ServerFault, NotAllowedException {
+	public int importICalendar(final AccessToken token, final String calendar, final String ics) 
+		throws ImportICalendarException, ServerFault, NotAllowedException {
 
 		assertUserCanWriteOnCalendar(token, calendar);
 		

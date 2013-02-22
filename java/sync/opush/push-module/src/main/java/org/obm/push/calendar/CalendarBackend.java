@@ -463,7 +463,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 	private EventObmId createTodo(ICalendar cc,
 			AccessToken token, String collectionPath, Event event)
 			throws ServerFault, EventAlreadyExistException, org.obm.sync.NotAllowedException {
-		return cc.createEvent(token, parseCalendarName(collectionPath), event, true, null);
+		return cc.createEvent(token, parseCalendarName(collectionPath), event, true);
 	}
 
 	private EventObmId createEvent(UserDataRequest udr, ICalendar cc,
@@ -472,7 +472,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 		EventExtId eventExtId = generateExtId();
 		event.setExtId(eventExtId);
 		eventService.trackEventExtIdMSEventUidTranslation(eventExtId, msEvent.getUid(), udr.getDevice());
-		EventObmId eventId = cc.createEvent(token, parseCalendarName(collectionPath), event, true, null);
+		EventObmId eventId = cc.createEvent(token, parseCalendarName(collectionPath), event, true);
 		return eventId;
 	}
 
@@ -567,7 +567,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 			if (previousEvent == null) {
 				try {
 					logger.info("createOrModifyInvitationEvent : create new event {}", newEvent.getObmId());
-					EventObmId id = calendarClient.createEvent(at, udr.getUser().getLoginAtDomain(), newEvent, isInternal, null);
+					EventObmId id = calendarClient.createEvent(at, udr.getUser().getLoginAtDomain(), newEvent, isInternal);
 					return calendarClient.getEventFromId(at, udr.getUser().getLoginAtDomain(), id);
 				} catch (EventAlreadyExistException e) {
 					throw new UnexpectedObmSyncServerException("it's not possible because getEventFromExtId == null");
