@@ -423,7 +423,7 @@ public class ContactsBackend extends ObmSyncBackend implements PIMBackend {
 		
 		AccessToken token = login(udr);
 		try {
-			return bookClient.createContact(token, addressBookId, contact, null);
+			return bookClient.createContact(token, addressBookId, contact);
 		} catch (ServerFault e) {
 			throw new UnexpectedObmSyncServerException(e);
 		} finally {
