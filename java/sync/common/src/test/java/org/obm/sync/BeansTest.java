@@ -37,7 +37,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.obm.filter.SlowFilterRunner;
-import org.obm.sync.addition.CommitedElement;
 import org.obm.sync.auth.Login;
 import org.obm.sync.bean.EqualsVerifierUtils;
 import org.obm.sync.book.Contact;
@@ -85,8 +84,7 @@ public class BeansTest {
 				EventRecurrence.class,
 				RecurrenceId.class,
 				Resource.class,
-				UserAttendee.class, ContactAttendee.class, ResourceAttendee.class,
-				CommitedElement.class);
+				UserAttendee.class, ContactAttendee.class, ResourceAttendee.class);
 	}
 	
 	@Test
