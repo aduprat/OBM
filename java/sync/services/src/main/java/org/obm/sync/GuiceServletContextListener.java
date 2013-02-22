@@ -68,8 +68,6 @@ import com.google.inject.Injector;
 import com.google.inject.name.Names;
 import com.google.inject.spi.Message;
 
-import fr.aliacom.obm.common.addition.CommitedOperationDao;
-import fr.aliacom.obm.common.addition.CommitedOperationDaoJdbcImpl;
 import fr.aliacom.obm.common.calendar.AttendeeServiceJdbcImpl;
 import fr.aliacom.obm.common.calendar.CalendarBindingImpl;
 import fr.aliacom.obm.common.calendar.CalendarDao;
@@ -123,7 +121,6 @@ public class GuiceServletContextListener implements ServletContextListener {
                 bind(SettingsService.class).to(SettingsServiceImpl.class);
                 bind(ObmSmtpConf.class).to(ObmSmtpConfImpl.class);
                 bind(CalendarDao.class).to(CalendarDaoJdbcImpl.class);
-                bind(CommitedOperationDao.class).to(CommitedOperationDaoJdbcImpl.class);
                 bind(ITemplateLoader.class).to(TemplateLoaderFreeMarkerImpl.class);
                 bind(LocalFreeBusyProvider.class).to(DatabaseFreeBusyProvider.class);
                 bind(DatabaseConnectionProvider.class).to(DatabaseConnectionProviderImpl.class);
