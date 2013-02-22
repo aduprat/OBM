@@ -36,7 +36,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.codec.binary.Base64;
 import org.obm.sync.addition.CommitedElement;
 import org.obm.sync.addition.Kind;
 import org.obm.sync.auth.AccessToken;
@@ -48,7 +47,6 @@ import org.obm.sync.calendar.EventObmId;
 import org.obm.sync.exception.ContactNotFoundException;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -101,8 +99,6 @@ public class CommitedOperationDaoJdbcImpl implements CommitedOperationDao {
 			return null;
 		}
 		
-		checkClientIdFormat(clientId);
-		
 		String q = "SELECT e.evententity_event_id FROM CommitedOperation a "
 				+ "INNER JOIN EventEntity e ON a.commitedoperation_entity_id=evententity_entity_id "
 				+ "WHERE commitedoperation_hash_client_id = ? AND commitedoperation_kind = ?";
@@ -142,8 +138,6 @@ public class CommitedOperationDaoJdbcImpl implements CommitedOperationDao {
 			return null;
 		}
 		
-		checkClientIdFormat(clientId);
-		
 		String q = "SELECT c.contactentity_contact_id FROM CommitedOperation a "
 				+ "INNER JOIN ContactEntity c ON a.commitedoperation_entity_id=contactentity_entity_id "
 				+ "WHERE commitedoperation_hash_client_id = ? AND commitedoperation_kind = ?";
@@ -178,10 +172,5 @@ public class CommitedOperationDaoJdbcImpl implements CommitedOperationDao {
 	private Object getJdbcObject(Kind kind) throws SQLException {
 		return obmHelper.getDBCP()
 				.getJdbcObject(ObmHelper.VKIND, kind.toString());
-	}
-	
-	@VisibleForTesting void checkClientIdFormat(String clientId) {
-		Preconditions.checkArgument(clientId.length() == 40, "clientId must have a length of 40 characters");
-		Preconditions.checkArgument(Base64.isBase64(clientId), "clientId must be in base 64");
 	}
 }
