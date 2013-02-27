@@ -109,6 +109,8 @@ fi
 
 
 %changelog
+* Wed Feb 27 2013 Thomas Sarboni <tsarboni@linagora.com> - obm-ca-2.4.2.2-0.rc2
+- New upstream release.
 * Tue Feb 26 2013 Thomas Sarboni <tsarboni@linagora.com> - obm-ca-2.4.2.2-0.rc1
 - New upstream release.
 * Fri Feb 08 2013 Thomas Sarboni <tsarboni@linagora.com> - obm-ca-2.4.2.1-1
