@@ -7008,6 +7008,7 @@ Class CalendarView {
 
     $obm_q = new DB_OBM;
     $id = sql_parse_id($bookmark_id);
+    $id = ( $id == 'NULL' ) ? 0 : $id;
 
     $query = "SELECT * FROM ObmBookmarkProperty WHERE obmbookmarkproperty_bookmark_id='$id'";
     display_debug_msg($query, $cdg_sql, "CalendarView::get_from_id()");
@@ -7028,7 +7029,7 @@ Class CalendarView {
       }
     }
     if($data['group'] == NULL && $data['users'] == NULL && $data['resources'] == NULL) {
-      $GLOBALS['display']['msg'] .= display_warn_msg($GLOBALS['l_view_invalid']);
+      $GLOBALS['display']['msg'] .= display_err_msg($GLOBALS['l_view_invalid']);
     } else {
       $view = new CalendarView($data);
       $view->id = $bookmark_id;
