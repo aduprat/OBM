@@ -671,6 +671,12 @@ function get_contact_params() {
   return $params;
 }
 
+function escapeSolrValue($string) {
+  $match = array('\\', '+', '-', '&', '|', '!', '(', ')', '{', '}', '[', ']', '^', '~', '*', '?', ':', '"', ';', ' ');
+  $replace = array('\\\\', '\\+', '\\-', '\\&', '\\|', '\\!', '\\(', '\\)', '\\{', '\\}', '\\[', '\\]', '\\^', '\\~', '\\*', '\\?', '\\:', '\\"', '\\;', '\\ ');
+  $string = str_replace($match, $replace, $string);
+  return $string;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Contact Action 
@@ -794,6 +800,13 @@ function get_contact_action() {
     'Url'      => "$path/contact/contact_index.php?action=ext_search",
     'Right'    => $cright_read,
     'Condition'=> array ('None') 
+  );
+
+// SearchSimilar
+  $actions['contact']['searchSimilar'] = array (
+    'Url'      => "$path/contact/contact_index.php?action=searchSimilar",
+    'Right'    => $cright_read,
+    'Condition'=> array ('None')
   );
 
 // Search mail
