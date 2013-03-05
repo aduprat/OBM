@@ -31,11 +31,8 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.push.mail.imap.testsuite;
 
-import static org.obm.configuration.EmailConfiguration.IMAP_INBOX_NAME;
 import static org.fest.assertions.api.Assertions.assertThat;
-
-import java.util.Timer;
-import java.util.TimerTask;
+import static org.obm.configuration.EmailConfiguration.IMAP_INBOX_NAME;
 
 import org.junit.After;
 import org.junit.Before;
@@ -88,7 +85,7 @@ public abstract class MailboxTimeoutTest {
 		String inboxPath = collectionPathHelper.buildCollectionPath(udr, PIMDataType.EMAIL, IMAP_INBOX_NAME);
 		//This one is for warming the stack
 		mailboxService.fetchUIDNext(udr, inboxPath);
-		lockGreenmailAndReleaseAfter(20);
+		greenMail.lockGreenmailAndReleaseAfter(20);
 		stopwatch.start();
 		try {
 			mailboxService.fetchUIDNext(udr, inboxPath);
@@ -96,25 +93,4 @@ public abstract class MailboxTimeoutTest {
 			assertThat(stopwatch.elapsedMillis()).isGreaterThanOrEqualTo(5000).isLessThan(6000);
 		}
 	}
-
-	private void lockGreenmailAndReleaseAfter(int timeoutInSeconds) throws InterruptedException {
-		lock();
-		releaseLockAfter(timeoutInSeconds);
-	}
-
-	private void lock() throws InterruptedException {
-		greenMail.getLock().acquire();
-	}
-	
-	private void releaseLockAfter(int timeoutInSecond) {
-		new Timer().schedule(
-				new TimerTask() {
-			
-			@Override
-			public void run() {
-				greenMail.getLock().release();
-			}
-		}, timeoutInSecond * 1000);
-	}
-	
 }
