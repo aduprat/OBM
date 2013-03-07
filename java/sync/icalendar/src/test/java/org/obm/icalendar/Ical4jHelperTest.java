@@ -217,12 +217,11 @@ public class Ical4jHelperTest {
 	}
 
 	protected ObmDomain getDefaultObmDomain() {
-		ObmDomain obmDomain = new ObmDomain();
-		
-		obmDomain.setName("test.tlse.lng");
-		obmDomain.setUuid("ac21bc0c-f816-4c52-8bb9-e50cfbfec5b6");
-		
-		return obmDomain;
+		return ObmDomain
+				.builder()
+				.uuid("ac21bc0c-f816-4c52-8bb9-e50cfbfec5b6")
+				.name("test.tlse.lng")
+				.build();
 	}
 
 	protected Event getTestEvent() {
@@ -1162,9 +1161,12 @@ public class Ical4jHelperTest {
 	}
 	
 	private Ical4jUser buildObmUser(final Attendee attendeeReply) {
-		final ObmDomain obmDomain = new ObmDomain();
-		obmDomain.setName(new UserEmailParserUtils().getDomain(attendeeReply.getEmail()));
-		obmDomain.setUuid("ac21bc0c-f816-4c52-8bb9-e50cfbfec5b6");
+		ObmDomain obmDomain = ObmDomain
+                				.builder()
+                				.uuid("ac21bc0c-f816-4c52-8bb9-e50cfbfec5b6")
+                				.name(new UserEmailParserUtils().getDomain(attendeeReply.getEmail()))
+                				.build();
+		
 		return Ical4jUser.Factory.create().createIcal4jUser(attendeeReply.getEmail(), obmDomain);
 	}
 	
