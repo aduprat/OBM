@@ -33,10 +33,12 @@ package org.obm.push.tnefconverter.test;
 
 import java.io.ByteArrayInputStream;
 
-import org.obm.push.tnefconverter.ScheduleMeeting.GlobalObjectId;
-
 import junit.framework.TestCase;
 
+import org.junit.Ignore;
+import org.obm.push.tnefconverter.ScheduleMeeting.GlobalObjectId;
+
+@Ignore("Waiting for OBMFULL-4525")
 public class GlobalObjectIdTests extends TestCase {
 
 
