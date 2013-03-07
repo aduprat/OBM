@@ -42,10 +42,10 @@ import java.util.SortedSet;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
-import com.google.common.collect.ContiguousSet;
-import com.google.common.collect.DiscreteDomain;
+import com.google.common.collect.DiscreteDomains;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
+import com.google.common.collect.Ranges;
 import com.google.common.collect.Sets;
 
 public class MessageSet implements Serializable, Iterable<Long> {
@@ -94,7 +94,7 @@ public class MessageSet implements Serializable, Iterable<Long> {
 		}
 
 		public Builder add(long value) {
-			return add(Range.singleton(value));
+			return add(Ranges.singleton(value));
 		}
 		
 		public Builder addAll(Collection<Long> values) {
@@ -175,7 +175,7 @@ public class MessageSet implements Serializable, Iterable<Long> {
 		return Iterables.concat(Iterables.transform(ranges, new Function<Range<Long>, Set<Long>>() {
 			@Override
 			public Set<Long> apply(Range<Long> input) {
-				return ContiguousSet.create(input, DiscreteDomain.longs());
+				return input.asSet(DiscreteDomains.longs());
 			}
 		}));
 	}

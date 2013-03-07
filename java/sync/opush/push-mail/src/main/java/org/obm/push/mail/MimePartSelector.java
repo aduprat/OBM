@@ -104,7 +104,7 @@ public class MimePartSelector {
 					public MSEmailBodyType apply(BodyPreference input) {
 						return input.getType();
 					}
-				}).toList();
+				}).toImmutableList();
 		
 		return new Comparator<FetchInstruction>() {
 			

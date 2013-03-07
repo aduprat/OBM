@@ -91,7 +91,7 @@ public class EmailChangesFetcherImpl implements EmailChangesFetcher {
 								.build();
 					}}
 				
-				).toSet();
+				).toImmutableSet();
 	}
 
 	private Set<ItemChange> emailAdditions(UserDataRequest udr,
@@ -115,7 +115,7 @@ public class EmailChangesFetcherImpl implements EmailChangesFetcher {
 								.build();
 					}}
 				
-				).toSet();
+				).toImmutableSet();
 	}
 
 	private Set<ItemChange> emailChanges(final int collectionId, Set<Email> changes) {
@@ -134,7 +134,7 @@ public class EmailChangesFetcherImpl implements EmailChangesFetcher {
 								.build();
 					}}
 				
-				).toSet();
+				).toImmutableSet();
 	}
 	
 

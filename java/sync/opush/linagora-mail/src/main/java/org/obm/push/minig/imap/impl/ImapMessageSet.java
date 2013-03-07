@@ -40,11 +40,12 @@ import org.obm.push.mail.bean.MessageSet.Builder;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ContiguousSet;
-import com.google.common.collect.DiscreteDomain;
+import com.google.common.collect.DiscreteDomains;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
+import com.google.common.collect.Ranges;
 
 public class ImapMessageSet {
 	
@@ -60,7 +61,7 @@ public class ImapMessageSet {
 				String[] p = s.split(":");
 				long start = Long.valueOf(p[0]);
 				long end = Long.valueOf(p[1]);
-				builder.add(Range.closed(start, end));
+				builder.add(Ranges.closed(start, end));
 			}
 		}
 		return wrap(builder.build());
@@ -87,7 +88,7 @@ public class ImapMessageSet {
 	}
 	
 	private String rangeAsString(Range<Long> range) {
-		ContiguousSet<Long> rangeAsSet = ContiguousSet.create(range, DiscreteDomain.longs());
+		ContiguousSet<Long> rangeAsSet = range.asSet(DiscreteDomains.longs());
 		if (rangeAsSet.size() == 1) {
 			return singleValueRangeAsString(rangeAsSet);
 		} else {

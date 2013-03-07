@@ -502,7 +502,7 @@ public class MailBackendTest {
 								return new MailboxFolder(input);
 							}
 						})
-					.toList());
+					.toImmutableList());
 	}
 
 	private void expectMappingServiceSnapshot(FolderSyncState outgoingSyncState, Iterable<Integer> collectionIds)

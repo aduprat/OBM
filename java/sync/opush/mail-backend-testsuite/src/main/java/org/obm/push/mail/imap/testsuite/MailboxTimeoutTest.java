@@ -36,7 +36,6 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -94,7 +93,7 @@ public abstract class MailboxTimeoutTest {
 		try {
 			mailboxService.fetchUIDNext(udr, inboxPath);
 		} finally {
-			assertThat(stopwatch.elapsed(TimeUnit.MILLISECONDS)).isGreaterThanOrEqualTo(5000).isLessThan(6000);
+			assertThat(stopwatch.elapsedMillis()).isGreaterThanOrEqualTo(5000).isLessThan(6000);
 		}
 	}
 

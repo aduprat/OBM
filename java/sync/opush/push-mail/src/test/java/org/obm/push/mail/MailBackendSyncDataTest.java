@@ -31,9 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.push.mail;
 
-import static org.easymock.EasyMock.createControl;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.*;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.obm.DateUtils.date;
 
@@ -67,7 +65,7 @@ import org.obm.push.utils.DateUtils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Range;
+import com.google.common.collect.Ranges;
 
 @RunWith(SlowFilterRunner.class)
 public class MailBackendSyncDataTest {
@@ -454,7 +452,7 @@ public class MailBackendSyncDataTest {
 		expect(dateService.getCurrentDate()).andReturn(fromDate);
 		expectSnapshotDaoHasEntry(syncKey, snapshot);
 
-		MessageSet messages = MessageSet.builder().add(Range.closed(2l, 10l)).build();
+		MessageSet messages = MessageSet.builder().add(Ranges.closed(2l, 10l)).build();
 		expect(mailboxService.fetchEmails(udr, collectionPath, messages)).andReturn(emailsInServer).once();
 		expect(mailboxService.fetchUIDNext(udr, collectionPath)).andReturn(uidNext);
 	
@@ -511,7 +509,7 @@ public class MailBackendSyncDataTest {
 		Date fromDate = syncCollectionOptions.getFilterType().getFilteredDateTodayAtMidnight();
 		expect(dateService.getCurrentDate()).andReturn(fromDate);
 		expectSnapshotDaoHasEntry(syncKey, snapshot);
-		MessageSet messages = MessageSet.builder().add(Range.closed(2l, 10l)).build();
+		MessageSet messages = MessageSet.builder().add(Ranges.closed(2l, 10l)).build();
 		expect(mailboxService.fetchEmails(udr, collectionPath, messages)).andReturn(actualEmailsInServer).once();
 		expect(mailboxService.fetchUIDNext(udr, collectionPath)).andReturn(uidNext);
 		expectEmailsDiff(ImmutableList.copyOf(previousEmailsInServer), actualEmailsInServer, emailChanges);
