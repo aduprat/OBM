@@ -971,7 +971,7 @@ public class Ical4jHelper {
 	}
 
 	private void appendLastModified(PropertyList prop, Event event) {
-		if(event.getTimeUpdate() != null){
+		if(event.getTimeUpdate() != null) {
 			prop.add(new LastModified(new DateTime(event.getTimeUpdate().getTime())));
 		}
 	}
@@ -1475,7 +1475,7 @@ public class Ical4jHelper {
 	}
 
 	private DtEnd getDtEnd(Date end) {
-		return new DtEnd(new DateTime(end));
+		return new DtEnd(new DateTime(end), true);
 	}
 
 	@VisibleForTesting DtStart getDtStart(Date start) {
