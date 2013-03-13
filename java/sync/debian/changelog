@@ -1,3 +1,9 @@
+obm-java (2.4.2.3~1) stable; urgency=low
+
+  * New upstream release.
+
+ -- Thomas Sarboni <tsarboni@linagora.com>  Wed, 13 Mar 2013 13:22:41 +0000
+
 obm-java (2.4.2.3~0.rc1) stable; urgency=low
 
   * New upstream release.
