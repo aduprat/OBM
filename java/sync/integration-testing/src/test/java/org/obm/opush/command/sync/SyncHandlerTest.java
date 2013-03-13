@@ -63,32 +63,40 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
+
+import javax.naming.NoPermissionException;
 
 import org.easymock.IMocksControl;
 import org.fest.util.Files;
+import org.joda.time.DateTimeZone;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.obm.filter.Slow;
-import org.obm.filter.SlowFilterRunner;
 import org.obm.opush.ActiveSyncServletModule.OpushServer;
 import org.obm.opush.IntegrationTestUtils;
 import org.obm.opush.IntegrationUserAccessUtils;
 import org.obm.opush.SingleUserFixture;
 import org.obm.opush.SingleUserFixture.OpushUser;
 import org.obm.opush.env.Configuration;
-import org.obm.opush.env.JUnitGuiceRule;
 import org.obm.push.backend.DataDelta;
 import org.obm.push.backend.IContentsExporter;
+import org.obm.push.backend.IContentsImporter;
+import org.obm.push.bean.CalendarBusyStatus;
+import org.obm.push.bean.CalendarMeetingStatus;
+import org.obm.push.bean.CalendarSensitivity;
 import org.obm.push.bean.Device;
 import org.obm.push.bean.FilterType;
 import org.obm.push.bean.FolderSyncState;
 import org.obm.push.bean.ItemSyncState;
 import org.obm.push.bean.MSEmailBodyType;
 import org.obm.push.bean.MSEmailHeader;
+import org.obm.push.bean.MSEvent;
+import org.obm.push.bean.MSEventBuilder;
+import org.obm.push.bean.MSEventUid;
 import org.obm.push.bean.PIMDataType;
 import org.obm.push.bean.SyncCollection;
 import org.obm.push.bean.SyncCollectionOptions;
@@ -111,9 +119,12 @@ import org.obm.push.exception.activesync.HierarchyChangedException;
 import org.obm.push.exception.activesync.ItemNotFoundException;
 import org.obm.push.exception.activesync.NotAllowedException;
 import org.obm.push.mail.exception.FilterTypeChangedException;
+import org.obm.push.mail.imap.GuiceModule;
+import org.obm.push.mail.imap.SlowGuiceRunner;
 import org.obm.push.protocol.bean.FolderSyncResponse;
 import org.obm.push.protocol.bean.SyncResponse;
 import org.obm.push.protocol.bean.SyncResponse.SyncCollectionResponse;
+import org.obm.push.protocol.data.EncoderFactory;
 import org.obm.push.store.CollectionDao;
 import org.obm.push.store.FolderSyncStateBackendMappingDao;
 import org.obm.push.store.ItemTrackingDao;
@@ -130,17 +141,17 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
-@RunWith(SlowFilterRunner.class) @Slow
+@GuiceModule(SyncHandlerTestModule.class)
+@RunWith(SlowGuiceRunner.class) @Slow
 public class SyncHandlerTest {
-
-	@Rule
-	public JUnitGuiceRule guiceBerry = new JUnitGuiceRule(SyncHandlerTestModule.class);
 
 	@Inject SingleUserFixture singleUserFixture;
 	@Inject OpushServer opushServer;
 	@Inject ClassToInstanceAgregateView<Object> classToInstanceMap;
 	@Inject IMocksControl mocksControl;
 	@Inject Configuration configuration;
+	@Inject IContentsImporter contentsImporter;
+	@Inject EncoderFactory encoderFactory;
 
 	private List<OpushUser> fakeTestUsers;
 
@@ -708,5 +719,99 @@ public class SyncHandlerTest {
 		SyncResponse syncResponse = opClient.syncWithCommand(syncKey, "15", command, "15:51");
 
 		assertThat(syncResponse.getStatus()).isEqualTo(SyncStatus.PROTOCOL_ERROR);
+	}
+
+	@Test
+	public void testAddLeadingToNoPermissionExceptionReplyNothing() throws Exception {
+		TimeZone defaultTimeZone = TimeZone.getDefault();
+		TimeZone.setDefault(DateTimeZone.UTC.toTimeZone());
+		
+		SyncKey syncKey = new SyncKey("13424");
+		int collectionId = 1;
+		List<Integer> existingCollections = ImmutableList.of(collectionId);
+		String serverId = null;
+		String clientId = "156";
+
+		DataDelta serverDataDelta = DataDelta.newEmptyDelta(date("2012-10-10T16:22:53"), syncKey);
+		
+		MSEvent clientData = new MSEventBuilder()
+			.withUid(new MSEventUid("1651"))
+			.withSubject("Any Subject")
+			.withStartTime(date("2004-12-11T10:15:10+01"))
+			.withEndTime(date("2004-12-11T11:15:10+01"))
+			.withDtStamp(date("2004-12-11T12:15:10+01"))
+			.withAllDayEvent(false)
+			.withMeetingStatus(CalendarMeetingStatus.IS_NOT_A_MEETING)
+			.withOrganizerEmail("user@domain.org")
+			.withSensitivity(CalendarSensitivity.CONFIDENTIAL)
+			.withBusyStatus(CalendarBusyStatus.FREE)
+			.build();
+		
+		expectAllocateFolderState(classToInstanceMap.get(CollectionDao.class), newSyncState(syncKey));
+		expectCreateFolderMappingState(classToInstanceMap.get(FolderSyncStateBackendMappingDao.class));
+		mockHierarchyChangesOnlyInbox(classToInstanceMap);
+		mockEmailSyncClasses(syncKey, existingCollections, serverDataDelta, fakeTestUsers, classToInstanceMap);
+		
+		UserDataRequest udr = new UserDataRequest(singleUserFixture.jaures.credentials, "Sync", singleUserFixture.jaures.device);
+		expect(contentsImporter.importMessageChange(udr, collectionId, serverId, clientId, clientData))
+			.andThrow(new NoPermissionException());
+		
+		mocksControl.replay();
+		opushServer.start();
+
+		OPClient opClient = buildWBXMLOpushClient(singleUserFixture.jaures, opushServer.getPort());
+		SyncResponse syncResponse = opClient.syncWithDataCommand(syncKey, String.valueOf(collectionId),
+				SyncCommand.ADD, serverId, clientId, clientData, encoderFactory, singleUserFixture.jaures.device);
+
+		assertThat(syncResponse.getStatus()).isEqualTo(SyncStatus.OK);
+		checkMailFolderHasNoChange(syncResponse, String.valueOf(collectionId));
+		TimeZone.setDefault(defaultTimeZone);
+	}
+
+	@Test
+	public void testChangeLeadingToNoPermissionExceptionReplyNothing() throws Exception {
+		TimeZone defaultTimeZone = TimeZone.getDefault();
+		TimeZone.setDefault(DateTimeZone.UTC.toTimeZone());
+		
+		SyncKey syncKey = new SyncKey("13424");
+		int collectionId = 1;
+		List<Integer> existingCollections = ImmutableList.of(collectionId);
+		String serverId = "432:1456";
+		String clientId = null;
+
+		DataDelta serverDataDelta = DataDelta.newEmptyDelta(date("2012-10-10T16:22:53"), syncKey);
+		
+		MSEvent clientData = new MSEventBuilder()
+			.withUid(new MSEventUid("1651"))
+			.withSubject("Any Subject")
+			.withStartTime(date("2004-12-11T10:15:10+01"))
+			.withEndTime(date("2004-12-11T11:15:10+01"))
+			.withDtStamp(date("2004-12-11T12:15:10+01"))
+			.withAllDayEvent(false)
+			.withMeetingStatus(CalendarMeetingStatus.IS_NOT_A_MEETING)
+			.withOrganizerEmail("user@domain.org")
+			.withSensitivity(CalendarSensitivity.CONFIDENTIAL)
+			.withBusyStatus(CalendarBusyStatus.FREE)
+			.build();
+		
+		expectAllocateFolderState(classToInstanceMap.get(CollectionDao.class), newSyncState(syncKey));
+		expectCreateFolderMappingState(classToInstanceMap.get(FolderSyncStateBackendMappingDao.class));
+		mockHierarchyChangesOnlyInbox(classToInstanceMap);
+		mockEmailSyncClasses(syncKey, existingCollections, serverDataDelta, fakeTestUsers, classToInstanceMap);
+		
+		UserDataRequest udr = new UserDataRequest(singleUserFixture.jaures.credentials, "Sync", singleUserFixture.jaures.device);
+		expect(contentsImporter.importMessageChange(udr, collectionId, serverId, clientId, clientData))
+			.andThrow(new NoPermissionException());
+		
+		mocksControl.replay();
+		opushServer.start();
+
+		OPClient opClient = buildWBXMLOpushClient(singleUserFixture.jaures, opushServer.getPort());
+		SyncResponse syncResponse = opClient.syncWithDataCommand(syncKey, String.valueOf(collectionId),
+				SyncCommand.CHANGE, serverId, clientId, clientData, encoderFactory, singleUserFixture.jaures.device);
+
+		assertThat(syncResponse.getStatus()).isEqualTo(SyncStatus.OK);
+		checkMailFolderHasNoChange(syncResponse, String.valueOf(collectionId));
+		TimeZone.setDefault(defaultTimeZone);
 	}
 }

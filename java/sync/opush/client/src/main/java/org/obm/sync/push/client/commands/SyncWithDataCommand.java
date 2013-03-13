@@ -33,8 +33,11 @@ package org.obm.sync.push.client.commands;
 
 import java.io.IOException;
 
+import org.obm.push.bean.Device;
+import org.obm.push.bean.IApplicationData;
 import org.obm.push.bean.SyncKey;
 import org.obm.push.bean.change.SyncCommand;
+import org.obm.push.protocol.data.EncoderFactory;
 import org.obm.push.protocol.data.SyncRequestFields;
 import org.obm.push.utils.DOMUtils;
 import org.obm.sync.push.client.beans.AccountInfos;
@@ -42,51 +45,41 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 
-public class SyncWithCommand extends Sync {
+public class SyncWithDataCommand extends SyncWithCommand {
 
-	public SyncWithCommand(SyncKey syncKey, String collectionId, SyncCommand command,
-			String serverId, String clientId) throws SAXException, IOException {
-		this(new SyncWithCommandTemplate(syncKey, collectionId, command, serverId, clientId));
+	public SyncWithDataCommand(SyncKey syncKey, String collectionId, SyncCommand command,
+			String serverId, String clientId, IApplicationData data, EncoderFactory encoders, Device device)
+					throws SAXException, IOException {
+		super(new SyncWithCommandDataTemplate(syncKey, collectionId, command, serverId, clientId, data, encoders, device));
 	}
 	
-	protected SyncWithCommand(TemplateDocument template) {
-		super(template);
-	}
-	
-	public static class SyncWithCommandTemplate extends TemplateDocument {
+	public static class SyncWithCommandDataTemplate extends SyncWithCommandTemplate {
 
-		protected final SyncKey syncKey;
-		protected final String collectionId;
-		protected final SyncCommand command;
-		protected final String serverId;
-		protected final String clientId;
+		private final IApplicationData data;
+		private final EncoderFactory encoders;
+		private final Device device;
 
-		protected SyncWithCommandTemplate(SyncKey syncKey, String collectionId, SyncCommand command,
-				String serverId, String clientId) throws SAXException, IOException {
-			super("SyncWithCommandRequest.xml");
-			this.syncKey = syncKey;
-			this.collectionId = collectionId;
-			this.command = command;
-			this.serverId = serverId;
-			this.clientId = clientId;
+		protected SyncWithCommandDataTemplate(SyncKey syncKey, String collectionId, SyncCommand command,
+				String serverId, String clientId, IApplicationData data, EncoderFactory encoders, Device device)
+				throws SAXException, IOException {
+			super(syncKey, collectionId, command, serverId, clientId);
+			this.data = data;
+			this.encoders = encoders;
+			this.device = device;
 		}
 
 		@Override
 		protected void customize(Document document, AccountInfos accountInfos) {
-			Element sk = DOMUtils.getUniqueElement(document.getDocumentElement(), SyncRequestFields.SYNC_KEY.getName());
-			sk.setTextContent(syncKey.getSyncKey());
-			Element collection = DOMUtils.getUniqueElement(document.getDocumentElement(), SyncRequestFields.COLLECTION_ID.getName());
-			collection.setTextContent(collectionId);
-			
-			Element commandsEl = DOMUtils.getUniqueElement(document.getDocumentElement(), SyncRequestFields.COMMANDS.getName());
-			Element commandEl = DOMUtils.createElement(commandsEl, command.asSpecificationValue());
-			if (!Strings.isNullOrEmpty(serverId)) {
-				DOMUtils.createElementAndText(commandEl, SyncRequestFields.SERVER_ID.getName(), serverId);
-			}
-			if (!Strings.isNullOrEmpty(clientId)) {
-				DOMUtils.createElementAndText(commandEl, SyncRequestFields.CLIENT_ID.getName(), clientId);
+			try {
+				super.customize(document, accountInfos);
+				Element commandsEl = DOMUtils.getUniqueElement(document.getDocumentElement(), SyncRequestFields.COMMANDS.getName());
+				Element commandEl = DOMUtils.getUniqueElement(commandsEl, command.asSpecificationValue());
+				Element applicationDataEl = DOMUtils.createElement(commandEl, SyncRequestFields.APPLICATION_DATA.getName());
+				encoders.encode(device, applicationDataEl, data, false);
+			} catch (IOException e) {
+				Throwables.propagate(e);
 			}
 		}
 	}

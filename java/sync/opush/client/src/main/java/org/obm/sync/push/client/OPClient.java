@@ -41,8 +41,10 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.obm.push.bean.Device;
 import org.obm.push.bean.DeviceId;
 import org.obm.push.bean.FilterType;
+import org.obm.push.bean.IApplicationData;
 import org.obm.push.bean.MSEmailBodyType;
 import org.obm.push.bean.PIMDataType;
 import org.obm.push.bean.SyncKey;
@@ -51,6 +53,7 @@ import org.obm.push.protocol.bean.FolderSyncResponse;
 import org.obm.push.protocol.bean.MeetingHandlerResponse;
 import org.obm.push.protocol.bean.PingResponse;
 import org.obm.push.protocol.bean.SyncResponse;
+import org.obm.push.protocol.data.EncoderFactory;
 import org.obm.push.wbxml.WBXmlException;
 import org.obm.sync.push.client.beans.AccountInfos;
 import org.obm.sync.push.client.beans.Folder;
@@ -75,6 +78,7 @@ import org.obm.sync.push.client.commands.ProvisionStepTwo;
 import org.obm.sync.push.client.commands.SimpleSyncCommand;
 import org.obm.sync.push.client.commands.Sync;
 import org.obm.sync.push.client.commands.SyncWithCommand;
+import org.obm.sync.push.client.commands.SyncWithDataCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -145,7 +149,16 @@ public abstract class OPClient {
 	}
 	
 	public SyncResponse syncWithCommand(SyncKey key, String collectionId, SyncCommand command, String serverId) throws Exception {
-		return run(new SyncWithCommand(key, collectionId, command, serverId));
+		return syncWithCommand(key, collectionId, command, serverId, null);
+	}
+	
+	public SyncResponse syncWithCommand(SyncKey key, String collectionId, SyncCommand command, String serverId, String clientId) throws Exception {
+		return run(new SyncWithCommand(key, collectionId, command, serverId, clientId));
+	}
+	
+	public SyncResponse syncWithDataCommand(SyncKey key, String collectionId, SyncCommand command,
+			String serverId, String clientId, IApplicationData data, EncoderFactory encoders, Device device) throws Exception {
+		return run(new SyncWithDataCommand(key, collectionId, command, serverId, clientId, data, encoders, device));
 	}
 
 	public SyncResponse syncWithoutOptions(SyncKey key, String collectionId) throws Exception {

@@ -383,7 +383,7 @@ public class ContactsBackend extends ObmSyncBackend implements PIMBackend {
 			String serverId, String clientId, IApplicationData data)
 			throws CollectionNotFoundException, ProcessingEmailException,
 			DaoException, UnexpectedObmSyncServerException,
-			ItemNotFoundException {
+			ItemNotFoundException, NoPermissionException {
 
 		MSContact contact = (MSContact) data;
 		Integer contactId = mappingService.getItemIdFromServerId(serverId);
@@ -401,9 +401,6 @@ public class ContactsBackend extends ObmSyncBackend implements PIMBackend {
 
 		} catch (ContactNotFoundException e) {
 			throw new ItemNotFoundException(e);
-		} catch (NoPermissionException e) {
-			logger.warn(e.getMessage());
-			return null;
 		}
 		
 		return mappingService.getServerIdFor(collectionId, String.valueOf(contactId));
