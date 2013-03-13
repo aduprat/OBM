@@ -84,6 +84,7 @@ import org.obm.push.exception.ConversionException;
 import org.obm.push.exception.DaoException;
 import org.obm.push.exception.activesync.CollectionNotFoundException;
 import org.obm.push.exception.activesync.ItemNotFoundException;
+import org.obm.push.service.ClientIdService;
 import org.obm.push.service.EventService;
 import org.obm.push.service.impl.MappingService;
 import org.obm.push.utils.DateUtils;
@@ -131,6 +132,7 @@ public class CalendarBackendTest {
 	private Provider<CollectionPath.Builder> collectionPathBuilderProvider;
 	private ConsistencyEventChangesLogger consistencyLogger;
 	private BackendWindowingService backendWindowingService;
+	private ClientIdService clientIdService;
 	
 	private CalendarBackend calendarBackend;
 	private IMocksControl mockControl;
@@ -154,6 +156,7 @@ public class CalendarBackendTest {
 		this.collectionPathBuilderProvider = mockControl.createMock(Provider.class);
 		this.consistencyLogger = mockControl.createMock(ConsistencyEventChangesLogger.class);
 		this.backendWindowingService = mockControl.createMock(BackendWindowingService.class);
+		this.clientIdService = mockControl.createMock(ClientIdService.class);
 		
 		consistencyLogger.log(anyObject(Logger.class), anyObject(EventChanges.class));
 		expectLastCall().anyTimes();
@@ -164,7 +167,8 @@ public class CalendarBackendTest {
 				eventService, 
 				loginService, 
 				collectionPathBuilderProvider, consistencyLogger,
-				backendWindowingService);
+				backendWindowingService,
+				clientIdService);
 	}
 	
 	@Test
@@ -959,13 +963,14 @@ public class CalendarBackendTest {
 		int collectionId = 1;
 		String serverId = "2";
 		String clientId = "3";
+		String clientIdHash = "35466464106456405";
 		IApplicationData data = new MSEvent();
 
 		expectLoginBehavior();
 		
 		expectMappingServiceCollectionPathFor(collectionId);
-		expect(mappingService.getServerIdFor(collectionId, serverId))
-			.andReturn(serverId).once();
+		expect(mappingService.getServerIdFor(collectionId, serverId)).andReturn(serverId).once();
+		expect(clientIdService.hash(userDataRequest, clientId)).andReturn(clientIdHash);
 		
 		Event event = new Event();
 		expect(calendarClient.getEventFromId(token, userDataRequest.getUser().getLoginAtDomain(), new EventObmId(serverId)))
@@ -993,13 +998,14 @@ public class CalendarBackendTest {
 		int collectionId = 1;
 		String serverId = "2";
 		String clientId = "3";
+		String clientIdHash = "35466464106456405";
 		IApplicationData data = new MSEvent();
 
 		expectLoginBehavior();
 		
 		expectMappingServiceCollectionPathFor(collectionId);
-		expect(mappingService.getServerIdFor(collectionId, serverId))
-			.andReturn(serverId).once();
+		expect(mappingService.getServerIdFor(collectionId, serverId)).andReturn(serverId).once();
+		expect(clientIdService.hash(userDataRequest, clientId)).andReturn(clientIdHash);
 		
 		Event event = new Event();
 		expect(calendarClient.getEventFromId(token, userDataRequest.getUser().getLoginAtDomain(), new EventObmId(serverId)))

@@ -75,6 +75,7 @@ import org.obm.push.exception.activesync.ItemNotFoundException;
 import org.obm.push.exception.activesync.NotAllowedException;
 import org.obm.push.exception.activesync.ProcessingEmailException;
 import org.obm.push.impl.ObmSyncBackend;
+import org.obm.push.service.ClientIdService;
 import org.obm.push.service.EventService;
 import org.obm.push.service.impl.MappingService;
 import org.obm.sync.auth.AccessToken;
@@ -115,6 +116,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 	private final ICalendar calendarClient;
 	private final ConsistencyEventChangesLogger consistencyLogger;
 	private final BackendWindowingService backendWindowingService;
+	private final ClientIdService clientIdService;
 
 	@Inject
 	@VisibleForTesting CalendarBackend(MappingService mappingService, 
@@ -123,7 +125,8 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 			EventService eventService,
 			LoginService login,
 			Provider<CollectionPath.Builder> collectionPathBuilderProvider, ConsistencyEventChangesLogger consistencyLogger,
-			BackendWindowingService backendWindowingService) {
+			BackendWindowingService backendWindowingService,
+			ClientIdService clientIdService) {
 		
 		super(mappingService, login, collectionPathBuilderProvider);
 		this.calendarClient = calendarClient;
@@ -131,6 +134,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 		this.eventService = eventService;
 		this.consistencyLogger = consistencyLogger;
 		this.backendWindowingService = backendWindowingService;
+		this.clientIdService = clientIdService;
 	}
 	
 	@Override
@@ -475,7 +479,7 @@ public class CalendarBackend extends ObmSyncBackend implements PIMBackend {
 		EventExtId eventExtId = generateExtId();
 		event.setExtId(eventExtId);
 		eventService.trackEventExtIdMSEventUidTranslation(eventExtId, msEvent.getUid(), udr.getDevice());
-		EventObmId eventId = cc.createEvent(token, parseCalendarName(collectionPath), event, true, getHashClientId(udr, clientId));
+		EventObmId eventId = cc.createEvent(token, parseCalendarName(collectionPath), event, true, clientIdService.hash(udr, clientId));
 		return eventId;
 	}
 	
