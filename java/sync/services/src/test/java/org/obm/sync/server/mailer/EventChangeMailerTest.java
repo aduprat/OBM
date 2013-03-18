@@ -668,6 +668,7 @@ public abstract class EventChangeMailerTest {
 
 		Event before = buildTestRecurrentEvent();
 		Event after = before.clone();
+		before.getRecurrence().setEnd(null);
 		after.setStartDate(date("2010-11-08T12:00:00"));
 		after.setDuration(3600);
 		for (Attendee att : before.getAttendees()) {
@@ -744,6 +745,7 @@ public abstract class EventChangeMailerTest {
 
 		Event before = buildTestRecurrentEvent();
 		Event after = before.clone();
+		before.getRecurrence().setEnd(null);
 		after.setStartDate(date("2010-11-08T12:00:00"));
 		after.setDuration(3600);
 		for (Attendee att: before.getAttendees()) {
