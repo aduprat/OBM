@@ -163,27 +163,19 @@ public class EmailSyncTestUtils {
 	
 	public static void mockEmailUnsynchronizedItemDao(UnsynchronizedItemDao unsynchronizedItemDao) {
 		expect(unsynchronizedItemDao.listItemsToAdd(
-				anyObject(Credentials.class), 
-				anyObject(Device.class),
-				anyInt())).andReturn(ImmutableSet.<ItemChange>of()).anyTimes();
+				anyObject(SyncKey.class)))
+			.andReturn(ImmutableSet.<ItemChange>of()).anyTimes();
 		unsynchronizedItemDao.clearItemsToAdd(
-				anyObject(Credentials.class), 
-				anyObject(Device.class),
-				anyInt());
+				anyObject(SyncKey.class));
 		expectLastCall().anyTimes();
 		expect(unsynchronizedItemDao.listItemsToRemove(
-				anyObject(Credentials.class), 
-				anyObject(Device.class),
-				anyInt())).andReturn(ImmutableList.<ItemDeletion>of()).anyTimes();
+				anyObject(SyncKey.class)))
+			.andReturn(ImmutableList.<ItemDeletion>of()).anyTimes();
 		unsynchronizedItemDao.clearItemsToRemove(
-				anyObject(Credentials.class), 
-				anyObject(Device.class),
-				anyInt());
+				anyObject(SyncKey.class));
 		expectLastCall().anyTimes();
 		unsynchronizedItemDao.storeItemsToRemove(
-				anyObject(Credentials.class), 
-				anyObject(Device.class),
-				anyInt(),
+				anyObject(SyncKey.class),
 				anyObject(List.class));
 		expectLastCall().anyTimes();
 	}

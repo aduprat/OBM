@@ -172,7 +172,7 @@ public class GetItemEstimateHandler extends WbxmlRequestHandler {
 		
 		int unSynchronizedItemNb, count;
 		try {
-			unSynchronizedItemNb = listItemToAddSize(udr, syncCollection);
+			unSynchronizedItemNb = listItemToAddSize(syncCollection);
 			count = contentsExporter.getItemEstimateSize(udr, state, syncCollection);
 		} catch (FilterTypeChangedException e) {
 			syncCollection.setStatus(SyncStatus.INVALID_SYNC_KEY);
@@ -187,9 +187,8 @@ public class GetItemEstimateHandler extends WbxmlRequestHandler {
 				.build();
 	}
 
-	private int listItemToAddSize(UserDataRequest udr, SyncCollection syncCollection) {
-		Collection<ItemChange> listItemToAdd = unSynchronizedItemCache.listItemsToAdd(udr.getCredentials(), 
-				udr.getDevice(), syncCollection.getCollectionId());
+	private int listItemToAddSize(SyncCollection syncCollection) {
+		Collection<ItemChange> listItemToAdd = unSynchronizedItemCache.listItemsToAdd(syncCollection.getSyncKey());
 		return listItemToAdd.size();
 	}
 
