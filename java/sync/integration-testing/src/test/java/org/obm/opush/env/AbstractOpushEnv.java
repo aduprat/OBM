@@ -85,7 +85,8 @@ public abstract class AbstractOpushEnv extends ActiveSyncServletModule {
 		ImmutableList<AbstractOverrideModule> modules = ImmutableList.of( 
 			dao(),
 			email(),
-			obmSync()
+			obmSync(),
+			backendsModule()
 		);
 		for (AbstractOverrideModule module: modules) {
 			mockMap.addMap(module.getMockMap());
@@ -102,6 +103,10 @@ public abstract class AbstractOpushEnv extends ActiveSyncServletModule {
 		return new ObmSyncModule(mocksControl);
 	}
 
+	protected BackendsModule backendsModule() {
+		return new BackendsModule(mocksControl);
+	}
+	
 	protected EmailModule email() {
 		return new EmailModule(mocksControl);
 	}
