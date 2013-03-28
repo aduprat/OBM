@@ -116,6 +116,7 @@ import org.obm.push.exception.ConversionException;
 import org.obm.push.exception.DaoException;
 import org.obm.push.exception.activesync.CollectionNotFoundException;
 import org.obm.push.exception.activesync.HierarchyChangedException;
+import org.obm.push.exception.activesync.InvalidItemException;
 import org.obm.push.exception.activesync.ItemNotFoundException;
 import org.obm.push.exception.activesync.NotAllowedException;
 import org.obm.push.mail.exception.FilterTypeChangedException;
@@ -648,7 +649,7 @@ public class SyncHandlerTest {
 
 		assertThat(syncResponse.getStatus()).isEqualTo(SyncStatus.SERVER_ERROR);
 	}
-
+	
 	@Test
 	public void testSyncOnHierarchyChangedException() throws Exception {
 		SyncKey initialSyncKey = SyncKey.INITIAL_FOLDER_SYNC_KEY;
@@ -725,7 +726,6 @@ public class SyncHandlerTest {
 	public void testAddLeadingToNoPermissionExceptionReplyNothing() throws Exception {
 		TimeZone defaultTimeZone = TimeZone.getDefault();
 		TimeZone.setDefault(DateTimeZone.UTC.toTimeZone());
-		
 		SyncKey syncKey = new SyncKey("13424");
 		int collectionId = 1;
 		List<Integer> existingCollections = ImmutableList.of(collectionId);
@@ -746,10 +746,7 @@ public class SyncHandlerTest {
 			.withSensitivity(CalendarSensitivity.CONFIDENTIAL)
 			.withBusyStatus(CalendarBusyStatus.FREE)
 			.build();
-		
-		expectAllocateFolderState(classToInstanceMap.get(CollectionDao.class), newSyncState(syncKey));
-		expectCreateFolderMappingState(classToInstanceMap.get(FolderSyncStateBackendMappingDao.class));
-		mockHierarchyChangesOnlyInbox(classToInstanceMap);
+
 		mockEmailSyncClasses(syncKey, existingCollections, serverDataDelta, fakeTestUsers, classToInstanceMap);
 		
 		UserDataRequest udr = new UserDataRequest(singleUserFixture.jaures.credentials, "Sync", singleUserFixture.jaures.device);
@@ -772,7 +769,6 @@ public class SyncHandlerTest {
 	public void testChangeLeadingToNoPermissionExceptionReplyNothing() throws Exception {
 		TimeZone defaultTimeZone = TimeZone.getDefault();
 		TimeZone.setDefault(DateTimeZone.UTC.toTimeZone());
-		
 		SyncKey syncKey = new SyncKey("13424");
 		int collectionId = 1;
 		List<Integer> existingCollections = ImmutableList.of(collectionId);
@@ -794,9 +790,6 @@ public class SyncHandlerTest {
 			.withBusyStatus(CalendarBusyStatus.FREE)
 			.build();
 		
-		expectAllocateFolderState(classToInstanceMap.get(CollectionDao.class), newSyncState(syncKey));
-		expectCreateFolderMappingState(classToInstanceMap.get(FolderSyncStateBackendMappingDao.class));
-		mockHierarchyChangesOnlyInbox(classToInstanceMap);
 		mockEmailSyncClasses(syncKey, existingCollections, serverDataDelta, fakeTestUsers, classToInstanceMap);
 		
 		UserDataRequest udr = new UserDataRequest(singleUserFixture.jaures.credentials, "Sync", singleUserFixture.jaures.device);
@@ -812,6 +805,94 @@ public class SyncHandlerTest {
 
 		assertThat(syncResponse.getStatus()).isEqualTo(SyncStatus.OK);
 		checkMailFolderHasNoChange(syncResponse, String.valueOf(collectionId));
+		TimeZone.setDefault(defaultTimeZone);
+	}
+	
+	@Test
+	public void testAddLeadingToInvalidItemExceptionReplySyncError() throws Exception {
+		TimeZone defaultTimeZone = TimeZone.getDefault();
+		TimeZone.setDefault(DateTimeZone.UTC.toTimeZone());
+		SyncKey syncKey = new SyncKey("13424");
+		int collectionId = 1;
+		List<Integer> existingCollections = ImmutableList.of(collectionId);
+
+		String serverId = null;
+		String clientId = "156";
+		
+		DataDelta serverDataDelta = DataDelta.newEmptyDelta(date("2012-10-10T16:22:53"), syncKey);
+
+		MSEvent clientData = new MSEventBuilder()
+			.withUid(new MSEventUid("1651"))
+			.withSubject("Any Subject")
+			.withStartTime(date("2004-12-11T10:15:10+01"))
+			.withEndTime(date("2004-12-11T11:15:10+01"))
+			.withDtStamp(date("2004-12-11T12:15:10+01"))
+			.withAllDayEvent(false)
+			.withMeetingStatus(CalendarMeetingStatus.IS_NOT_A_MEETING)
+			.withOrganizerEmail("user@domain.org")
+			.withSensitivity(CalendarSensitivity.CONFIDENTIAL)
+			.withBusyStatus(CalendarBusyStatus.FREE)
+			.build();
+		
+		mockEmailSyncClasses(syncKey, existingCollections, serverDataDelta, fakeTestUsers, classToInstanceMap);
+		
+		UserDataRequest udr = new UserDataRequest(singleUserFixture.jaures.credentials, "Sync", singleUserFixture.jaures.device);
+		expect(contentsImporter.importMessageChange(udr, collectionId, serverId, clientId, clientData))
+			.andThrow(new InvalidItemException());
+		
+		mocksControl.replay();
+		opushServer.start();
+		
+		OPClient opClient = buildWBXMLOpushClient(singleUserFixture.jaures, opushServer.getPort());
+		SyncResponse syncResponse = opClient.syncWithDataCommand(syncKey, String.valueOf(collectionId),
+				SyncCommand.ADD, serverId, clientId, clientData, encoderFactory, singleUserFixture.jaures.device);
+		
+		assertThat(syncResponse).isNotNull();
+		assertThat(syncResponse.getStatus()).isEqualTo(SyncStatus.CONVERSATION_ERROR_OR_INVALID_ITEM);
+		TimeZone.setDefault(defaultTimeZone);
+	}
+	
+	@Test
+	public void testChangeLeadingToInvalidItemExceptionReplySyncError() throws Exception {
+		TimeZone defaultTimeZone = TimeZone.getDefault();
+		TimeZone.setDefault(DateTimeZone.UTC.toTimeZone());
+		SyncKey syncKey = new SyncKey("13424");
+		int collectionId = 1;
+		List<Integer> existingCollections = ImmutableList.of(collectionId);
+		
+		String serverId = "432:1456";
+		String clientId = null;
+
+		DataDelta serverDataDelta = DataDelta.newEmptyDelta(date("2012-10-10T16:22:53"), syncKey);
+		
+		MSEvent clientData = new MSEventBuilder()
+			.withUid(new MSEventUid("1651"))
+			.withSubject("Any Subject")
+			.withStartTime(date("2004-12-11T10:15:10+01"))
+			.withEndTime(date("2004-12-11T11:15:10+01"))
+			.withDtStamp(date("2004-12-11T12:15:10+01"))
+			.withAllDayEvent(false)
+			.withMeetingStatus(CalendarMeetingStatus.IS_NOT_A_MEETING)
+			.withOrganizerEmail("user@domain.org")
+			.withSensitivity(CalendarSensitivity.CONFIDENTIAL)
+			.withBusyStatus(CalendarBusyStatus.FREE)
+			.build();
+		
+		mockEmailSyncClasses(syncKey, existingCollections, serverDataDelta, fakeTestUsers, classToInstanceMap);
+		
+		UserDataRequest udr = new UserDataRequest(singleUserFixture.jaures.credentials, "Sync", singleUserFixture.jaures.device);
+		expect(contentsImporter.importMessageChange(udr, collectionId, serverId, clientId, clientData))
+			.andThrow(new InvalidItemException());
+		
+		mocksControl.replay();
+		opushServer.start();
+		
+		OPClient opClient = buildWBXMLOpushClient(singleUserFixture.jaures, opushServer.getPort());
+		SyncResponse syncResponse = opClient.syncWithDataCommand(syncKey, String.valueOf(collectionId),
+				SyncCommand.CHANGE, serverId, clientId, clientData, encoderFactory, singleUserFixture.jaures.device);
+		
+		assertThat(syncResponse).isNotNull();
+		assertThat(syncResponse.getStatus()).isEqualTo(SyncStatus.CONVERSATION_ERROR_OR_INVALID_ITEM);
 		TimeZone.setDefault(defaultTimeZone);
 	}
 }
