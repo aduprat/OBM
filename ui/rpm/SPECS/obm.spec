@@ -664,6 +664,8 @@ fi
 #empty package :(
 
 %changelog
+* Tue Apr 02 2013 Thomas Sarboni <tsarboni@linagora.com> - obm-2.4.2.4-1
+- New upstream release.
 * Fri Mar 29 2013 Thomas Sarboni <tsarboni@linagora.com> - obm-2.4.2.4-0.rc4
 - New upstream release.
 * Wed Mar 27 2013 Thomas Sarboni <tsarboni@linagora.com> - obm-2.4.2.4-0.rc3
