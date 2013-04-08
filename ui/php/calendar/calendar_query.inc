@@ -2176,7 +2176,7 @@ function event_duration($datebegin, $duration, $allDay) {
   }
   
   $dateend = clone $datebegin;
-  $dateend->addSecond($duration);
+  $dateend->addSecondsInUTC($duration);
   $durationInDays = $datebegin->daysCount($dateend);
   
   return $durationInDays * 24 * 60 * 60;
