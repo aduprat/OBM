@@ -62,7 +62,7 @@ public class StaticConfigurationService implements ConfigurationService {
 
 		@Override
 		public Boolean allowUnknownPdaToSync() {
-			return configuration.allowUnkwownDevice;
+			return configuration.allowUnknownDevice;
 		}
 	}
 
