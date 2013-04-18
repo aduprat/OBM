@@ -124,9 +124,7 @@ sub _updateTransportFile {
     }
     close $out_fh;
     close $in_fh;
-    my $cmd = 'mv "'.$out_fh->filename().'" "'.TRANSPORT_MAP.'"';
-    $self->_log("Executing ".$cmd, 5);
-    if (system($cmd)) {
+    if (! rename ($out_fh->filename(), TRANSPORT_MAP) ) {
         $self->_log("Can't rename ".$out_fh->filename()." to ".TRANSPORT_MAP, 1);
         return 0;
     }
