@@ -80,11 +80,9 @@ import org.obm.sync.auth.AuthFault;
 import org.obm.sync.auth.ServerFault;
 import org.obm.sync.book.AddressBook;
 import org.obm.sync.book.Contact;
-import org.obm.sync.book.Email;
 import org.obm.sync.book.Folder;
 import org.obm.sync.client.book.BookClient;
 import org.obm.sync.client.login.LoginService;
-import org.obm.sync.exception.InvalidContactException;
 import org.obm.sync.items.ContactChanges;
 import org.obm.sync.items.FolderChanges;
 

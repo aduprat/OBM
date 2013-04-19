@@ -42,8 +42,6 @@ import org.obm.sync.auth.Login;
 import org.obm.sync.bean.EqualsVerifierUtils;
 import org.obm.sync.book.Contact;
 import org.obm.sync.calendar.ContactAttendee;
-import org.obm.sync.book.Email;
-import org.obm.sync.book.Phone;
 import org.obm.sync.calendar.DeletedEvent;
 import org.obm.sync.calendar.Event;
 import org.obm.sync.calendar.EventExtId;
@@ -88,9 +86,7 @@ public class BeansTest {
 				RecurrenceId.class,
 				Resource.class,
 				UserAttendee.class, ContactAttendee.class, ResourceAttendee.class,
-				CommitedElement.class,
-				Email.class,
-				Phone.class);
+				CommitedElement.class);
 	}
 	
 	@Test

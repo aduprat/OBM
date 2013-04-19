@@ -33,10 +33,6 @@ package org.obm.sync.book;
 
 import java.io.Serializable;
 
-import org.apache.commons.validator.routines.EmailValidator;
-
-import com.google.common.base.Objects;
-
 public class Email implements IMergeable, Serializable {
 
 	public Email(String email) {
@@ -54,31 +50,9 @@ public class Email implements IMergeable, Serializable {
 		this.email = email;
 	}
 
-	public boolean hasAnEmptyEmail() {
-		return email.isEmpty();
-	}
-
-	public boolean isValid() {
-		EmailValidator emailValidator = EmailValidator.getInstance();
-		return emailValidator.isValid(email);
-	}
-
 	@Override
 	public void merge(IMergeable previous) {
 		//do nothing on merge
 	}
 
-	@Override
-	public final int hashCode(){
-		return Objects.hashCode(email);
-	}
-
-	@Override
-	public final boolean equals(Object object){
-		if (object instanceof Email) {
-			Email that = (Email) object;
-			return Objects.equal(this.email, that.email);
-			}
-		return false;
-	}
 }
