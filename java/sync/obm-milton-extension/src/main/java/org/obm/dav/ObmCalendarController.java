@@ -53,6 +53,7 @@ import io.milton.resource.AccessControlledResource;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -65,6 +66,7 @@ import org.obm.sync.auth.AccessToken;
 import org.obm.sync.auth.EventAlreadyExistException;
 import org.obm.sync.auth.EventNotFoundException;
 import org.obm.sync.auth.ServerFault;
+import org.obm.sync.calendar.CalendarInfo;
 import org.obm.sync.calendar.Event;
 import org.obm.sync.calendar.EventExtId;
 import org.obm.sync.calendar.EventObmId;
@@ -103,17 +105,23 @@ public class ObmCalendarController {
 
 	@ChildrenOf
 	@Calendars
-	public List<ObmUserCalendar> getCalendarsForUser(ObmUserCalendars userCalendarsHome) {
-		return ImmutableList.of(new ObmUserCalendar(userCalendarsHome.user, "default"));
+	public List<ObmUserCalendar> getCalendarsForUser(ObmUserCalendars userCalendarsHome) throws ServerFault {
+		final ObmUser user = userCalendarsHome.user;
+		AccessToken requestAccessToken = requestAccessToken();
+		if (requestAccessToken != null) {
+			return FluentIterable.from(Arrays.asList(calendarService.listCalendars(requestAccessToken)))
+						.transform(new Function<CalendarInfo, ObmUserCalendar>() {
+		
+							@Override
+							public ObmUserCalendar apply(CalendarInfo calendarInfo) {
+								return new ObmUserCalendar(user, calendarInfo.getMail());
+							}
+							
+						}).toList();
+		}
+		return null;
 	}
 
-	
-//	@ChildOf
-//	@Calendars
-//	public ObmUserCalendar getCalendarForUser(ObmUserCalendars userCalendarsHome, String name) {
-//		return new ObmUserCalendar(userCalendarsHome.user, name);
-//	}
-	
 	@ChildrenOf
 	public List<EventResource> getEvents(ObmUserCalendar cal) {
 		AccessToken requestAccessToken = requestAccessToken();
@@ -138,10 +146,10 @@ public class ObmCalendarController {
 		if (calendar != null) {
 			AccessToken token = requestAccessToken();
 			if (token != null) {
-				if (helperService.canWriteOnCalendar(token, calendar.getUser().getLogin())) {
+				if (helperService.canWriteOnCalendar(token, calendar.getName())) {
 					return AccessControlledResource.READ_WRITE;
 				}
-				if (helperService.canReadCalendar(token, calendar.getUser().getLogin())) {
+				if (helperService.canReadCalendar(token, calendar.getName())) {
 					return AccessControlledResource.READ_BROWSE;
 				}
 			}

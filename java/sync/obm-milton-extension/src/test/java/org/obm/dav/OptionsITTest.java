@@ -54,9 +54,11 @@ import org.obm.guice.GuiceModule;
 import org.obm.guice.SlowGuiceRunner;
 import org.obm.icalendar.Ical4jHelper;
 import org.obm.sync.auth.AccessToken;
+import org.obm.sync.calendar.CalendarInfo;
 import org.obm.sync.calendar.Event;
 import org.obm.sync.calendar.EventExtId;
 import org.obm.sync.calendar.EventType;
+import org.obm.sync.services.ICalendar;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -80,6 +82,8 @@ public class OptionsITTest extends AbstractObmDavIT {
 	private UserService userService;
 	@Inject
 	private CalendarDao calendarDao;
+	@Inject
+	private ICalendar calendarService;
 	@Inject
 	private Ical4jHelper ical4jHelper;
 	@Inject 
@@ -127,16 +131,19 @@ public class OptionsITTest extends AbstractObmDavIT {
 		events.add(event);
 
 		AccessToken accessToken = new AccessToken(142, "MiltonDav");
+		CalendarInfo calendarInfo = new CalendarInfo();
+		calendarInfo.setMail("joe@my.domain");
 
 		expect(userService.getUserFromLogin("joe","my.domain") ).andReturn(user).anyTimes();
 		expect(sessionManagement.login("joe", "password", "MiltonDav", "/context", "127.0.0.1", null, null, false)).andReturn(accessToken);
 		expect(calendarDao.findAllEvents(accessToken, user, EventType.VEVENT)).andReturn(events);
-		expect(helperService.canWriteOnCalendar(accessToken, "joe")).andReturn(true);
+		expect(helperService.canWriteOnCalendar(accessToken, "joe@my.domain")).andReturn(true);
+		expect(calendarService.listCalendars(accessToken)).andReturn(new CalendarInfo[] { calendarInfo });
 
 		control.replay();
 
 		executor.auth("joe@my.domain", "password");
-		HttpResponse response = executor.execute(propfind("/users/joe@my.domain/calendars/default",1)).returnResponse();
+		HttpResponse response = executor.execute(propfind("/users/joe@my.domain/calendars/joe@my.domain",1)).returnResponse();
 		control.verify();
 		assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_MULTI_STATUS);
 		List<PropFindResponse> responses = PropFindResponse.parse(response, 1);
@@ -159,6 +166,8 @@ public class OptionsITTest extends AbstractObmDavIT {
 		String ical = "FAKE ICAL";
 
 		AccessToken accessToken = new AccessToken(142, "MiltonDav");
+		CalendarInfo calendarInfo = new CalendarInfo();
+		calendarInfo.setMail("joe@my.domain");
 
 		//expect(domainService.list()).andReturn(ImmutableList.of(domain)).anyTimes();
 		expect(domainService.findDomainByName("my.domain") ).andReturn(domain).anyTimes();
@@ -167,12 +176,13 @@ public class OptionsITTest extends AbstractObmDavIT {
 		expect(calendarDao.findEventByExtId(accessToken, user, eventId)).andReturn(event).anyTimes();
 		expect(ical4jHelper.buildIcs(null, events, accessToken)).andReturn(ical).anyTimes();
 		expect(sessionManagement.login("joe", "password", "MiltonDav", "/context", "127.0.0.1", null, null, false)).andReturn(accessToken);
-		expect(helperService.canWriteOnCalendar(accessToken, "joe")).andReturn(true);
+		expect(helperService.canWriteOnCalendar(accessToken, "joe@my.domain")).andReturn(true);
+		expect(calendarService.listCalendars(accessToken)).andReturn(new CalendarInfo[] { calendarInfo });
 
 
 		control.replay();
 		executor.auth("joe@my.domain", "password");
-		HttpResponse response = executor.execute(get("/users/joe@my.domain/calendars/default/" + eventId.getExtId())).returnResponse();
+		HttpResponse response = executor.execute(get("/users/joe@my.domain/calendars/joe@my.domain/" + eventId.getExtId())).returnResponse();
 		control.verify();
 		assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_OK);
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -186,16 +196,19 @@ public class OptionsITTest extends AbstractObmDavIT {
 		ObmDomain domain = ObmDomain.builder().name("my.domain").build();
 		ObmUser user = ObmUser.builder().login("joe").domain(domain).build();
 		AccessToken accessToken = new AccessToken(142, "MiltonDav");
-		         
+		CalendarInfo calendarInfo = new CalendarInfo();
+		calendarInfo.setMail("joe@my.domain");
+      
 		expect(domainService.findDomainByName("my.domain") ).andReturn(domain).anyTimes();
 		expect(userService.getUserFromLogin("joe","my.domain") ).andReturn(user).anyTimes();
 		expect(calendarDao.doesEventExist(user, new EventExtId("event1"))).andReturn(false).anyTimes();
 		expect(sessionManagement.login("joe", "password", "MiltonDav", "/context", "127.0.0.1", null, null, false)).andReturn(accessToken);
 		expect(calendarDao.findAllEvents(accessToken, user, EventType.VEVENT)).andReturn(ImmutableList.<Event>of());
-		          
+		expect(calendarService.listCalendars(accessToken)).andReturn(new CalendarInfo[] { calendarInfo });
+  
 		control.replay();
 		executor.auth("joe@my.domain", "password");
-		HttpResponse response = executor.execute(get("/users/joe@my.domain/calendars/default/event1")).returnResponse();
+		HttpResponse response = executor.execute(get("/users/joe@my.domain/calendars/joe@my.domain/event1")).returnResponse();
 		control.verify();
 		          
 		assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_NOT_FOUND);
@@ -206,15 +219,18 @@ public class OptionsITTest extends AbstractObmDavIT {
 		ObmDomain domain = ObmDomain.builder().name("my.domain").build();
 		ObmUser user = ObmUser.builder().login("joe").domain(domain).build();
 		AccessToken accessToken = new AccessToken(142, "MiltonDav");
+		CalendarInfo calendarInfo = new CalendarInfo();
+		calendarInfo.setMail("joe@my.domain");
 
 		expect(userService.getUserFromLogin("joe","my.domain") ).andReturn(user).anyTimes();
 		expect(sessionManagement.login("joe", "password", "MiltonDav", "/context", "127.0.0.1", null, null, false)).andReturn(accessToken).anyTimes();
-		expect(helperService.canWriteOnCalendar(accessToken, "joe")).andReturn(true);
+		expect(helperService.canWriteOnCalendar(accessToken, "joe@my.domain")).andReturn(true);
 		expect(calendarDao.findAllEvents(accessToken, user, EventType.VEVENT)).andReturn(ImmutableList.<Event>of());
+		expect(calendarService.listCalendars(accessToken)).andReturn(new CalendarInfo[] { calendarInfo });
 
 		control.replay();
 		executor.auth("joe@my.domain", "password");
-		HttpResponse response = executor.execute(propfind("/users/joe@my.domain/calendars/default", 1)).returnResponse();
+		HttpResponse response = executor.execute(propfind("/users/joe@my.domain/calendars/joe@my.domain", 1)).returnResponse();
 		control.verify();
 		assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_MULTI_STATUS);
 	}
@@ -224,16 +240,19 @@ public class OptionsITTest extends AbstractObmDavIT {
 		ObmDomain domain = ObmDomain.builder().name("my.domain").build();
 		ObmUser user = ObmUser.builder().login("joe").domain(domain).build();
 		AccessToken accessToken = new AccessToken(142, "MiltonDav");
+		CalendarInfo calendarInfo = new CalendarInfo();
+		calendarInfo.setMail("joe@my.domain");
 
 		expect(userService.getUserFromLogin("joe","my.domain") ).andReturn(user).anyTimes();
 		expect(sessionManagement.login("joe", "password", "MiltonDav", "/context", "127.0.0.1", null, null, false)).andReturn(accessToken).anyTimes();
-		expect(helperService.canWriteOnCalendar(accessToken, "joe")).andReturn(false);
-		expect(helperService.canReadCalendar(accessToken, "joe")).andReturn(true);
+		expect(helperService.canWriteOnCalendar(accessToken, "joe@my.domain")).andReturn(false);
+		expect(helperService.canReadCalendar(accessToken, "joe@my.domain")).andReturn(true);
 		expect(calendarDao.findAllEvents(accessToken, user, EventType.VEVENT)).andReturn(ImmutableList.<Event>of());
+		expect(calendarService.listCalendars(accessToken)).andReturn(new CalendarInfo[] { calendarInfo });
 
 		control.replay();
 		executor.auth("joe@my.domain", "password");
-		HttpResponse response = executor.execute(propfind("/users/joe@my.domain/calendars/default", 1)).returnResponse();
+		HttpResponse response = executor.execute(propfind("/users/joe@my.domain/calendars/joe@my.domain", 1)).returnResponse();
 		control.verify();
 		assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_MULTI_STATUS);
 	}
@@ -243,15 +262,18 @@ public class OptionsITTest extends AbstractObmDavIT {
 		ObmDomain domain = ObmDomain.builder().name("my.domain").build();
 		ObmUser user = ObmUser.builder().login("joe").domain(domain).build();
 		AccessToken accessToken = new AccessToken(142, "MiltonDav");
+		CalendarInfo calendarInfo = new CalendarInfo();
+		calendarInfo.setMail("joe@my.domain");
 
 		expect(userService.getUserFromLogin("joe","my.domain") ).andReturn(user).anyTimes();
 		expect(sessionManagement.login("joe", "password", "MiltonDav", "/context", "127.0.0.1", null, null, false)).andReturn(accessToken).anyTimes();
-		expect(helperService.canWriteOnCalendar(accessToken, "joe")).andReturn(false);
-		expect(helperService.canReadCalendar(accessToken, "joe")).andReturn(false);
+		expect(helperService.canWriteOnCalendar(accessToken, "joe@my.domain")).andReturn(false);
+		expect(helperService.canReadCalendar(accessToken, "joe@my.domain")).andReturn(false);
+		expect(calendarService.listCalendars(accessToken)).andReturn(new CalendarInfo[] { calendarInfo });
 
 		control.replay();
 		executor.auth("joe@my.domain", "password");
-		HttpResponse response = executor.execute(propfind("/users/joe@my.domain/calendars/default", 1)).returnResponse();
+		HttpResponse response = executor.execute(propfind("/users/joe@my.domain/calendars/joe@my.domain", 1)).returnResponse();
 		control.verify();
 		assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_UNAUTHORIZED);
 	}
