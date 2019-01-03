@@ -10,7 +10,6 @@
 	<artifactId>message-queue</artifactId>
 	<name>obm-sync message-queue</name>
 	<url>http://www.obm.org/</url>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<licenses>
 		<license>

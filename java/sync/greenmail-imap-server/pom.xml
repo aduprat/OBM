@@ -12,7 +12,6 @@
 	<packaging>jar</packaging>
 	<name>greenmail-imap-server for test</name>
 	<url>http://www.obm.org/</url>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<licenses>
 		<license>

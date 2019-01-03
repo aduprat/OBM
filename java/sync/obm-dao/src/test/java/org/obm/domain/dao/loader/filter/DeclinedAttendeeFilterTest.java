@@ -32,7 +32,7 @@
 package org.obm.domain.dao.loader.filter;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.obm.DateUtils.date;
+import static org.obm.push.utils.DateUtils.date;
 
 import java.util.Map;
 

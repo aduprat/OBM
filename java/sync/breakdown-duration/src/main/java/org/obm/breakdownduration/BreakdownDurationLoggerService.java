@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
@@ -368,7 +368,7 @@ public class BreakdownDurationLoggerService {
 		
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this)
+			return MoreObjects.toStringHelper(this)
 					.add("group", group)
 					.add("children", children)
 					.add("timeElapsedInMs", timeElapsedInMs)

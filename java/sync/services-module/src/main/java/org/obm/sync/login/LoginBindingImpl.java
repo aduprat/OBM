@@ -103,7 +103,7 @@ public class LoginBindingImpl extends AbstractLoginBackend implements LoginBacke
 
 	@Transactional(readOnly=true)
 	public boolean authenticateAdmin(String user, UserPassword password, String origin, String domainName, boolean isPasswordHashed) throws AuthFault {
-		logger.info("trying {} admin authentication with login '{}' from '{}'", new String[] { domainName, user, origin });
+		logger.info("trying {} admin authentication with login '{}' from '{}'", domainName, user, origin);
 		ObmDomain domain = domainDao.findDomainByName(domainName);
 		Credentials credentials = Credentials.builder()
 			.login(user)

@@ -34,6 +34,7 @@ package org.obm.push.mail.bean;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -195,7 +196,7 @@ public class Envelope {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("date", date)
 			.add("subject", subject)
 			.add("from", from)

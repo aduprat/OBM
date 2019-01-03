@@ -86,7 +86,7 @@ public class UIDFetchMessageTest {
 
 		InputStream fetchPart = uidFetchMessage(emailUid);
 		
-		assertThat(fetchPart).hasContentEqualTo(ImapTestUtils.loadEmail("plainText.eml"));
+		assertThat(fetchPart).hasSameContentAs(ImapTestUtils.loadEmail("plainText.eml"));
 	}
 	
 	@Test
@@ -95,7 +95,7 @@ public class UIDFetchMessageTest {
 
 		InputStream fetchPart = uidFetchMessage(emailUid);
 		
-		assertThat(fetchPart).hasContentEqualTo(ImapTestUtils.loadEmail("multipartAlternative.eml"));
+		assertThat(fetchPart).hasSameContentAs(ImapTestUtils.loadEmail("multipartAlternative.eml"));
 	}
 	
 	@Test
@@ -104,7 +104,7 @@ public class UIDFetchMessageTest {
 
 		InputStream fetchPart = uidFetchMessage(emailUid);
 		
-		assertThat(fetchPart).hasContentEqualTo(ImapTestUtils.loadEmail("multipartForwarded.eml"));
+		assertThat(fetchPart).hasSameContentAs(ImapTestUtils.loadEmail("multipartForwarded.eml"));
 	}
 	
 	@Test
@@ -113,7 +113,7 @@ public class UIDFetchMessageTest {
 
 		InputStream fetchPart = uidFetchMessage(emailUid);
 		
-		assertThat(fetchPart).hasContentEqualTo(ImapTestUtils.loadEmail("multipartMixed.eml"));
+		assertThat(fetchPart).hasSameContentAs(ImapTestUtils.loadEmail("multipartMixed.eml"));
 	}
 	
 	@Test
@@ -122,7 +122,7 @@ public class UIDFetchMessageTest {
 
 		InputStream fetchPart = uidFetchMessage(emailUid);
 		
-		assertThat(fetchPart).hasContentEqualTo(ImapTestUtils.loadEmail("multipartRelated.eml"));
+		assertThat(fetchPart).hasSameContentAs(ImapTestUtils.loadEmail("multipartRelated.eml"));
 	}
 
 	@Test

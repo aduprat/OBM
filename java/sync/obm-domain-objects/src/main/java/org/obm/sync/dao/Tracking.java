@@ -35,6 +35,7 @@ import java.util.Date;
 
 import org.obm.sync.auth.AccessToken;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.hash.Hashing;
 
@@ -78,7 +79,7 @@ public class Tracking {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("reference", reference)
 			.add("date", date)
 			.toString();

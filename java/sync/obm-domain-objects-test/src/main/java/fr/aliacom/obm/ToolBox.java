@@ -39,7 +39,7 @@ import java.util.List;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.obm.DateUtils;
+import org.obm.push.utils.DateUtils;
 import org.obm.sync.auth.AccessToken;
 import org.obm.sync.auth.MavenVersion;
 import org.obm.sync.base.EmailAddress;

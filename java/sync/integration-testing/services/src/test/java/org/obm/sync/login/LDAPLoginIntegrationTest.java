@@ -43,6 +43,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.obm.guice.GuiceModule;
@@ -74,6 +75,7 @@ import fr.aliacom.obm.common.domain.ObmDomain;
 import fr.aliacom.obm.common.domain.ObmDomainUuid;
 import fr.aliacom.obm.common.user.UserPassword;
 
+@Ignore("OBMFULL-6549 opendj is failing when starting in Java 8 (we should use it in testcontainers)")
 @RunWith(ManagedTomcatGuiceArquillianRunner.class)
 @GuiceModule(ServicesClientAndEmbeddedLDAPModule.class)
 public class LDAPLoginIntegrationTest extends ObmSyncIntegrationTest {

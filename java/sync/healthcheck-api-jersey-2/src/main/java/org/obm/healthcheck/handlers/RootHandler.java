@@ -42,6 +42,7 @@ import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.obm.healthcheck.HealthCheckHandler;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
@@ -60,7 +61,7 @@ public class RootHandler implements HealthCheckHandler {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Set<EndpointDescription> root() {
-		Iterable<Class<?>> classes = Iterables.filter(application.getClasses(), Predicates.assignableFrom(HealthCheckHandler.class));
+		Iterable<Class<?>> classes = Iterables.filter(application.getClasses(), Predicates.subtypeOf(HealthCheckHandler.class));
 
 		Set<EndpointDescription> endpoints = Sets.newHashSet();
 		for (Class<?> handlerClass : classes) {
@@ -112,7 +113,10 @@ public class RootHandler implements HealthCheckHandler {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this).add("path", path).add("method", method).toString();
+			return MoreObjects.toStringHelper(this)
+					.add("path", path)
+					.add("method", method)
+					.toString();
 		}
 
 	}

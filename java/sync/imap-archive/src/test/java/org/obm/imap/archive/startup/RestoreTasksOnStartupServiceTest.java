@@ -33,8 +33,9 @@ package org.obm.imap.archive.startup;
 import static org.easymock.EasyMock.createControl;
 import static org.easymock.EasyMock.expect;
 
+import java.time.ZonedDateTime;
+
 import org.easymock.IMocksControl;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.obm.domain.dao.DomainDao;
@@ -96,10 +97,11 @@ public class RestoreTasksOnStartupServiceTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void startingShouldReScheduleWhenScheduledEntry() throws Exception {
-		DateTime when = DateTime.parse("2014-12-2T11:35Z");
-		DateTime higherBoundary = DateTime.parse("2014-12-1T01:01Z");
+		ZonedDateTime when = ZonedDateTime.parse("2014-12-02T11:35Z");
+		ZonedDateTime higherBoundary = ZonedDateTime.parse("2014-12-01T01:01Z");
 		ArchiveTreatmentRunId runId = ArchiveTreatmentRunId.from("aee2d1ab-b237-4077-a61b-a85e3cb67742");
 		
 		expect(domainDao.findDomainByUuid(domainUuid)).andReturn(domain);
@@ -133,9 +135,9 @@ public class RestoreTasksOnStartupServiceTest {
 			.forDomain(domainUuid)
 			.runId("aee2d1ab-b237-4077-a61b-a85e3cb67742")
 			.recurrent(true)
-			.higherBoundary(DateTime.parse("2014-12-1T01:01Z"))
-			.scheduledAt(DateTime.parse("2014-12-2T11:35Z"))
-			.startedAt(DateTime.parse("2014-12-3T01:01Z"))
+			.higherBoundary(ZonedDateTime.parse("2014-12-01T01:01Z"))
+			.scheduledAt(ZonedDateTime.parse("2014-12-02T11:35Z"))
+			.startedAt(ZonedDateTime.parse("2014-12-03T01:01Z"))
 			.build();
 		
 		expect(archiveTreatmentDao.findAllScheduledOrRunning())
@@ -155,10 +157,10 @@ public class RestoreTasksOnStartupServiceTest {
 				.forDomain(domainUuid)
 				.runId("aee2d1ab-b237-4077-a61b-a85e3cb67742")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-12-1T01:01Z"))
-				.scheduledAt(DateTime.parse("2014-12-2T11:35Z"))
-				.startedAt(DateTime.parse("2014-12-3T01:01Z"))
-				.terminatedAt(DateTime.parse("2014-12-4T01:01Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-12-01T01:01Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-12-02T11:35Z"))
+				.startedAt(ZonedDateTime.parse("2014-12-03T01:01Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-12-04T01:01Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build()
 			));

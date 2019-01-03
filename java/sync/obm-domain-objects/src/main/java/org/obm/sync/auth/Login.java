@@ -1,6 +1,7 @@
 package org.obm.sync.auth;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -86,7 +87,10 @@ public class Login {
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("login", login).add("domain", domain).toString();
+		return MoreObjects.toStringHelper(this)
+				.add("login", login)
+				.add("domain", domain)
+				.toString();
 	}
 
 	@Override

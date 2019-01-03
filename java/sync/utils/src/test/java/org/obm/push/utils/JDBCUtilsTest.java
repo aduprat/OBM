@@ -47,10 +47,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 
@@ -358,7 +359,7 @@ public class JDBCUtilsTest {
 			.andReturn(null);
 		replay(resultSet);
 		
-		DateTime dateTime = JDBCUtils.getDateTime(resultSet, fieldName, DateTimeZone.UTC);
+		ZonedDateTime dateTime = JDBCUtils.getDateTime(resultSet, fieldName, ZoneId.of(ZoneOffset.UTC.getId()));
 		
 		verify(resultSet);
 		assertThat(dateTime).isNull();
@@ -366,15 +367,15 @@ public class JDBCUtilsTest {
 
 	@Test
 	public void getDateTimeShouldReturnDateTimeWhenEveryThingIsOk() throws Exception {
-		DateTime expectedDateTime = DateTime.parse("2014-07-15T15:55:00.000Z");
-		Timestamp timestamp = new Timestamp(expectedDateTime.getMillis());
+		ZonedDateTime expectedDateTime = ZonedDateTime.parse("2014-07-15T15:55:00.000Z");
+		Timestamp timestamp = Timestamp.from(expectedDateTime.toInstant());
 		ResultSet resultSet = createMock(ResultSet.class);
 		String fieldName = "field_name";
 		expect(resultSet.getTimestamp(fieldName))
 			.andReturn(timestamp);
 		replay(resultSet);
 		
-		DateTime dateTime = JDBCUtils.getDateTime(resultSet, fieldName, DateTimeZone.UTC);
+		ZonedDateTime dateTime = JDBCUtils.getDateTime(resultSet, fieldName, ZoneId.of(ZoneOffset.UTC.getId()));
 		
 		verify(resultSet);
 		assertThat(dateTime).isEqualTo(expectedDateTime);
@@ -388,7 +389,7 @@ public class JDBCUtilsTest {
 	@Test
 	public void toTimestampShouldReturnTimestampWhenDateTimeProvided() {
 		Timestamp expectedTimestamp = Timestamp.valueOf("2014-07-15 15:55:00");
-		DateTime dateTime = new DateTime(expectedTimestamp.getTime());
+		ZonedDateTime dateTime = ZonedDateTime.ofInstant(expectedTimestamp.toInstant(), ZoneId.of(ZoneOffset.UTC.getId()));
 		
 		assertThat(JDBCUtils.toTimestamp(dateTime)).isEqualTo(expectedTimestamp);
 	}

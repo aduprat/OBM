@@ -43,9 +43,9 @@ import org.easymock.IMocksControl;
 import org.junit.Before;
 import org.junit.Test;
 import org.obm.servlet.filter.qos.QoSAction;
-import org.obm.servlet.filter.qos.handlers.TransactionalKeyRequestsInfoStore.RequestInfoReference;
 import org.obm.servlet.filter.qos.handlers.NPerClientQoSRequestHandler.RequestDoneFunction;
 import org.obm.servlet.filter.qos.handlers.NPerClientQoSRequestHandler.StartRequestFunction;
+import org.obm.servlet.filter.qos.handlers.TransactionalKeyRequestsInfoStore.RequestInfoReference;
 
 
 public class NPerClientQoSRequestHandlerTest {
@@ -59,6 +59,7 @@ public class NPerClientQoSRequestHandlerTest {
 	private KeyRequestsInfo<String> twoRequests;
 	private String key;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() {
 		control = createStrictControl();
@@ -96,6 +97,7 @@ public class NPerClientQoSRequestHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void acceptFirstRequest() {
 		testee = new NPerClientQoSRequestHandler<String>(keyProvider, requestInfoStore, 2);
@@ -109,6 +111,7 @@ public class NPerClientQoSRequestHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void acceptSecondRequest() {
 		testee = new NPerClientQoSRequestHandler<String>(keyProvider, requestInfoStore, 2);
@@ -122,6 +125,7 @@ public class NPerClientQoSRequestHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void tooManyRequestsReject() {
 		testee = new NPerClientQoSRequestHandler<String>(keyProvider, requestInfoStore, 2);
@@ -134,6 +138,7 @@ public class NPerClientQoSRequestHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void requestDoneTrackNbRequest() {
 		testee = new NPerClientQoSRequestHandler<String>(keyProvider, requestInfoStore, 2);
@@ -145,6 +150,7 @@ public class NPerClientQoSRequestHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void cleanupEmptyInfo() {
 		testee = new NPerClientQoSRequestHandler<String>(keyProvider, requestInfoStore, 2);
@@ -156,6 +162,7 @@ public class NPerClientQoSRequestHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void cleanupBusyInfo() {
 		testee = new NPerClientQoSRequestHandler<String>(keyProvider, requestInfoStore, 2);

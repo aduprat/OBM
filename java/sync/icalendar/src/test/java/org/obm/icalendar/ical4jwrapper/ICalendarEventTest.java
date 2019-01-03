@@ -32,19 +32,22 @@
 package org.obm.icalendar.ical4jwrapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.obm.DateUtils.date;
+import static org.obm.push.utils.DateUtils.date;
 
 import java.net.URISyntaxException;
 import java.util.Date;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.Recur.Frequency;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Related;
@@ -62,10 +65,6 @@ import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Trigger;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.XProperty;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class ICalendarEventTest {
 
@@ -205,13 +204,13 @@ public class ICalendarEventTest {
 	}
 
 	private VEvent vEventWithProperty(Property property) {
-		PropertyList properties = new PropertyList();
+		PropertyList<Property> properties = new PropertyList<>();
 		properties.add(property);
 		return new VEvent(properties);
 	}
 	
-	private PropertyList properties(Property... properties) {
-		PropertyList propertyList = new PropertyList(properties.length);
+	private PropertyList<Property> properties(Property... properties) {
+		PropertyList<Property> propertyList = new PropertyList<>(properties.length);
 		for (Property property: properties) {
 			propertyList.add(property);
 		}
@@ -226,8 +225,8 @@ public class ICalendarEventTest {
 		return parameterList;
 	}
 	
-	private ComponentList alarms(VAlarm... alarms) {
-		ComponentList componentList = new ComponentList(alarms.length);
+	private ComponentList<VAlarm> alarms(VAlarm... alarms) {
+		ComponentList<VAlarm> componentList = new ComponentList<>(alarms.length);
 		for (VAlarm alarm: alarms) {
 			componentList.add(alarm);
 		}
@@ -303,7 +302,7 @@ public class ICalendarEventTest {
 	@Test
 	public void hasOneRecur() {
 		VEvent vEvent = new VEvent(
-				properties(new RRule(new Recur(Recur.WEEKLY, 3))));
+				properties(new RRule(new Recur(Frequency.WEEKLY, 3))));
 		ICalendarEvent iCalendarEvent = new ICalendarEvent(vEvent, organizer);
 		assertThat(iCalendarEvent.hasRecur()).isTrue();
 	}
@@ -413,7 +412,7 @@ public class ICalendarEventTest {
 		VEvent vEvent = new VEvent(
 				properties(
 						new DtStart(new DateTime(startDate)),
-						new Duration(new Dur("1H"))));
+						new Duration(java.time.Duration.ofHours(1))));
 		ICalendarEvent iCalendarEvent = new ICalendarEvent(vEvent, organizer);
 		assertThat(iCalendarEvent.endDate()).isEqualTo(expectedEndDate);
 	}
@@ -425,7 +424,7 @@ public class ICalendarEventTest {
 		VEvent vEvent = new VEvent(
 				properties(
 						new DtStart(new DateTime(startDate)),
-						new Duration(new Dur("2H")),
+						new Duration(java.time.Duration.ofHours(2)),
 						new DtEnd(new DateTime(expectedEndDate))));
 		ICalendarEvent iCalendarEvent = new ICalendarEvent(vEvent, organizer);
 		assertThat(iCalendarEvent.endDate()).isEqualTo(expectedEndDate);
@@ -433,21 +432,20 @@ public class ICalendarEventTest {
 	
 
 	@Test
-	public void endDateWithStartButNoDuration() {
+	public void endDateShouldReturnStartDateWhenStartAndNoDuration() {
 		Date startDate = date("2012-01-01T10:22:33");
 		VEvent vEvent = new VEvent(
 				properties(
 						new DtStart(new DateTime(startDate))));
 		ICalendarEvent iCalendarEvent = new ICalendarEvent(vEvent, organizer);
-		assertThat(iCalendarEvent.endDate()).isNull();
+		assertThat(iCalendarEvent.endDate()).isEqualTo(startDate);
 	}
 	
-	@Ignore("ical4j bug")
 	@Test
 	public void endDateWithDurationButNoStart() {
 		VEvent vEvent = new VEvent(
 				properties(
-						new Duration(new Dur("2H"))));
+						new Duration(java.time.Duration.ofHours(2))));
 		ICalendarEvent iCalendarEvent = new ICalendarEvent(vEvent, organizer);
 		assertThat(iCalendarEvent.endDate()).isNull();
 	}
@@ -494,11 +492,7 @@ public class ICalendarEventTest {
 
 	@Test
 	public void firstAlarmDefaultRelatedIsStartDate() {
-		int durDays = 0;
-		int durHours = -10;
-		int durMinutes = 0;
-		int durSeconds = 0;
-		VAlarm vAlarm = new VAlarm(new Dur(durDays, durHours, durMinutes, durSeconds));
+		VAlarm vAlarm = new VAlarm(java.time.Duration.ofHours(-10));
 		
 		VEvent vEvent = new VEvent(
 				properties(
@@ -511,11 +505,11 @@ public class ICalendarEventTest {
 
 	@Test
 	public void firstAlarmBeforeRelatedStartTime() {
-		int durDays = -1;
-		int durHours = -2;
-		int durMinutes = -30;
-		int durSeconds = 0;
-		VAlarm vAlarm = new VAlarm(properties(new Trigger(parameters(Related.START), new Dur(durDays, durHours, durMinutes, durSeconds))));
+		java.time.Duration duration = java.time.Duration
+				.ofDays(-1)
+				.minusHours(2)
+				.minusMinutes(30);
+		VAlarm vAlarm = new VAlarm(properties(new Trigger(parameters(Related.START), duration)));
 		
 		VEvent vEvent = new VEvent(
 				properties(
@@ -528,11 +522,7 @@ public class ICalendarEventTest {
 
 	@Test
 	public void firstAlarmAfterRelatedStartTime() {
-		int durDays = 0;
-		int durHours = 2;
-		int durMinutes = 0;
-		int durSeconds = 0;
-		VAlarm vAlarm = new VAlarm(properties(new Trigger(parameters(Related.START), new Dur(durDays, durHours, durMinutes, durSeconds))));
+		VAlarm vAlarm = new VAlarm(properties(new Trigger(parameters(Related.START), java.time.Duration.ofHours(2))));
 		
 		VEvent vEvent = new VEvent(
 				properties(
@@ -545,11 +535,7 @@ public class ICalendarEventTest {
 
 	@Test
 	public void firstAlarmBeforeRelatedToEndDate() {
-		int durDays = 0;
-		int durHours = -1;
-		int durMinutes = 0;
-		int durSeconds = 0;
-		VAlarm vAlarm = new VAlarm(properties(new Trigger(parameters(Related.END), new Dur(durDays, durHours, durMinutes, durSeconds))));
+		VAlarm vAlarm = new VAlarm(properties(new Trigger(parameters(Related.END), java.time.Duration.ofHours(-1))));
 		
 		VEvent vEvent = new VEvent(
 				properties(
@@ -563,11 +549,7 @@ public class ICalendarEventTest {
 
 	@Test
 	public void firstAlarmAfterRelatedToEndDate() {
-		int durDays = 0;
-		int durHours = 10;
-		int durMinutes = 0;
-		int durSeconds = 0;
-		VAlarm vAlarm = new VAlarm(properties(new Trigger(parameters(Related.END), new Dur(durDays, durHours, durMinutes, durSeconds))));
+		VAlarm vAlarm = new VAlarm(properties(new Trigger(parameters(Related.END), java.time.Duration.ofHours(10))));
 		
 		VEvent vEvent = new VEvent(
 				properties(

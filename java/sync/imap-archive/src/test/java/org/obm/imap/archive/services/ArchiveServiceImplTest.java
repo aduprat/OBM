@@ -74,6 +74,7 @@ public class ArchiveServiceImplTest {
 		testee = new ArchiveServiceImpl(scheduledArchivingTracker, loggerFileNameService);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void archiveTreatmentLogsShouldGetLogsFromTaskWhenTaskIsPresent() throws Exception {
 		ArchiveTreatmentRunId runId = ArchiveTreatmentRunId.from("3918bb86-a21c-4b5d-b8da-e5ab88c464b8");

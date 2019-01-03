@@ -31,19 +31,20 @@
  * ***** END LICENSE BLOCK ***** */
 package com.linagora.scheduling;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 public interface DateTimeProvider {
 
 	DateTimeProvider SYSTEM_UTC = new DateTimeProvider() {
 		
 		@Override
-		public DateTime now() {
-			return DateTime.now(DateTimeZone.UTC);
+		public ZonedDateTime now() {
+			return ZonedDateTime.now(ZoneId.of(ZoneOffset.UTC.getId()));
 		}
 	};
 	
-	DateTime now();
+	ZonedDateTime now();
 	
 }

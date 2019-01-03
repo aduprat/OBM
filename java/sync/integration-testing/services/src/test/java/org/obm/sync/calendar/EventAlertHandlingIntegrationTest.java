@@ -32,7 +32,7 @@
 package org.obm.sync.calendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.obm.DateUtils.date;
+import static org.obm.push.utils.DateUtils.date;
 
 import java.net.URL;
 import java.util.Date;

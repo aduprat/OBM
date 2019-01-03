@@ -29,6 +29,7 @@
  * ***** END LICENSE BLOCK ***** */
 package fr.aliacom.obm.common.user;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
@@ -74,10 +75,10 @@ public class UserNomad {
 		}
 
 		public UserNomad build() {
-			this.enabled = Objects.firstNonNull(this.enabled, false);
+			this.enabled = MoreObjects.firstNonNull(this.enabled, false);
 			this.email = Strings.emptyToNull(email);
-			this.allowed = Objects.firstNonNull(this.allowed, false);
-			this.localCopy = Objects.firstNonNull(this.localCopy, false);
+			this.allowed = MoreObjects.firstNonNull(this.allowed, false);
+			this.localCopy = MoreObjects.firstNonNull(this.localCopy, false);
 			// In theory, should ensure that enable is only on if email is not null, but who knows what crap we'll find in the database?
 			// This may prevent us from loading existing users
 			return new UserNomad(enabled, email, allowed, localCopy);
@@ -140,7 +141,7 @@ public class UserNomad {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("enabled", enabled)
 				.add("email", email)
 				.add("allowed", allowed)

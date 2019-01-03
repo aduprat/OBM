@@ -34,7 +34,9 @@ package org.obm.imap.archive.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.guava.api.Assertions.assertThat;
 
-import org.joda.time.DateTime;
+import java.sql.Date;
+import java.time.ZonedDateTime;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -52,8 +54,6 @@ import org.obm.imap.archive.beans.ProcessedFolder;
 import org.obm.imap.archive.dao.SqlTables.MailArchiveRun;
 import org.obm.provisioning.dao.exceptions.DaoException;
 
-import pl.wkr.fluentrule.api.FluentExpectedException;
-
 import com.google.common.base.Optional;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -61,6 +61,8 @@ import com.google.inject.Provider;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.Operations;
 import com.ninja_squad.dbsetup.operation.Operation;
+
+import pl.wkr.fluentrule.api.FluentExpectedException;
 
 public class ProcessedFolderJdbcImplTest {
 
@@ -110,10 +112,10 @@ public class ProcessedFolderJdbcImplTest {
 						.values("c3c5cb24-f5df-45ed-8918-99c7555a02c4",
 								"633bdb12-bb8a-4943-9dd0-6a6e48051517", 
 								ArchiveStatus.SCHEDULED, 
-								DateTime.parse("2014-06-01T00:00:00.000Z").toDate(), 
-								DateTime.parse("2014-06-01T00:01:00.000Z").toDate(), 
-								DateTime.parse("2014-06-01T00:02:00.000Z").toDate(), 
-								DateTime.parse("2014-06-01T00:03:00.000Z").toDate())
+								Date.from(ZonedDateTime.parse("2014-06-01T00:00:00.000Z").toInstant()), 
+								Date.from(ZonedDateTime.parse("2014-06-01T00:01:00.000Z").toInstant()), 
+								Date.from(ZonedDateTime.parse("2014-06-01T00:02:00.000Z").toInstant()), 
+								Date.from(ZonedDateTime.parse("2014-06-01T00:03:00.000Z").toInstant()))
 						.build(),
 						Operations.deleteAllFrom(ProcessedFolderJdbcImpl.TABLE.NAME),
 						Operations.insertInto(ProcessedFolderJdbcImpl.TABLE.NAME)
@@ -124,8 +126,8 @@ public class ProcessedFolderJdbcImplTest {
 								ProcessedFolderJdbcImpl.TABLE.FIELDS.STATUS)
 						.values("c3c5cb24-f5df-45ed-8918-99c7555a02c4",
 								1,
-								DateTime.parse("2014-06-01T00:02:02.000Z").toDate(),
-								DateTime.parse("2014-06-01T00:02:04.000Z").toDate(),
+								Date.from(ZonedDateTime.parse("2014-06-01T00:02:02.000Z").toInstant()),
+									Date.from(ZonedDateTime.parse("2014-06-01T00:02:04.000Z").toInstant()),
 								ArchiveStatus.SUCCESS)
 						.build());
 
@@ -145,8 +147,8 @@ public class ProcessedFolderJdbcImplTest {
 		ProcessedFolder processedFolder = optionProcessedFolder.get();
 		assertThat(processedFolder.getRunId()).isEqualTo(runId);
 		assertThat(processedFolder.getFolder()).isEqualTo(imapFolder);
-		assertThat(processedFolder.getStart()).isEqualTo(DateTime.parse("2014-06-01T00:02:02.000Z"));
-		assertThat(processedFolder.getEnd()).isEqualTo(DateTime.parse("2014-06-01T00:02:04.000Z"));
+		assertThat(processedFolder.getStart()).isEqualTo(ZonedDateTime.parse("2014-06-01T00:02:02.000Z"));
+		assertThat(processedFolder.getEnd()).isEqualTo(ZonedDateTime.parse("2014-06-01T00:02:04.000Z"));
 		assertThat(processedFolder.getStatus()).isEqualTo(ArchiveStatus.SUCCESS);
 	}
 	
@@ -171,8 +173,8 @@ public class ProcessedFolderJdbcImplTest {
 		ProcessedFolder expectedProcessedFolder = ProcessedFolder.builder()
 				.runId(runId)
 				.folder(imapFolder)
-				.start(DateTime.parse("2014-06-02T00:02:02.000Z"))
-				.end(DateTime.parse("2014-06-02T00:02:32.000Z"))
+				.start(ZonedDateTime.parse("2014-06-02T00:02:02.000Z"))
+				.end(ZonedDateTime.parse("2014-06-02T00:02:32.000Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 		
@@ -186,8 +188,8 @@ public class ProcessedFolderJdbcImplTest {
 		ProcessedFolder processedFolder = ProcessedFolder.builder()
 				.runId(ArchiveTreatmentRunId.from("c3c5cb24-f5df-45ed-8918-99c7555a02c4"))
 				.folder(ImapFolder.from("user/usera/Test@mydomain.org"))
-				.start(DateTime.parse("2014-06-02T00:02:02.000Z"))
-				.end(DateTime.parse("2014-06-02T00:02:32.000Z"))
+				.start(ZonedDateTime.parse("2014-06-02T00:02:02.000Z"))
+				.end(ZonedDateTime.parse("2014-06-02T00:02:32.000Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 		

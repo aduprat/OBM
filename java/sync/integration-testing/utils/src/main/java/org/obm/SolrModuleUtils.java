@@ -41,7 +41,6 @@ import org.apache.solr.common.SolrInputDocument;
 import org.obm.service.solr.SolrClientFactory;
 import org.obm.service.solr.SolrService;
 
-import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 
@@ -99,7 +98,7 @@ public class SolrModuleUtils {
 				try {
 					return new DummyCommonsHttpSolrServer();
 				} catch (MalformedURLException e) {
-					throw Throwables.propagate(e);
+					throw new RuntimeException(e);
 				}
 			}
 		};

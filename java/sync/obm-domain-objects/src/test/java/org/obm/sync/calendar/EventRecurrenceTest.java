@@ -40,7 +40,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
-import org.obm.DateUtils;
+import org.obm.push.utils.DateUtils;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;

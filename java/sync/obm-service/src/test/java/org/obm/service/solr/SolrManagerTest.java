@@ -188,12 +188,15 @@ public class SolrManagerTest {
 		Object object = ois.readObject();
 
 		ois.close();
-  		
-  		assertThat(object).isInstanceOf(SolrDocumentIndexer.class).isEqualToComparingFieldByField(indexer);
-  }
+		
+		assertThat(object).isInstanceOf(SolrDocumentIndexer.class);
+		SolrDocumentIndexer that = (SolrDocumentIndexer) object;
+		assertThat(that.document().toString())
+			.isEqualTo(indexer.document().toString());
+	}
 	
 	@Test
-	public void solrShouldBeMarkedAsDownWhenRequestFails() throws Exception {        
+	public void solrShouldBeMarkedAsDownWhenRequestFails() throws Exception {
 		expect(server.ping()).andThrow(new IOException()).anyTimes();
 		control.replay();
 		

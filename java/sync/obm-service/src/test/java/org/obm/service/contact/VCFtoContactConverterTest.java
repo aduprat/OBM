@@ -40,7 +40,7 @@ import java.util.TimeZone;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.obm.DateUtils;
+import org.obm.push.utils.DateUtils;
 import org.obm.sync.base.EmailAddress;
 import org.obm.sync.book.Address;
 import org.obm.sync.book.Contact;

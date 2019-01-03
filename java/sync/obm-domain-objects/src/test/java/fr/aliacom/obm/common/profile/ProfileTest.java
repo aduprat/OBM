@@ -34,9 +34,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Date;
 
 import org.junit.Test;
-import org.obm.DateUtils;
 import org.obm.provisioning.ProfileId;
 import org.obm.provisioning.ProfileName;
+import org.obm.push.utils.DateUtils;
 import org.obm.sync.Right;
 
 import fr.aliacom.obm.common.domain.Domains;

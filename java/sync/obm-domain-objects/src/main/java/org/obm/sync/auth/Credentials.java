@@ -36,6 +36,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.codec.binary.Base64;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -152,7 +153,7 @@ public class Credentials {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("login", login)
 			.add("password", password)
 			.add("hashedPassword", hashedPassword)

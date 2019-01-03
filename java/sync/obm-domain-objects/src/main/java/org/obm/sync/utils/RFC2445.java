@@ -31,10 +31,10 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.sync.utils;
 
-import org.obm.sync.calendar.ParticipationRole;
 import org.obm.sync.calendar.Participation;
+import org.obm.sync.calendar.ParticipationRole;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * RFC2445 standard
@@ -46,15 +46,15 @@ import com.google.common.base.Objects;
 public class RFC2445 {
 
 	public static int getPriorityOrDefault(Integer priority) {
-		return Objects.firstNonNull(priority, 0);
+		return MoreObjects.firstNonNull(priority, 0);
 	}
 
 	public static Participation getParticipationOrDefault(Participation participation) {
-		return Objects.firstNonNull(participation, Participation.needsAction());
+		return MoreObjects.firstNonNull(participation, Participation.needsAction());
 	}
 
 	public static ParticipationRole getParticipationRoleOrDefault(ParticipationRole pRole) {
-		return  Objects.firstNonNull(pRole, ParticipationRole.REQ);
+		return MoreObjects.firstNonNull(pRole, ParticipationRole.REQ);
 	}
 
 }

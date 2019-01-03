@@ -40,6 +40,7 @@ import org.obm.locator.LocatorClientImpl;
 import org.obm.locator.ServiceNotFoundException;
 import org.slf4j.Logger;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
@@ -138,7 +139,7 @@ public class LocatorCache implements LocatorService {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this)
+			return MoreObjects.toStringHelper(this)
 				.add("serviceSlashProperty", serviceSlashProperty)
 				.add("loginAtDomain", loginAtDomain)
 				.toString();

@@ -41,6 +41,7 @@ import java.util.Set;
 import org.obm.push.utils.collection.Sets;
 
 import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -301,7 +302,7 @@ public class EventRecurrence implements Anonymizable<EventRecurrence>, Serializa
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(this)
 				.add("kind", kind)
 				.add("end", end)

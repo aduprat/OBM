@@ -34,11 +34,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.obm.ElementNotFoundException;
 import org.obm.dbcp.DatabaseConnectionProvider;
 import org.obm.imap.archive.beans.ArchiveStatus;
@@ -237,10 +237,10 @@ public class ArchiveTreatmentJdbcImpl implements ArchiveTreatmentDao {
 		ArchiveTreatmentRunId runId = ArchiveTreatmentRunId.from(rs.getString(Fields.UUID));
 		ArchiveStatus status = ArchiveStatus.fromSpecificationValue(rs.getString(Fields.STATUS));
 		boolean isRecurrent = rs.getBoolean(Fields.RECURRENT);
-		DateTime scheduleTime = JDBCUtils.getDateTime(rs, Fields.SCHEDULE, DateTimeZone.UTC);
-		DateTime startTime = JDBCUtils.getDateTime(rs, Fields.START, DateTimeZone.UTC);
-		DateTime endTime = JDBCUtils.getDateTime(rs, Fields.END, DateTimeZone.UTC);
-		DateTime higherBoundary = JDBCUtils.getDateTime(rs, Fields.HIGHER_BOUNDARY, DateTimeZone.UTC);
+		ZonedDateTime scheduleTime = JDBCUtils.getDateTime(rs, Fields.SCHEDULE, ZoneOffset.UTC);
+		ZonedDateTime startTime = JDBCUtils.getDateTime(rs, Fields.START, ZoneOffset.UTC);
+		ZonedDateTime endTime = JDBCUtils.getDateTime(rs, Fields.END, ZoneOffset.UTC);
+		ZonedDateTime higherBoundary = JDBCUtils.getDateTime(rs, Fields.HIGHER_BOUNDARY, ZoneOffset.UTC);
 		
 		return ArchiveTreatment
 				.builder(domain)

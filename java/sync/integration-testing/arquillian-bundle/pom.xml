@@ -13,7 +13,6 @@
 	<packaging>jar</packaging>
 	<name>OBM Arquillian bundle</name>
 	<url>http://www.obm.org/</url>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
@@ -45,22 +44,18 @@
 		<dependency>
 			<groupId>org.jboss.arquillian.container</groupId>
 			<artifactId>arquillian-container-spi</artifactId>
-			<version>${arquillian.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.arquillian.junit</groupId>
 			<artifactId>arquillian-junit-container</artifactId>
-			<version>${arquillian.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.arquillian.protocol</groupId>
 			<artifactId>arquillian-protocol-servlet</artifactId>
-			<version>${arquillian.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
 			<artifactId>shrinkwrap-resolver-depchain</artifactId>
-			<version>${version.shrinkwrap.resolvers}</version>
 			<scope>compile</scope>
 			<type>pom</type>
 		</dependency>

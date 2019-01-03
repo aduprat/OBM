@@ -33,6 +33,7 @@ package org.obm.sync.addition;
 
 import java.util.Date;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
@@ -71,7 +72,7 @@ public class CommitedOperation<T> {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("entity", entity)
 			.add("clientDate", clientDate)
 			.toString();

@@ -29,6 +29,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.sync.book;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class DeletedContact {
@@ -95,7 +96,10 @@ public class DeletedContact {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("id", id).add("addressbookId", addressbookId).toString();
+		return MoreObjects.toStringHelper(this)
+				.add("id", id)
+				.add("addressbookId", addressbookId)
+				.toString();
 	}
 
 }

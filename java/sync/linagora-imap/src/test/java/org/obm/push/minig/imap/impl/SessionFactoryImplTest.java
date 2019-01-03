@@ -61,6 +61,7 @@ public class SessionFactoryImplTest {
 	private IMocksControl control;
 	private SocketConnector socketConnector;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() {
 		control = createControl();

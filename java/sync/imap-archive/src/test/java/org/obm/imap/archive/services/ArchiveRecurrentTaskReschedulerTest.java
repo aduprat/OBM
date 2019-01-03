@@ -32,9 +32,10 @@ package org.obm.imap.archive.services;
 
 import static org.easymock.EasyMock.expect;
 
+import java.time.ZonedDateTime;
+
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.obm.imap.archive.beans.ArchiveConfiguration;
@@ -57,7 +58,7 @@ public class ArchiveRecurrentTaskReschedulerTest {
 	Logger logger;
 	ArchiveTreatmentRunId runId;
 	ObmDomain domain;
-	DateTime scheduledTime;
+	ZonedDateTime scheduledTime;
 	
 	IMocksControl mocks;
 	ArchiveSchedulingService schedulingService;
@@ -66,12 +67,13 @@ public class ArchiveRecurrentTaskReschedulerTest {
 	ArchiveRecurrentTaskRescheduler testee;
 	ArchiveConfiguration archiveConfiguration;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
 		logger = LoggerFactory.getLogger(ArchiveRecurrentTaskRescheduler.class);
 		runId = ArchiveTreatmentRunId.from("38efaa5c-6d46-419c-97e6-6e6c6d9cbed3");
 		domain = ObmDomain.builder().uuid(ObmDomainUuid.of("f7d9e710-1863-48dc-af78-bdd59cf6d82f")).build();
-		scheduledTime = DateTime.parse("2024-11-1T01:04Z");
+		scheduledTime = ZonedDateTime.parse("2024-11-01T01:04Z");
 		
 		mocks = EasyMock.createControl();
 		schedulingService = mocks.createMock(ArchiveSchedulingService.class);

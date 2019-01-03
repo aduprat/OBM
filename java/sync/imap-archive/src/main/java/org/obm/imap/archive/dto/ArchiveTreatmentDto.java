@@ -30,9 +30,10 @@
 
 package org.obm.imap.archive.dto;
 
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.obm.imap.archive.beans.ArchiveTreatment;
 
 public class ArchiveTreatmentDto {
@@ -42,21 +43,34 @@ public class ArchiveTreatmentDto {
 		dto.runId = archiveTreatment.getRunId().getRunId();
 		dto.domainUuid = (archiveTreatment.getDomainUuid() != null) ? archiveTreatment.getDomainUuid().getUUID() : null;
 		dto.archiveStatus = (archiveTreatment.getArchiveStatus() != null) ? archiveTreatment.getArchiveStatus().asSpecificationValue() : null;
-		dto.scheduledTime = archiveTreatment.getScheduledTime();
-		dto.startTime = archiveTreatment.getStartTime();
-		dto.endTime = archiveTreatment.getEndTime();
-		dto.higherBoundary = archiveTreatment.getHigherBoundary();
+		dto.scheduledTime = Date.from(archiveTreatment.getScheduledTime().toInstant());
+		dto.startTime = startTime(archiveTreatment.getStartTime());
+		dto.endTime = endTime(archiveTreatment.getEndTime());
+		dto.higherBoundary = Date.from(archiveTreatment.getHigherBoundary().toInstant());
 		dto.recurrent = archiveTreatment.isRecurrent();
 		return dto;
+	}
+	private static Date startTime(ZonedDateTime startTime) {
+		if (startTime != null) {
+			return Date.from(startTime.toInstant());
+		}
+		return null;
+	}
+	
+	private static Date endTime(ZonedDateTime endTime) {
+		if (endTime != null) {
+			return Date.from(endTime.toInstant());
+		}
+		return null;
 	}
 	
 	public UUID runId;
 	public UUID domainUuid;
 	public String archiveStatus;
-	public DateTime scheduledTime;
-	public DateTime startTime;
-	public DateTime endTime;
-	public DateTime higherBoundary;
+	public Date scheduledTime;
+	public Date startTime;
+	public Date endTime;
+	public Date higherBoundary;
 	public boolean recurrent;
 	
 }

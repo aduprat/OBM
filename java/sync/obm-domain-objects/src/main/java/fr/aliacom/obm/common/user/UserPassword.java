@@ -31,6 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package fr.aliacom.obm.common.user;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class UserPassword {
@@ -65,7 +66,7 @@ public class UserPassword {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("password", "***")
 				.toString();
 	}

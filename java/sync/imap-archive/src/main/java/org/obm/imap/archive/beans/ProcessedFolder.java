@@ -31,8 +31,9 @@
 
 package org.obm.imap.archive.beans;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -48,8 +49,8 @@ public class ProcessedFolder {
 		
 		private ArchiveTreatmentRunId runId;
 		private ImapFolder folder;
-		private DateTime start;
-		private DateTime end;
+		private ZonedDateTime start;
+		private ZonedDateTime end;
 		private ArchiveStatus status;
 		
 		private Builder() {
@@ -67,13 +68,13 @@ public class ProcessedFolder {
 			return this;
 		}
 		
-		public Builder start(DateTime start) {
+		public Builder start(ZonedDateTime start) {
 			Preconditions.checkNotNull(start);
 			this.start = start;
 			return this;
 		}
 		
-		public Builder end(DateTime end) {
+		public Builder end(ZonedDateTime end) {
 			Preconditions.checkNotNull(end);
 			this.end = end;
 			return this;
@@ -91,17 +92,17 @@ public class ProcessedFolder {
 			Preconditions.checkState(start != null);
 			Preconditions.checkState(end != null);
 			
-			return new ProcessedFolder(runId, folder, start, end, Objects.firstNonNull(status, DEFAULT_STATUS));
+			return new ProcessedFolder(runId, folder, start, end, MoreObjects.firstNonNull(status, DEFAULT_STATUS));
 		}
 	}
 
 	private final ArchiveTreatmentRunId runId;
 	private final ImapFolder folder;
-	private final DateTime start;
-	private final DateTime end;
+	private final ZonedDateTime start;
+	private final ZonedDateTime end;
 	private final ArchiveStatus status;
 
-	private ProcessedFolder(ArchiveTreatmentRunId runId, ImapFolder folder, DateTime start, DateTime end, ArchiveStatus status) {
+	private ProcessedFolder(ArchiveTreatmentRunId runId, ImapFolder folder, ZonedDateTime start, ZonedDateTime end, ArchiveStatus status) {
 		this.runId = runId;
 		this.folder = folder;
 		this.start = start;
@@ -117,11 +118,11 @@ public class ProcessedFolder {
 		return folder;
 	}
 
-	public DateTime getStart() {
+	public ZonedDateTime getStart() {
 		return start;
 	}
 
-	public DateTime getEnd() {
+	public ZonedDateTime getEnd() {
 		return end;
 	}
 
@@ -149,7 +150,7 @@ public class ProcessedFolder {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("runId", runId)
 			.add("folder", folder)
 			.add("start", start)

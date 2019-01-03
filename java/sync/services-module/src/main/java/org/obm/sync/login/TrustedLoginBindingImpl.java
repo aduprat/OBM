@@ -30,14 +30,13 @@
 package org.obm.sync.login;
 
 import org.obm.annotations.transactional.Transactional;
-import org.obm.provisioning.dao.exceptions.DomainNotFoundException;
 import org.obm.domain.dao.TrustTokenDao;
+import org.obm.provisioning.dao.exceptions.DomainNotFoundException;
 import org.obm.sync.auth.AccessToken;
-import org.obm.sync.auth.Login;
 import org.obm.sync.auth.AuthFault;
+import org.obm.sync.auth.Login;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 
 import fr.aliacom.obm.common.ObmSyncVersionNotFoundException;
@@ -71,7 +70,7 @@ public class TrustedLoginBindingImpl extends AbstractLoginBackend implements Log
 			trustToken = trustTokenDao.getTrustToken(login.getLogin());
 		}
 		catch (Exception e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 		
 		if (trustToken == null) {

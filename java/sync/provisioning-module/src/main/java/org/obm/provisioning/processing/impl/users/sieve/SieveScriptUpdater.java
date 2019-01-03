@@ -36,7 +36,6 @@ import org.obm.imap.sieve.SieveScript;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 
 import fr.aliacom.obm.common.user.ObmUser;
@@ -60,7 +59,7 @@ public class SieveScriptUpdater {
 			try {
 				sieveClient.logout();
 			} catch (Exception e) {
-				throw Throwables.propagate(e);
+				throw new RuntimeException(e);
 			}
 		}
 	}

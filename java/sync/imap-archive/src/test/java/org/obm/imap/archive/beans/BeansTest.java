@@ -30,9 +30,9 @@
 
 package org.obm.imap.archive.beans;
 
+import java.time.ZonedDateTime;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.obm.imap.archive.mailbox.MailboxPaths;
 import org.obm.sync.bean.EqualsVerifierUtils.EqualsVerifierBuilder;
@@ -45,7 +45,7 @@ public class BeansTest {
 	@Test
 	public void beanShouldRespectBeanContract() {
 		EqualsVerifierBuilder.builder()
-			.prefabValue(LocalTime.class, LocalTime.parse("23:32"), LocalTime.parse("12:22"))
+			.prefabValue(ZonedDateTime.class, ZonedDateTime.parse("2020-10-01T23:32Z"), ZonedDateTime.parse("2020-10-01T12:22Z"))
 			.prefabValue(Logger.class, (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("1"), (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("2"))
 			.prefabValue(ConcurrentLinkedDeque.class, new ConcurrentLinkedDeque<String>(), new ConcurrentLinkedDeque<String>())
 			.equalsVerifiers(

@@ -37,13 +37,13 @@ import static org.easymock.EasyMock.createControl;
 import static org.easymock.EasyMock.expectLastCall;
 
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.easymock.IMocksControl;
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -62,8 +62,6 @@ import org.obm.imap.archive.scheduling.ArchiveSchedulerBus.Events.RealRunTaskSta
 import org.obm.imap.archive.services.ImapArchiveProcessing;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Logger;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
@@ -75,6 +73,7 @@ import com.linagora.scheduling.Monitor;
 import com.linagora.scheduling.ScheduledTask;
 import com.linagora.scheduling.ScheduledTask.State;
 
+import ch.qos.logback.classic.Logger;
 import fr.aliacom.obm.common.domain.ObmDomain;
 import fr.aliacom.obm.common.domain.ObmDomainUuid;
 
@@ -88,7 +87,7 @@ public class ArchiveSchedulerTest {
 	ImapArchiveProcessing imapArchiveProcessing;
 	Logger logger;
 	LoggerAppenders loggerAppenders;
-	DateTime higherBoundary;
+	ZonedDateTime higherBoundary;
 	
 	TestDateTimeProvider timeProvider;
 	Monitor<ArchiveDomainTask> monitor;
@@ -102,7 +101,7 @@ public class ArchiveSchedulerTest {
 	@Before
 	public void setUp() throws IOException {
 		timeout = 1500;
-		higherBoundary = DateTime.parse("2024-11-1T05:04Z");
+		higherBoundary = ZonedDateTime.parse("2024-11-01T05:04Z");
 		
 		mocks = createControl();
 		imapArchiveProcessing = mocks.createMock(ImapArchiveProcessing.class);
@@ -113,7 +112,7 @@ public class ArchiveSchedulerTest {
 		loggerAppenders.stopAppenders();
 		expectLastCall().anyTimes();
 		
-		DateTime testsStartTime = DateTime.parse("2024-01-1T05:04Z");
+		ZonedDateTime testsStartTime = ZonedDateTime.parse("2024-01-01T05:04Z");
 		timeProvider = new TestDateTimeProvider(testsStartTime);
 		futureListener = new FutureTestListener<>();
 		
@@ -139,7 +138,7 @@ public class ArchiveSchedulerTest {
 	}
 	
 	private RemotelyControlledTask createTask(DomainConfiguration domainConfiguration,
-			DateTime when, DateTime higherBoundary, ArchiveTreatmentRunId runId) {
+			ZonedDateTime when, ZonedDateTime higherBoundary, ArchiveTreatmentRunId runId) {
 		return new RemotelyControlledTask(imapArchiveProcessing, logger, loggerAppenders, domainConfiguration, when, higherBoundary, runId);
 	}
 	
@@ -160,7 +159,7 @@ public class ArchiveSchedulerTest {
 				.archiveMainFolder("arChive")
 				.build();
 		ArchiveTreatmentRunId runId = ArchiveTreatmentRunId.from("ff43907a-af02-4509-b66b-a712a4da6146");
-		DateTime when = DateTime.parse("2024-11-1T05:04Z");
+		ZonedDateTime when = ZonedDateTime.parse("2024-11-01T05:04Z");
 		RemotelyControlledTask task = createTask(configuration, when, higherBoundary, runId);
 		imapArchiveProcessing.archive(task.getArchiveConfiguration());
 		expectLastCall();
@@ -184,8 +183,8 @@ public class ArchiveSchedulerTest {
 						.recurrence(ArchiveRecurrence.daily()).build())
 				.archiveMainFolder("arChive")
 				.build();
-		DateTime when1 = DateTime.parse("2024-11-1T05:04Z");
-		DateTime when2 = DateTime.parse("2024-11-5T05:04Z");
+		ZonedDateTime when1 = ZonedDateTime.parse("2024-11-01T05:04Z");
+		ZonedDateTime when2 = ZonedDateTime.parse("2024-11-05T05:04Z");
 		ArchiveTreatmentRunId runId1 = ArchiveTreatmentRunId.from("ff43907a-af02-4509-b66b-a712a4da6146");
 		ArchiveTreatmentRunId runId2 = ArchiveTreatmentRunId.from("14a311d0-aa84-4aed-ba33-f796a6283e50");
 		RemotelyControlledTask task1 = createTask(configuration, when1, higherBoundary, runId1);
@@ -216,8 +215,8 @@ public class ArchiveSchedulerTest {
 						.recurrence(ArchiveRecurrence.daily()).build())
 				.archiveMainFolder("arChive")
 				.build();
-		DateTime when = DateTime.parse("2024-11-1T05:04Z");
-		DateTime whenToEnqueue = DateTime.parse("2024-11-2T05:04Z");
+		ZonedDateTime when = ZonedDateTime.parse("2024-11-01T05:04Z");
+		ZonedDateTime whenToEnqueue = ZonedDateTime.parse("2024-11-02T05:04Z");
 		ArchiveTreatmentRunId runId1 = ArchiveTreatmentRunId.from("ff43907a-af02-4509-b66b-a712a4da6146");
 		ArchiveTreatmentRunId runId2 = ArchiveTreatmentRunId.from("14a311d0-aa84-4aed-ba33-f796a6283e50");
 		RemotelyControlledTask task =  createTask(configuration, when, higherBoundary, runId1);
@@ -253,9 +252,9 @@ public class ArchiveSchedulerTest {
 						.recurrence(ArchiveRecurrence.daily()).build())
 				.archiveMainFolder("arChive")
 				.build();
-		DateTime when = DateTime.parse("2024-11-1T00:00");
-		DateTime earlierWhenEnqueuedAfter = DateTime.parse("2024-11-5T00:00");
-		DateTime laterWhenEnqueuedBefore = DateTime.parse("2024-11-9T00:00");
+		ZonedDateTime when = ZonedDateTime.parse("2024-11-01T00:00Z");
+		ZonedDateTime earlierWhenEnqueuedAfter = ZonedDateTime.parse("2024-11-05T00:00Z");
+		ZonedDateTime laterWhenEnqueuedBefore = ZonedDateTime.parse("2024-11-09T00:00Z");
 		ArchiveTreatmentRunId runId1 = ArchiveTreatmentRunId.from("ff43907a-af02-4509-b66b-a712a4da6146");
 		ArchiveTreatmentRunId runId2 = ArchiveTreatmentRunId.from("14a311d0-aa84-4aed-ba33-f796a6283e50");
 		ArchiveTreatmentRunId runId3 = ArchiveTreatmentRunId.from("b13c4e34-c70a-446d-a764-17575c4ea52f");
@@ -310,8 +309,8 @@ public class ArchiveSchedulerTest {
 						.recurrence(ArchiveRecurrence.daily()).build())
 				.archiveMainFolder("arChive")
 				.build();
-		DateTime when1 = DateTime.parse("2024-11-1T05:04Z");
-		DateTime when2 = DateTime.parse("2024-11-2T05:04Z");
+		ZonedDateTime when1 = ZonedDateTime.parse("2024-11-01T05:04Z");
+		ZonedDateTime when2 = ZonedDateTime.parse("2024-11-02T05:04Z");
 		ArchiveTreatmentRunId runId1 = ArchiveTreatmentRunId.from("ff43907a-af02-4509-b66b-a712a4da6146");
 		ArchiveTreatmentRunId runId2 = ArchiveTreatmentRunId.from("14a311d0-aa84-4aed-ba33-f796a6283e50");
 
@@ -359,10 +358,10 @@ public class ArchiveSchedulerTest {
 						.recurrence(ArchiveRecurrence.daily()).build())
 				.archiveMainFolder("arChive")
 				.build();
-		DateTime when1 = DateTime.parse("2024-11-1T05:04Z");
-		DateTime when2 = DateTime.parse("2024-11-2T05:04Z");
-		DateTime when1ToEnqueue = DateTime.parse("2024-11-3T05:04Z");
-		DateTime when2ToEnqueue = DateTime.parse("2024-11-4T05:04Z");
+		ZonedDateTime when1 = ZonedDateTime.parse("2024-11-01T05:04Z");
+		ZonedDateTime when2 = ZonedDateTime.parse("2024-11-02T05:04Z");
+		ZonedDateTime when1ToEnqueue = ZonedDateTime.parse("2024-11-03T05:04Z");
+		ZonedDateTime when2ToEnqueue = ZonedDateTime.parse("2024-11-04T05:04Z");
 		ArchiveTreatmentRunId runId1 = ArchiveTreatmentRunId.from("ff43907a-af02-4509-b66b-a712a4da6146");
 		ArchiveTreatmentRunId runId2 = ArchiveTreatmentRunId.from("14a311d0-aa84-4aed-ba33-f796a6283e50");
 		ArchiveTreatmentRunId runId3 = ArchiveTreatmentRunId.from("b13c4e34-c70a-446d-a764-17575c4ea52f");
@@ -425,8 +424,8 @@ public class ArchiveSchedulerTest {
 				.archiveMainFolder("arChive")
 				.build();
 
-		DateTime when1 = DateTime.parse("2024-11-1T00:00");
-		DateTime when2 = DateTime.parse("2024-11-9T00:00");
+		ZonedDateTime when1 = ZonedDateTime.parse("2024-11-01T00:00Z");
+		ZonedDateTime when2 = ZonedDateTime.parse("2024-11-09T00:00Z");
 		ArchiveTreatmentRunId runId1 = ArchiveTreatmentRunId.from("ff43907a-af02-4509-b66b-a712a4da6146");
 		ArchiveTreatmentRunId runId2 = ArchiveTreatmentRunId.from("14a311d0-aa84-4aed-ba33-f796a6283e50");
 		RemotelyControlledTask runningTask = createTask(configuration, when1, higherBoundary, runId1);
@@ -471,8 +470,8 @@ public class ArchiveSchedulerTest {
 						.recurrence(ArchiveRecurrence.daily()).build())
 				.archiveMainFolder("arChive")
 				.build();
-		DateTime when1 = DateTime.parse("2024-11-1T00:00");
-		DateTime when2 = DateTime.parse("2024-11-9T00:00");
+		ZonedDateTime when1 = ZonedDateTime.parse("2024-11-01T00:00Z");
+		ZonedDateTime when2 = ZonedDateTime.parse("2024-11-09T00:00Z");
 		ArchiveTreatmentRunId runId1 = ArchiveTreatmentRunId.from("ff43907a-af02-4509-b66b-a712a4da6146");
 		ArchiveTreatmentRunId runId2 = ArchiveTreatmentRunId.from("14a311d0-aa84-4aed-ba33-f796a6283e50");
 
@@ -490,7 +489,7 @@ public class ArchiveSchedulerTest {
 		assertThat(scheduled2.state()).isEqualTo(State.WAITING);
 	}
 
-	ArchiveDomainTask archiveDomainTask(DomainConfiguration configuration, ArchiveTreatmentRunId runId, DateTime when) {
+	ArchiveDomainTask archiveDomainTask(DomainConfiguration configuration, ArchiveTreatmentRunId runId, ZonedDateTime when) {
 		return new ArchiveDomainTask(imapArchiveProcessing, new RealRunTaskStatusChanged.Factory(),
 				new ArchiveConfiguration(configuration, when, 
 				higherBoundary, runId, logger, loggerAppenders, false));

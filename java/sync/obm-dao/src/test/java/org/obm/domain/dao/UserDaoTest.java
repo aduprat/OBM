@@ -32,13 +32,14 @@ package org.obm.domain.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createControl;
 import static org.easymock.EasyMock.createMockBuilder;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import org.easymock.IMocksControl;
 import org.junit.After;
@@ -300,10 +301,12 @@ public class UserDaoTest {
 	}
 	
 	private void expectEmailQueryCalls(Connection connection, ResultSet rs, int numberOfMatches) throws Exception {
-		Statement st = mocksControl.createMock(Statement.class);
+		PreparedStatement st = mocksControl.createMock(PreparedStatement.class);
 		
-		expect(connection.createStatement()).andReturn(st);
-		expect(st.executeQuery(isA(String.class))).andReturn(rs);
+		expect(connection.prepareStatement(isA(String.class))).andReturn(st);
+		st.setString(eq(1), isA(String.class));
+		expectLastCall();
+		expect(st.executeQuery()).andReturn(rs);
 		
 		if (numberOfMatches > 0) {
 			expect(rs.next()).andReturn(true).times(1, numberOfMatches);

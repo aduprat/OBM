@@ -55,7 +55,7 @@ import org.hornetq.spi.core.remoting.AcceptorFactory;
 import org.hornetq.spi.core.remoting.ConnectorFactory;
 
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -406,7 +406,7 @@ public class HornetQConfiguration {
 		public ConnectionFactoryConfiguration build() {
 			ConnectionFactoryConfigurationImpl configuration 
 				= new ConnectionFactoryConfigurationImpl(name, 
-						Objects.firstNonNull(ha, false), 
+						MoreObjects.firstNonNull(ha, false), 
 						connectors, 
 						bindings.toArray(new String[0]));
 			if (factoryType != null) {

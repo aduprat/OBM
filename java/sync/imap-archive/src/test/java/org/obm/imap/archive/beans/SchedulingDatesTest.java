@@ -33,7 +33,9 @@ package org.obm.imap.archive.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 import org.junit.Test;
 
 
@@ -47,10 +49,11 @@ public class SchedulingDatesTest {
 
 	@Test
 	public void builderShouldBuildWhenNextTreatmentDateIsNotNull() {
-		DateTime expectedNextTreatmentDate = DateTime.now();
+		ZonedDateTime now = ZonedDateTime.now();
 		
-		SchedulingDates schedulingDates = SchedulingDates.builder().nextTreatmentDate(expectedNextTreatmentDate).build();
+		SchedulingDates schedulingDates = SchedulingDates.builder().nextTreatmentDate(now).build();
 		
+		Date expectedNextTreatmentDate = Date.from(now.toInstant());
 		assertThat(schedulingDates.getNextTreatmentDate()).isEqualTo(expectedNextTreatmentDate);
 	}
 }

@@ -30,7 +30,8 @@
 
 package org.obm.imap.archive.scheduling;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+
 import org.obm.imap.archive.beans.ArchiveConfiguration;
 import org.obm.imap.archive.beans.ArchiveTreatmentKind;
 import org.obm.imap.archive.beans.ArchiveTreatmentRunId;
@@ -43,11 +44,11 @@ import org.obm.imap.archive.services.DryRunImapArchiveProcessing;
 import org.obm.imap.archive.services.ImapArchiveProcessing;
 import org.obm.imap.archive.services.ResetImapArchiveProcessing;
 
-import ch.qos.logback.classic.Logger;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import ch.qos.logback.classic.Logger;
 
 @Singleton
 public class ArchiveDomainTaskFactory {
@@ -69,15 +70,15 @@ public class ArchiveDomainTaskFactory {
 		this.loggerFactory = loggerFactory;
 	}
 	
-	public ArchiveDomainTask createAsRecurrent(DomainConfiguration configuration, DateTime when, 
-			DateTime higherBoundary, ArchiveTreatmentRunId runId) {
+	public ArchiveDomainTask createAsRecurrent(DomainConfiguration configuration, ZonedDateTime when, 
+			ZonedDateTime higherBoundary, ArchiveTreatmentRunId runId) {
 		
 		ArchiveConfiguration archiveConfiguration = createConfiguration(configuration, when, higherBoundary, runId, true);
 		return create(archiveConfiguration, ArchiveTreatmentKind.REAL_RUN); 
 	}
 
-	public ArchiveDomainTask create(DomainConfiguration configuration, DateTime when,
-			DateTime higherBoundary, ArchiveTreatmentRunId runId,
+	public ArchiveDomainTask create(DomainConfiguration configuration, ZonedDateTime when,
+			ZonedDateTime higherBoundary, ArchiveTreatmentRunId runId,
 			ArchiveTreatmentKind kind) {
 		
 		ArchiveConfiguration archiveConfiguration = createConfiguration(configuration, when, higherBoundary, runId, false);
@@ -85,7 +86,7 @@ public class ArchiveDomainTaskFactory {
 	}
 	
 	private ArchiveConfiguration createConfiguration(DomainConfiguration configuration,
-			DateTime when, DateTime higherBoundary, ArchiveTreatmentRunId runId, boolean recurrent) {
+			ZonedDateTime when, ZonedDateTime higherBoundary, ArchiveTreatmentRunId runId, boolean recurrent) {
 		Logger logger = loggerFactory.create(runId);
 		LoggerAppenders loggerAppenders = LoggerAppenders.from(runId, logger);
 		return new ArchiveConfiguration(configuration, 

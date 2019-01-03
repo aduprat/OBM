@@ -45,6 +45,7 @@ import org.obm.sync.calendar.EventObmId;
 import org.obm.sync.dao.EntityId;
 import org.obm.sync.utils.DisplayNameUtils;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class Contact implements Serializable {
@@ -379,7 +380,7 @@ public class Contact implements Serializable {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("uid", uid)
 			.add("commonname", commonname)
 			.add("firstname", firstname)

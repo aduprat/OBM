@@ -36,11 +36,12 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.easymock.IMocksControl;
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -136,11 +137,11 @@ public class DryRunImapArchiveProcessingTest {
 		expect(archiveTreatmentDao.findLastTerminated(domainId, Limit.from(1)))
 			.andReturn(ImmutableList.<ArchiveTreatment> of());
 		
-		DateTime treatmentDate = DateTime.parse("2014-08-27T12:18:00.000Z");
+		ZonedDateTime treatmentDate = ZonedDateTime.parse("2014-08-27T12:18:00.000Z");
 		expect(dateTimeProvider.now())
 			.andReturn(treatmentDate).times(4);
 		
-		DateTime higherBoundary = DateTime.parse("2014-08-26T12:18:00.000Z");
+		ZonedDateTime higherBoundary = ZonedDateTime.parse("2014-08-26T12:18:00.000Z");
 		expect(schedulingDatesService.higherBoundary(treatmentDate, RepeatKind.DAILY))
 			.andReturn(higherBoundary);
 		
@@ -190,7 +191,7 @@ public class DryRunImapArchiveProcessingTest {
 		control.verify();
 	}
 	
-	private void expectImapCommandsOnMailboxProcessing(String mailboxName, Range<Long> uids, DateTime higherBoundary, StoreClient storeClient) 
+	private void expectImapCommandsOnMailboxProcessing(String mailboxName, Range<Long> uids, ZonedDateTime higherBoundary, StoreClient storeClient) 
 			throws Exception {
 		
 		MessageSet messageSet = MessageSet.builder()
@@ -201,7 +202,7 @@ public class DryRunImapArchiveProcessingTest {
 		expectLastCall();
 		expect(storeClient.select(mailboxName)).andReturn(true);
 		expect(storeClient.uidSearch(SearchQuery.builder()
-				.beforeExclusive(higherBoundary.toDate())
+				.beforeExclusive(Date.from(higherBoundary.toInstant()))
 				.unmatchingFlag(MailboxProcessing.IMAP_ARCHIVE_FLAG)
 				.build()))
 			.andReturn(messageSet);

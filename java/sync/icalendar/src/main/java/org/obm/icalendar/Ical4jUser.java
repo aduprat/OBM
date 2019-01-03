@@ -32,6 +32,8 @@
 package org.obm.icalendar;
 
 import org.obm.push.utils.UserEmailParserUtils;
+
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -95,7 +97,7 @@ public class Ical4jUser {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("email", email)
 			.add("obmDomain", obmDomain)
 			.toString();

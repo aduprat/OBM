@@ -109,6 +109,7 @@ public class ChunkedOutputAppenderTest {
 		assertThat(chunkedOutput2.isClosed()).isTrue();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test 
 	public void chunkShouldCopyAlreadyAppendedMessages() throws Exception {
 		String expectedMessage = "message" + System.lineSeparator();
@@ -136,6 +137,7 @@ public class ChunkedOutputAppenderTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test 
 	public void appendShouldWriteMessagesInChunedOutput() throws Exception {
 		String expectedMessage = "message" + System.lineSeparator();

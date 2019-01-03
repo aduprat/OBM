@@ -39,17 +39,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import javax.transaction.UserTransaction;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 
 public class JDBCUtils {
 
@@ -102,7 +101,7 @@ public class JDBCUtils {
 
 	public static void throwRuntimeIfNotNull(Throwable failure) {
 		if (failure != null) {
-			Throwables.propagate(failure);
+			throw new RuntimeException(failure);
 		}
 	}
 
@@ -171,11 +170,11 @@ public class JDBCUtils {
 		}
 	}
 
-	public static DateTime getDateTime(ResultSet rs, String fieldName, DateTimeZone dateTimeZone) throws SQLException {
+	public static ZonedDateTime getDateTime(ResultSet rs, String fieldName, ZoneId dateTimeZone) throws SQLException {
 		Preconditions.checkNotNull(dateTimeZone);
 		Timestamp timestamp = getTimestamp(rs, fieldName);
 		if (timestamp != null) {
-			return new DateTime(timestamp).withZone(dateTimeZone);
+			return ZonedDateTime.ofInstant(timestamp.toInstant(), dateTimeZone);
 		} else {
 			return null;
 		}
@@ -206,11 +205,11 @@ public class JDBCUtils {
 		return !rs.wasNull() ? value : null;
 	}
 	
-	public static Timestamp toTimestamp(DateTime dateTime) {
+	public static Timestamp toTimestamp(ZonedDateTime dateTime) {
 		if (dateTime == null) {
 			return null;
 		}
-		return new Timestamp(dateTime.getMillis());
+		return Timestamp.from(dateTime.toInstant());
 	}
 
 	public static boolean setOptionalDate(PreparedStatement ps, Date date, int idx) throws SQLException {

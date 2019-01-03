@@ -36,7 +36,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Collections;
@@ -44,7 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.obm.provisioning.Group;
 import org.obm.provisioning.ProfileName;
 import org.obm.provisioning.dao.GroupDao;
@@ -64,11 +62,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -211,15 +208,13 @@ public class UserDaoJdbcImpl implements UserDao {
 	}
 	
 	@VisibleForTesting Integer userIdFromEmailQuery(Connection con, EmailLogin login, DomainName domain) throws SQLException {
-		try (Statement st = con.createStatement()) {
-			// Don't use a PreparedStatement here, as they can't be load-balanced and this is a very frequent query
-			String request = String.format("SELECT userobm_id, userobm_email, domain_name, domain_alias " +
+		try (PreparedStatement st = con.prepareStatement("SELECT userobm_id, userobm_email, domain_name, domain_alias " +
 					"FROM UserObm " +
 					"INNER JOIN Domain ON domain_id = userobm_domain_id " +
-					"WHERE UPPER(userobm_email) like UPPER('%s') AND userobm_archive != 1", StringEscapeUtils.escapeSql(
-							"%" + login.get().toString() + "%"));
+					"WHERE UPPER(userobm_email) like UPPER(?) AND userobm_archive != 1")) {
+			st.setString(1, "%" + login.get().toString() + "%");
 			
-			ResultSet rs = st.executeQuery(request);
+			ResultSet rs = st.executeQuery();
 			
 			while (rs.next()) {
 				
@@ -335,6 +330,7 @@ public class UserDaoJdbcImpl implements UserDao {
 		return createUserFromResultSet(domain, rs, creator, updator, groups);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private ObmUser createUserFromResultSet(ObmDomain domain, ResultSet rs, ObmUser creator, ObmUser updator, Set<Group> groups) throws SQLException {
 
 		try {
@@ -401,7 +397,7 @@ public class UserDaoJdbcImpl implements UserDao {
 					.gidNumber(JDBCUtils.getInteger(rs, "userobm_gid"))
 					.createdBy(creator)
 					.updatedBy(updator)
-					.groups(Objects.firstNonNull(groups, Collections.EMPTY_SET))
+					.groups(MoreObjects.firstNonNull(groups, Collections.EMPTY_SET))
 					.expirationDate(JDBCUtils.getDate(rs, "userobm_account_dateexp"))
 					.delegation(emptyToNull(rs.getString("userobm_delegation")))
 					.delegationTarget(emptyToNull(rs.getString("userobm_delegation_target")))
@@ -474,7 +470,7 @@ public class UserDaoJdbcImpl implements UserDao {
 				}
 			}
 		} catch (SQLException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 		return obmUser;
 	}
@@ -949,7 +945,7 @@ public class UserDaoJdbcImpl implements UserDao {
 	}
 
 	@VisibleForTesting int getQuotaAsInt0(ObmUser user) {
-		return Objects.firstNonNull(user.getMailQuota(), 0);
+		return MoreObjects.firstNonNull(user.getMailQuota(), 0);
 	}
 
 	@VisibleForTesting Integer quotaToNullable(int quota) {
@@ -1056,7 +1052,7 @@ public class UserDaoJdbcImpl implements UserDao {
 				throw new DomainNotFoundException(String.format("The login %s is in several domains (at least %s and  %s).", userLogin, domain, rs.getString("domain_name")));
 			}
 		} catch (SQLException e){
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		} finally {
 			obmHelper.cleanup(con, ps, rs);
 		}

@@ -31,6 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.cyrus.imap.admin;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class Partition {
@@ -75,7 +76,7 @@ public class Partition {
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(this)
 				.add("name", name)
 				.toString();

@@ -32,6 +32,7 @@
 
 package org.obm.provisioning.beans;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class ObmDomainEntry {
@@ -90,7 +91,7 @@ public class ObmDomainEntry {
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(this)
 				.add("id", id)
 				.add("url", url)

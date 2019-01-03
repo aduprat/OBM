@@ -32,6 +32,7 @@
 package org.obm.push.mail.mime;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -101,7 +102,7 @@ public class MimeAddress {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("address", address)
 			.toString();
 	}

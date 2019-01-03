@@ -12,17 +12,16 @@
 	<packaging>jar</packaging>
 	<name>transaction test classes</name>
 	<url>http://www.obm.org/</url>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<dependencies>
-		<dependency>
-			<groupId>be.bitronix.btm</groupId>
-			<artifactId>btm</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.btm</groupId>
+			<artifactId>btm</artifactId>
 		</dependency>
 	</dependencies>
 

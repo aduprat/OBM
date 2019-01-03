@@ -34,7 +34,6 @@ package org.obm.dao.utils;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.google.common.base.Throwables;
 import com.ninja_squad.dbsetup.destination.Destination;
 
 public class H2Destination implements Destination {
@@ -54,7 +53,7 @@ public class H2Destination implements Destination {
 		try {
 			return db.getConnection();
 		} catch (Exception e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

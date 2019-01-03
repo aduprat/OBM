@@ -33,12 +33,12 @@ package org.obm.push.minig.imap.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.obm.push.mail.bean.Flag;
 import org.obm.push.mail.bean.MessageSet;
 import org.obm.push.mail.bean.SearchQuery;
 import org.obm.push.minig.imap.impl.IMAPResponse;
+import org.obm.push.utils.DateUtils;
 
 import com.google.common.collect.ImmutableList;
 
@@ -82,8 +82,8 @@ public class UIDSearchCommandTest {
 	public void buildCommandShouldManagerBetween() {
 		UIDSearchCommand command = new UIDSearchCommand(SearchQuery.builder()
 				.between(true)
-				.beforeExclusive(DateTime.parse("2014-01-01").toDate())
-				.afterInclusive(DateTime.parse("2015-01-01").toDate())
+				.beforeExclusive(DateUtils.date("2014-01-01"))
+				.afterInclusive(DateUtils.date("2015-01-01"))
 				.includeDeleted(true)
 				.build());
 		CommandArgument commandArgument = command.buildCommand();

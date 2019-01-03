@@ -29,6 +29,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.ldap.client.bean;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class LdapDomain {
@@ -62,6 +63,8 @@ public class LdapDomain {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this).add("domain", domain).toString();
+			return MoreObjects.toStringHelper(this)
+					.add("domain", domain)
+					.toString();
 		}
 }

@@ -30,6 +30,7 @@
 
 package org.obm.imap.archive.beans;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -148,7 +149,7 @@ public class ArchiveRecurrence {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("repeatKind", repeatKind)
 			.add("dayOfWeek", dayOfWeek)
 			.add("dayOfMonth", dayOfMonth)

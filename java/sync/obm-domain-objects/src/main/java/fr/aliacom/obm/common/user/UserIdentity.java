@@ -33,6 +33,7 @@ package fr.aliacom.obm.common.user;
 
 import org.obm.sync.utils.DisplayNameUtils;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class UserIdentity {
@@ -143,7 +144,7 @@ public class UserIdentity {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("lastName", lastName)
 				.add("firstName", firstName)
 				.add("commonName", commonName)

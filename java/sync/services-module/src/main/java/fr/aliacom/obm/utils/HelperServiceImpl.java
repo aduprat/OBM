@@ -54,7 +54,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -129,7 +128,7 @@ public class HelperServiceImpl implements HelperService {
 			otherLoginsToRights = helperDao.listRightsOnCalendars(accessToken,
 					loginsWithUnknownRights);
 		} catch (SQLException e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 
 		Map<String, EnumSet<Right>> calsWithImplicitRightsToRights = buildCalsWithImplicitRightsToRights(
@@ -230,7 +229,7 @@ public class HelperServiceImpl implements HelperService {
 			EnumSet<Right> rights = mailToRights.get(login);
 			return rights != null && rights.contains(Right.READ);
 		} catch (SQLException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

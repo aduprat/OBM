@@ -85,6 +85,7 @@ public class LoginClientTest extends AbstractClientTest {
 		};
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test(expected = AuthFault.class)
 	public void testLoginAuthFault() throws Exception {
 		Document document = mockErrorDocument(AuthFault.class, null);
@@ -95,6 +96,7 @@ public class LoginClientTest extends AbstractClientTest {
 		client.login("user@domain.com", UserPassword.valueOf("secret"));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test(expected = AuthFault.class)
 	public void testLoginAuthFaultAsDefaultWhenTypeIsNotDefined() throws Exception {
 		Document document = mockErrorDocument(null, "any error !");
@@ -105,6 +107,7 @@ public class LoginClientTest extends AbstractClientTest {
 		client.login("user@domain.com", UserPassword.valueOf("secret"));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test(expected = RuntimeException.class)
 	public void testLoginRuntimeException() throws Exception {
 		Document document = mockErrorDocument(RuntimeException.class, null);
@@ -115,6 +118,7 @@ public class LoginClientTest extends AbstractClientTest {
 		client.login("user@domain.com", UserPassword.valueOf("secret"));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testLogin() throws Exception {
 		ObmDomain domain = ObmDomain

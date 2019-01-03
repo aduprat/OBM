@@ -30,9 +30,11 @@
 
 package org.obm.imap.archive.beans;
 
-import org.joda.time.LocalTime;
+import java.time.LocalTime;
+
 import org.obm.imap.archive.dto.DomainConfigurationDto;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -74,7 +76,7 @@ public class SchedulingConfiguration {
 		}
 		
 		public Builder time(LocalTime time) {
-			Preconditions.checkArgument(time.getMillisOfSecond() == 0 && time.getSecondOfMinute() == 0);
+			Preconditions.checkArgument(time.getNano() == 0 && time.getSecond() == 0);
 			this.time = time;
 			return this;
 		}
@@ -128,11 +130,11 @@ public class SchedulingConfiguration {
 	}
 	
 	public Integer getHour() {
-		return time.getHourOfDay();
+		return time.getHour();
 	}
 	
 	public Integer getMinute() {
-		return time.getMinuteOfHour();
+		return time.getMinute();
 	}
 
 	@Override
@@ -152,7 +154,7 @@ public class SchedulingConfiguration {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("recurrence", recurrence)
 			.add("time", time)
 			.toString();

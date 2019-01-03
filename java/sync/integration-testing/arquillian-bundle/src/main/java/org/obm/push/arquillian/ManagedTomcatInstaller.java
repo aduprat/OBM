@@ -46,7 +46,6 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.utils.IOUtils;
 
-import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
 
 public final class ManagedTomcatInstaller {
@@ -72,7 +71,7 @@ public final class ManagedTomcatInstaller {
 				copyTomcatManager();
 				replaceFilesByFolders();
 			} catch (Exception e) {
-				Throwables.propagate(e);
+				throw new RuntimeException(e);
 			}
 		}
 	}

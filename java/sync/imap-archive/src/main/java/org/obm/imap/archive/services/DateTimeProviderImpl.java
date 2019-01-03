@@ -30,8 +30,10 @@
 
 package org.obm.imap.archive.services;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 import org.obm.sync.date.DateProvider;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -50,8 +52,8 @@ public class DateTimeProviderImpl implements DateTimeProvider {
 	}
 	
 	@Override
-	public DateTime now() {
-		return new DateTime(dateProvider.getDate(), DateTimeZone.UTC);
+	public ZonedDateTime now() {
+		return ZonedDateTime.ofInstant(dateProvider.getDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId()));
 	}
 
 }

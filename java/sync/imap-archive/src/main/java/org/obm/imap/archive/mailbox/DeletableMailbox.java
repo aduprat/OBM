@@ -35,6 +35,7 @@ import org.obm.imap.archive.exception.ImapDeleteException;
 import org.obm.push.minig.imap.StoreClient;
 import org.slf4j.Logger;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -119,7 +120,7 @@ public class DeletableMailbox extends MailboxImpl {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("name", name)
 			.toString();
 	}

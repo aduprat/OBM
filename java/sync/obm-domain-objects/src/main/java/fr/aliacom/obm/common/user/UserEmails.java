@@ -36,6 +36,7 @@ import java.util.List;
 import org.obm.sync.host.ObmHost;
 
 import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.FluentIterable;
@@ -184,7 +185,7 @@ public class UserEmails {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("addresses", addresses)
 				.add("server", server)
 				.add("quota", quota)

@@ -130,7 +130,7 @@ public class DatabaseTruncationServiceImplTest {
 	public void testGetTruncatingEntityReturnsNullWhenNullGiven() throws Exception {
 		control.replay();
 
-		assertThat(service.getTruncatingEntity(null)).isNull();
+		assertThat(service.getTruncatingEntity((Boolean) null)).isNull();
 	}
 
 	@Test

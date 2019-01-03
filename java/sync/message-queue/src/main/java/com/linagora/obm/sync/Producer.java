@@ -32,16 +32,14 @@
 package com.linagora.obm.sync;
 
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-
-import com.google.common.base.Throwables;
 
 public class Producer {
 
@@ -76,7 +74,7 @@ public class Producer {
 				throw new TimeoutException("Unable to acquire lock over the JMS producer in a reasonable amount of time");
 			}
 		} catch (InterruptedException ex) {
-			throw Throwables.propagate(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 	

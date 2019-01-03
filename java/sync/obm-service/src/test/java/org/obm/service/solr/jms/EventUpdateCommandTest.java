@@ -34,7 +34,7 @@ import static fr.aliacom.obm.ToolBox.getDefaultObmUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createControl;
 import static org.easymock.EasyMock.expect;
-import static org.obm.DateUtils.date;
+import static org.obm.push.utils.DateUtils.date;
 
 import org.apache.solr.common.SolrInputDocument;
 import org.easymock.IMocksControl;
@@ -42,7 +42,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.obm.domain.dao.UserDao;
-import org.obm.service.solr.jms.EventUpdateCommand;
 import org.obm.sync.calendar.Event;
 import org.obm.sync.calendar.EventExtId;
 import org.obm.sync.calendar.EventObmId;

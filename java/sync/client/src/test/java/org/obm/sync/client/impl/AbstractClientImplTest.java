@@ -188,6 +188,7 @@ public class AbstractClientImplTest {
 
 	private class TestServlet extends HttpServlet {
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 				throws ServletException, IOException {

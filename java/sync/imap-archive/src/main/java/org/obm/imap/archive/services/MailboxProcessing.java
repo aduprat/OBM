@@ -31,6 +31,7 @@
 
 package org.obm.imap.archive.services;
 
+import java.sql.Date;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -248,8 +249,8 @@ public class MailboxProcessing {
 	private MessageSet searchOutOfYearMessages(Mailbox mailbox, MessageSet messageSet, Year year) {
 		return mailbox.uidSearch(SearchQuery.builder()
 				.between(true)
-				.beforeExclusive(year.toDate())
-				.afterInclusive(year.next().toDate())
+				.beforeExclusive(Date.from(year.toDate().toInstant()))
+				.afterInclusive(Date.from(year.next().toDate().toInstant()))
 				.messageSet(messageSet)
 				.build());
 	}
@@ -318,7 +319,7 @@ public class MailboxProcessing {
 	
 	@VisibleForTesting MessageSet searchMailUids(Mailbox mailbox, HigherBoundary higherBoundary) {
 		return mailbox.uidSearch(SearchQuery.builder()
-					.beforeExclusive(higherBoundary.getHigherBoundary().toDate())
+					.beforeExclusive(Date.from(higherBoundary.getHigherBoundary().toInstant()))
 					.includeDeleted(false)
 					.unmatchingFlag(IMAP_ARCHIVE_FLAG)
 					.build());

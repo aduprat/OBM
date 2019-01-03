@@ -38,7 +38,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.google.common.base.Splitter;
-import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 
 public class InternalDate extends Date {
@@ -67,7 +66,7 @@ public class InternalDate extends Date {
 			//22-Mar-2010 14:26:18 +0100
 			return new SimpleDateFormat("d-MMM-yyyy HH:mm:ss Z", Locale.ENGLISH).parse(date);
 		} catch (ParseException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

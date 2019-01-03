@@ -35,6 +35,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 
+import org.obm.icalendar.ical4jwrapper.ICalendarEvent;
+import org.obm.icalendar.ical4jwrapper.ICalendarMethod;
+import org.obm.icalendar.ical4jwrapper.ICalendarTimeZone;
+import org.obm.push.utils.FileUtils;
+
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.data.UnfoldingReader;
@@ -43,14 +52,6 @@ import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Organizer;
-
-import org.obm.icalendar.ical4jwrapper.ICalendarEvent;
-import org.obm.icalendar.ical4jwrapper.ICalendarMethod;
-import org.obm.icalendar.ical4jwrapper.ICalendarTimeZone;
-import org.obm.push.utils.FileUtils;
-
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 
 public class ICalendar {
 
@@ -165,7 +166,7 @@ public class ICalendar {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("iCalendar", iCalendar)
 			.toString();
 	}

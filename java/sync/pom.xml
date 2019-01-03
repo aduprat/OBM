@@ -30,17 +30,17 @@
 		<hornetq.version>2.3.1.Final</hornetq.version>
 		<junit.version>4.11</junit.version>
 		<easymock.version>3.1</easymock.version>
-		<assertj.version>1.6.1</assertj.version>
-		<guava.version>15.0</guava.version>
+		<assertj.version>3.11.1</assertj.version>
+		<guava.version>27.0.1-jre</guava.version>
 		<powermock.version>1.5.1</powermock.version>
 		<httpclient.version>4.3</httpclient.version>
 		<commons-io.version>2.4</commons-io.version>
 		<commons-validator.version>1.4.0</commons-validator.version>
 		<jms.version>1.1</jms.version>
 		<netty.version>3.7.0.Final</netty.version>
-		<jta.version>1.1</jta.version>
+		<javaee-api.version>8.0</javaee-api.version>
 		<jetty.version>9.1.2.v20140210</jetty.version>
-		<commons-lang.version>2.6</commons-lang.version>
+		<commons-lang3.version>3.8.1</commons-lang3.version>
 		<slf4j.version>1.7.5</slf4j.version>
 		<tomcat-slf4j.version>1.5.8</tomcat-slf4j.version>
 		<servlet-api.version>2.5</servlet-api.version>
@@ -50,11 +50,11 @@
 		<guice.version>3.0</guice.version>
 		<apache-mime4j.version>0.7.2</apache-mime4j.version>
 		<apache-solr.version>1.4.1</apache-solr.version>
-		<btm.version>3.0.0-1a33e59482fd29f6993ef3dfb5fab12efa0b24d2</btm.version>
-		<parboiled.version>1.1.6</parboiled.version>
+		<btm.version>2.1.4</btm.version>
+		<parboiled.version>1.2.0</parboiled.version>
 		<jersey.version>1.17.1</jersey.version>
 		<cglib.version>3.0</cglib.version>
-		<asm.version>4.1</asm.version>
+		<asm.version>7.0</asm.version>
 		<shiro.version>1.2.2</shiro.version>
 		<version.shrinkwrap.resolvers>2.0.0</version.shrinkwrap.resolvers>
 		<arquillian.version>1.1.1.Final</arquillian.version>
@@ -69,7 +69,7 @@
 		<plugin.dependency.version>2.6</plugin.dependency.version>
 		<cucumber.version>1.1.7</cucumber.version>
 		<dbsetup.version>1.3.0</dbsetup.version>
-		<jackson.version>2.4.1</jackson.version>
+		<jackson.version>2.9.8</jackson.version>
 	</properties>
 
 	<repositories>
@@ -158,8 +158,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${plugin.compiler.version}</version>
 					<configuration>
-						<source>1.7</source>
-						<target>1.7</target>
+						<source>1.8</source>
+						<target>1.8</target>
 						<fork>true</fork>
                                                 <meminitial>128m</meminitial>
                                                 <maxmem>256m</maxmem>
@@ -200,8 +200,8 @@ org.eclipse.jdt.core.codeComplete.staticFinalFieldPrefixes=
 org.eclipse.jdt.core.codeComplete.staticFinalFieldSuffixes=
 org.eclipse.jdt.core.codeComplete.visibilityCheck=enabled
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
-org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.7
-org.eclipse.jdt.core.compiler.compliance=1.7
+org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.8
+org.eclipse.jdt.core.compiler.compliance=1.8
 org.eclipse.jdt.core.compiler.problem.annotationSuperInterface=warning
 org.eclipse.jdt.core.compiler.problem.assertIdentifier=error
 org.eclipse.jdt.core.compiler.problem.autoboxing=ignore
@@ -273,7 +273,7 @@ org.eclipse.jdt.core.compiler.problem.unusedParameterWhenOverridingConcrete=disa
 org.eclipse.jdt.core.compiler.problem.unusedPrivateMember=warning
 org.eclipse.jdt.core.compiler.problem.unusedWarningToken=warning
 org.eclipse.jdt.core.compiler.problem.varargsArgumentNeedCast=warning
-org.eclipse.jdt.core.compiler.source=1.7
+org.eclipse.jdt.core.compiler.source=1.8
 								</content>
 							</file>
 						</additionalConfig>
@@ -572,17 +572,6 @@ org.eclipse.jdt.core.compiler.source=1.7
 				<artifactId>utils-integration-testing</artifactId>
 				<version>${obm.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>be.bitronix.btm</groupId>
-				<artifactId>btm</artifactId>
-				<version>${btm.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>cglib</groupId>
-						<artifactId>cglib</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
 	                <dependency>
                         	<groupId>ch.qos.logback</groupId>
                 	        <artifactId>logback-access</artifactId>
@@ -607,7 +596,7 @@ org.eclipse.jdt.core.compiler.source=1.7
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
-				<artifactId>jackson-datatype-joda</artifactId>
+				<artifactId>jackson-datatype-jdk8</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
@@ -707,9 +696,9 @@ org.eclipse.jdt.core.compiler.source=1.7
 				<version>${commons-io.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>commons-lang</groupId>
-				<artifactId>commons-lang</artifactId>
-				<version>${commons-lang.version}</version>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${commons-lang3.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>greenmail</groupId>
@@ -741,6 +730,12 @@ org.eclipse.jdt.core.compiler.source=1.7
 				<version>${netty.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>${javaee-api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
 				<groupId>javax.jms</groupId>
 				<artifactId>jms</artifactId>
 				<version>${jms.version}</version>
@@ -762,17 +757,6 @@ org.eclipse.jdt.core.compiler.source=1.7
                                 <version>3.1.0</version>
                                 <scope>provided</scope>
                         </dependency>
-			<dependency>
-				<groupId>javax.transaction</groupId>
-				<artifactId>jta</artifactId>
-				<version>${jta.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>joda-time</groupId>
-				<artifactId>joda-time</artifactId>
-				<version>2.3</version>
-			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -870,8 +854,19 @@ org.eclipse.jdt.core.compiler.source=1.7
 			<dependency>
 				<groupId>org.assertj</groupId>
 				<artifactId>assertj-guava</artifactId>
-				<version>1.2.0</version>
+				<version>3.2.1</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.btm</groupId>
+				<artifactId>btm</artifactId>
+				<version>${btm.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>cglib</groupId>
+						<artifactId>cglib</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.easymock</groupId>
@@ -970,7 +965,7 @@ org.eclipse.jdt.core.compiler.source=1.7
 			<dependency>
 				<groupId>org.mnode.ical4j</groupId>
 				<artifactId>ical4j</artifactId>
-				<version>1.0.4</version>
+				<version>3.0.5</version>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>

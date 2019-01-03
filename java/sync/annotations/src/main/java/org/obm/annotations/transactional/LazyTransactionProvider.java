@@ -38,16 +38,15 @@ import org.obm.configuration.TransactionConfiguration;
 import org.obm.configuration.module.LoggerModule;
 import org.slf4j.Logger;
 
-import bitronix.tm.BitronixTransactionManager;
-import bitronix.tm.Configuration;
-import bitronix.tm.TransactionManagerServices;
-
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+
+import bitronix.tm.BitronixTransactionManager;
+import bitronix.tm.Configuration;
+import bitronix.tm.TransactionManagerServices;
 
 @Singleton
 public class LazyTransactionProvider implements TransactionProvider {
@@ -69,7 +68,7 @@ public class LazyTransactionProvider implements TransactionProvider {
 					transactionManager.setTransactionTimeout(transactionTimeOutInSecond);
 					return transactionManager;
 				} catch (SystemException e) {
-					throw Throwables.propagate(e);
+					throw new RuntimeException(e);
 				}
 			}
 		});

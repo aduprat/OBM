@@ -34,6 +34,7 @@ package org.obm.push.mail.bean;
 
 import org.obm.push.utils.UserEmailParserUtils;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
@@ -92,7 +93,7 @@ public final class ListInfo {
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(getClass())
+		return MoreObjects.toStringHelper(getClass())
 				.add("name", name)
 				.toString();
 	}

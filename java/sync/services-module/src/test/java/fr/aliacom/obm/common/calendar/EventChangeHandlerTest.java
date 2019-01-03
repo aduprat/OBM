@@ -32,28 +32,26 @@
 package fr.aliacom.obm.common.calendar;
 
 import static fr.aliacom.obm.common.calendar.EventNotificationServiceTestTools.after;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 import java.util.Date;
 import java.util.Set;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.easymock.EasyMock.expectLastCall;
-import org.joda.time.DateTime;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.obm.sync.auth.AccessToken;
 import org.obm.sync.calendar.Attendee;
 import org.obm.sync.calendar.Event;
 import org.obm.sync.calendar.Participation;
 
+import com.google.common.collect.Iterables;
+
 import fr.aliacom.obm.ToolBox;
 import fr.aliacom.obm.common.user.ObmUser;
-
-
-import com.google.common.collect.Iterables;
 
 
 public class EventChangeHandlerTest {
@@ -75,7 +73,7 @@ public class EventChangeHandlerTest {
 	@Test
 	public void testNegativeException() {
 		Event currentEvent = previousEvent.clone();
-		Date exceptionDate = new DateTime(after()).plusMonths(1).toDate();
+		Date exceptionDate = DateUtils.addMonths(after(), 1);
 		currentEvent.addException(exceptionDate);
 
 		Event negativeExceptionEvent = ToolBox.getFakeNegativeExceptionEvent(currentEvent, exceptionDate);

@@ -44,7 +44,7 @@ import org.obm.push.mail.EncodedWord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
 public class IMAPHeadersImpl implements IMAPHeaders {
@@ -218,7 +218,7 @@ public class IMAPHeadersImpl implements IMAPHeaders {
 	}
 
 	public Map<String, String> getRawHeaders() {
-		return Objects.firstNonNull(raw, ImmutableMap.<String, String>of());
+		return MoreObjects.firstNonNull(raw, ImmutableMap.<String, String>of());
 	}
 	
 }

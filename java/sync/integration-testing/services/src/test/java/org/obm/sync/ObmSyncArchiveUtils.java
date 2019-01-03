@@ -57,7 +57,6 @@ import org.obm.dbcp.DatabaseConfigurationFixtureH2;
 import org.obm.dbcp.jdbc.H2DriverConfiguration;
 
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Module;
 
@@ -123,14 +122,14 @@ public class ObmSyncArchiveUtils {
 						changeSetPerformer.perform(servicesZip, jarArchiveOutputStream);
 						return outputFile;
 					} catch (IOException e) {
-						Throwables.propagate(e);
+						throw new RuntimeException(e);
 					} finally {
 						try {
 							if (servicesZip != null) {
 								servicesZip.close();
 							}
 						} catch (IOException e) {
-							Throwables.propagate(e);
+							throw new RuntimeException(e);
 						}
 					}
 				}

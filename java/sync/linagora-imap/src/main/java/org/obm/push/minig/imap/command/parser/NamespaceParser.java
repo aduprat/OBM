@@ -55,6 +55,7 @@ public class NamespaceParser extends AbstractImapBaseParser {
 				namespace(), ACTION(setSharedFolderNamespaces()));
 	}
 	
+	@SuppressWarnings("unchecked")
 	boolean setPersonalNamespaces() {
 		swap();
 		NameSpaceInfo nsi = (NameSpaceInfo) pop();
@@ -63,6 +64,7 @@ public class NamespaceParser extends AbstractImapBaseParser {
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	boolean setOtherUserNamespaces() {
 		swap();
 		NameSpaceInfo nsi = (NameSpaceInfo) pop();
@@ -71,6 +73,7 @@ public class NamespaceParser extends AbstractImapBaseParser {
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	boolean setSharedFolderNamespaces() {
 		swap();
 		NameSpaceInfo nsi = (NameSpaceInfo) pop();
@@ -93,6 +96,7 @@ public class NamespaceParser extends AbstractImapBaseParser {
 				')');
 	}
 
+	@SuppressWarnings("unchecked")
 	boolean addEntryToList() {
 		String expression = (java.lang.String)pop();
 		List<String> list = (List<String>)peek();

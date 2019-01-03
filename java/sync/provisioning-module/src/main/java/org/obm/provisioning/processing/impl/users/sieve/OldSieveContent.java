@@ -31,6 +31,7 @@ package org.obm.provisioning.processing.impl.users.sieve;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -73,7 +74,7 @@ public class OldSieveContent {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("requires", this.requires)
 				.add("userRules", this.userRules)
 				.toString();

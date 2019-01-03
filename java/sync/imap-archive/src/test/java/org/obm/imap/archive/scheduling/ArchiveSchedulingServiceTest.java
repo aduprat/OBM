@@ -32,12 +32,12 @@ package org.obm.imap.archive.scheduling;
 
 import static org.easymock.EasyMock.expect;
 
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,12 +54,11 @@ import org.obm.imap.archive.services.SchedulingDatesService;
 import org.obm.provisioning.dao.exceptions.DaoException;
 import org.obm.push.utils.UUIDFactory;
 
-import pl.wkr.fluentrule.api.FluentExpectedException;
-
 import com.linagora.scheduling.ScheduledTask;
 
 import fr.aliacom.obm.common.domain.ObmDomain;
 import fr.aliacom.obm.common.domain.ObmDomainUuid;
+import pl.wkr.fluentrule.api.FluentExpectedException;
 
 public class ArchiveSchedulingServiceTest {
 
@@ -118,9 +117,10 @@ public class ArchiveSchedulingServiceTest {
 				.build());
 	}
 
+	@SuppressWarnings("unchecked")
 	private void testSchedule(DomainConfiguration config) throws DaoException {
-		DateTime when = DateTime.parse("2024-01-1T05:04Z");
-		DateTime higherBoundary = DateTime.parse("2024-02-1T05:04Z");
+		ZonedDateTime when = ZonedDateTime.parse("2024-01-01T05:04Z");
+		ZonedDateTime higherBoundary = ZonedDateTime.parse("2024-02-01T05:04Z");
 		UUID runUuid = UUID.fromString("ecd08c0d-70aa-4a04-8a18-57fe7afe1404");
 		ArchiveTreatmentRunId runId = ArchiveTreatmentRunId.from(runUuid);
 		ArchiveDomainTask task = mocks.createMock(ArchiveDomainTask.class);
@@ -139,7 +139,7 @@ public class ArchiveSchedulingServiceTest {
 
 	@Test
 	public void scheduleShouldRaiseExceptionWhenConfigNotFound() throws Exception {
-		DateTime when = DateTime.parse("2024-01-1T05:04Z");
+		ZonedDateTime when = ZonedDateTime.parse("2024-01-01T05:04Z");
 		expect(domainConfigDao.get(domain)).andReturn(null);
 		
 		expectedException.expect(DomainConfigurationNotFoundException.class);
@@ -210,9 +210,10 @@ public class ArchiveSchedulingServiceTest {
 		mocks.verify();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void expectScheduleByConfig(DomainConfiguration config) {
-		DateTime when = DateTime.parse("2024-01-1T05:04Z");
-		DateTime higherBoundary = DateTime.parse("2024-02-1T05:04Z");
+		ZonedDateTime when = ZonedDateTime.parse("2024-01-01T05:04Z");
+		ZonedDateTime higherBoundary = ZonedDateTime.parse("2024-02-01T05:04Z");
 		UUID runUuid = UUID.fromString("ecd08c0d-70aa-4a04-8a18-57fe7afe1404");
 		ArchiveTreatmentRunId runId = ArchiveTreatmentRunId.from(runUuid);
 		ArchiveDomainTask task = mocks.createMock(ArchiveDomainTask.class);

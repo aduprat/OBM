@@ -34,8 +34,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZoneOffset;
 
-import org.joda.time.DateTimeZone;
 import org.obm.dbcp.DatabaseConnectionProvider;
 import org.obm.imap.archive.beans.ArchiveStatus;
 import org.obm.imap.archive.beans.ArchiveTreatmentRunId;
@@ -118,8 +118,8 @@ public class ProcessedFolderJdbcImpl implements ProcessedFolderDao {
 		return ProcessedFolder.builder()
 				.runId(ArchiveTreatmentRunId.from(rs.getString(FIELDS.RUN_ID)))
 				.folder(ImapFolder.from(rs.getString(ImapFolderJdbcImpl.TABLE.FIELDS.FOLDER)))
-				.start(JDBCUtils.getDateTime(rs, FIELDS.START, DateTimeZone.UTC))
-				.end(JDBCUtils.getDateTime(rs, FIELDS.END, DateTimeZone.UTC))
+				.start(JDBCUtils.getDateTime(rs, FIELDS.START, ZoneOffset.UTC))
+				.end(JDBCUtils.getDateTime(rs, FIELDS.END, ZoneOffset.UTC))
 				.status(ArchiveStatus.fromSpecificationValue(rs.getString(FIELDS.STATUS)))
 				.build();
 	}

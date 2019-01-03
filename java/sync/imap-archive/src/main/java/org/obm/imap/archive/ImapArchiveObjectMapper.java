@@ -35,7 +35,7 @@ import javax.ws.rs.ext.ContextResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 public class ImapArchiveObjectMapper implements ContextResolver<ObjectMapper> {
 	
@@ -44,7 +44,7 @@ public class ImapArchiveObjectMapper implements ContextResolver<ObjectMapper> {
 	public ImapArchiveObjectMapper() {
 	   	objectMapper = new ObjectMapper();
 	   	objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-	   	objectMapper.registerModule(new JodaModule());
+	   	objectMapper.registerModule(new Jdk8Module());
 	}
 
 	@Override

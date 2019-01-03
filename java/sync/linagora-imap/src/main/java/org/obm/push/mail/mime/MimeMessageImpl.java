@@ -39,6 +39,7 @@ import java.util.List;
 
 import org.obm.push.mail.bean.IMAPHeaders;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -341,7 +342,7 @@ public class MimeMessageImpl implements MimeMessage {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("uid", uid)
 			.add("size", size)
 			.add("tree", printTree())

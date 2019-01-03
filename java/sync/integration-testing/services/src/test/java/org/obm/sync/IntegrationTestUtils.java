@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.sync;
 
-import static org.obm.DateUtils.date;
+import static org.obm.push.utils.DateUtils.date;
 
 import java.util.Comparator;
 

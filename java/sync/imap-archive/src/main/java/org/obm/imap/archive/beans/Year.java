@@ -31,12 +31,13 @@
 
 package org.obm.imap.archive.beans;
 
-import java.util.Date;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.obm.push.mail.bean.InternalDate;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -76,16 +77,8 @@ public class Year {
 		return Year.from(year + 1);
 	}
 	
-	public Date toDate() {
-		return new DateTime(DateTimeZone.UTC)
-			.withYear(year)
-			.withMonthOfYear(1)
-			.withDayOfMonth(1)
-			.withHourOfDay(0)
-			.withMinuteOfHour(0)
-			.withSecondOfMinute(0)
-			.withMillisOfSecond(0)
-			.toDate();
+	public ZonedDateTime toDate() {
+		return ZonedDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId()));
 	}
 	
 	@Override
@@ -104,7 +97,7 @@ public class Year {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("year", year)
 			.toString();
 	}

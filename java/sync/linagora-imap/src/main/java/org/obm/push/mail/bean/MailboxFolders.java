@@ -35,6 +35,7 @@ package org.obm.push.mail.bean;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class MailboxFolders implements Iterable<MailboxFolder> {
@@ -71,7 +72,7 @@ public class MailboxFolders implements Iterable<MailboxFolder> {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("folders", folders)
 			.toString();
 	}

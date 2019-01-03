@@ -35,13 +35,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obm.DateUtils;
 import org.obm.push.mail.bean.Address;
 import org.obm.push.mail.bean.Envelope;
 import org.obm.push.mail.bean.MessageSet;
 import org.obm.push.minig.imap.impl.IMAPResponse;
 import org.obm.push.minig.imap.impl.IMAPResponseParser;
 import org.obm.push.minig.imap.impl.MinaIMAPMessage;
+import org.obm.push.utils.DateUtils;
 
 import com.google.common.collect.ImmutableList;
 

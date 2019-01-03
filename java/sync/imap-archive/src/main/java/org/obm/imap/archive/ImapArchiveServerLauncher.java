@@ -34,15 +34,14 @@ import org.obm.push.utils.jvm.VMArgumentsUtils;
 import org.obm.server.ServerConfiguration;
 import org.obm.server.WebServer;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Throwables;
+import com.google.common.base.MoreObjects;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public class ImapArchiveServerLauncher {
 
 	private static final int DEFAULT_SERVER_PORT = 8085; 
-	private static final int SERVER_PORT = Objects.firstNonNull( 
+	private static final int SERVER_PORT = MoreObjects.firstNonNull( 
 			VMArgumentsUtils.integerArgumentValue("imapArchivePort"), DEFAULT_SERVER_PORT);
 
 	public static void main(String... args) throws Exception {
@@ -74,7 +73,7 @@ public class ImapArchiveServerLauncher {
 				try {
 					server.stop();
 				} catch (Exception e) {
-					Throwables.propagate(e);
+					throw new RuntimeException(e);
 				}
 			}
 		});

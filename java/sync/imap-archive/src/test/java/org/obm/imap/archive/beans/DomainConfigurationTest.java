@@ -32,7 +32,8 @@ package org.obm.imap.archive.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joda.time.LocalTime;
+import java.time.LocalTime;
+
 import org.junit.Test;
 import org.obm.imap.archive.dto.DomainConfigurationDto;
 import org.obm.sync.base.EmailAddress;
@@ -348,7 +349,7 @@ public class DomainConfigurationTest {
 						.dayOfYear(DayOfYear.of(1))
 						.repeat(RepeatKind.MONTHLY)
 						.build())
-				.time(LocalTime.parse("0:0"))
+				.time(LocalTime.parse("00:00"))
 				.build();
 		
 		ObmDomain domain = ObmDomain.builder().uuid(domainId).build();

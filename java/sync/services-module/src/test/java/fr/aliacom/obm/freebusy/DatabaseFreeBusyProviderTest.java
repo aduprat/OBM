@@ -1,8 +1,8 @@
 package fr.aliacom.obm.freebusy;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createControl;
 import static org.easymock.EasyMock.expect;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -10,11 +10,11 @@ import org.easymock.IMocksControl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.obm.DateUtils;
 import org.obm.domain.dao.CalendarDao;
 import org.obm.guice.GuiceModule;
 import org.obm.guice.GuiceRunner;
 import org.obm.icalendar.Ical4jHelper;
+import org.obm.push.utils.DateUtils;
 import org.obm.service.user.UserService;
 import org.obm.sync.calendar.FreeBusy;
 import org.obm.sync.calendar.FreeBusyInterval;

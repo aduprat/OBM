@@ -31,6 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.cyrus.imap.admin;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -80,7 +81,9 @@ public class Quota {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("limit", limit).toString();
+		return MoreObjects.toStringHelper(this)
+				.add("limit", limit)
+				.toString();
 	}
 
 	@Override

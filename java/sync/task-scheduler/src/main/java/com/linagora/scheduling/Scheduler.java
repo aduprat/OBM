@@ -31,18 +31,18 @@
  * ***** END LICENSE BLOCK ***** */
 package com.linagora.scheduling;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.joda.time.DateTime;
-import org.joda.time.ReadablePeriod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.AbstractScheduledService;
@@ -95,10 +95,10 @@ public class Scheduler<T extends Task> implements AutoCloseable {
 		
 		public Scheduler<T> start() {
 			Scheduler<T> scheduler = new Scheduler<>(
-				Objects.firstNonNull(queue, new TaskQueue.DelayedQueue<T>()),
-				Objects.firstNonNull(timeProvider, DateTimeProvider.SYSTEM_UTC),
-				Objects.firstNonNull(resolution, 1),
-				Objects.firstNonNull(unit, TimeUnit.MINUTES),
+				MoreObjects.firstNonNull(queue, new TaskQueue.DelayedQueue<T>()),
+				MoreObjects.firstNonNull(timeProvider, DateTimeProvider.SYSTEM_UTC),
+				MoreObjects.firstNonNull(resolution, 1),
+				MoreObjects.firstNonNull(unit, TimeUnit.MINUTES),
 				listeners.build());
 			scheduler.start();
 			return scheduler;
@@ -154,7 +154,7 @@ public class Scheduler<T extends Task> implements AutoCloseable {
 		return actualScheduler.submit(scheduledTask);
 	}
 	
-	/* package */ DateTime now() {
+	/* package */ ZonedDateTime now() {
 		return dateTimeProvider.now();
 	}
 	
@@ -219,14 +219,14 @@ public class Scheduler<T extends Task> implements AutoCloseable {
 			taskBuilder = ScheduledTask.<T>builder().task(task);
 		}
 		
-		public ScheduledTask<T> at(DateTime when) {
+		public ScheduledTask<T> at(ZonedDateTime when) {
 			Preconditions.checkNotNull(when);
 			return taskBuilder.scheduledTime(when).schedule(Scheduler.this);
 		}
 
-		public ScheduledTask<T> in(ReadablePeriod period) {
+		public ScheduledTask<T> in(Duration period) {
 			Preconditions.checkNotNull(period);
-			DateTime when = dateTimeProvider.now().plus(period);
+			ZonedDateTime when = dateTimeProvider.now().plus(period);
 			return taskBuilder.scheduledTime(when).schedule(Scheduler.this);
 		}
 

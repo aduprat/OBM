@@ -44,8 +44,7 @@ import org.obm.locator.LocatorServerLauncher;
 import org.obm.push.utils.jvm.VMArgumentsUtils;
 import org.slf4j.Logger;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Throwables;
+import com.google.common.base.MoreObjects;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -55,7 +54,7 @@ public class ContainerModule extends AbstractModule {
 
 	private static final Logger logger = LocatorServerLauncher.logger;
 
-	private static final int POOL_THREAD_SIZE = Objects.firstNonNull( 
+	private static final int POOL_THREAD_SIZE = MoreObjects.firstNonNull( 
 			VMArgumentsUtils.integerArgumentValue("obmLocatorPoolSize"), 50);
 
 	private final static int LOCATOR_PORT = 8084;
@@ -112,7 +111,7 @@ public class ContainerModule extends AbstractModule {
 						return getLocalPort();
 					}
 				} catch (InterruptedException e) {
-					Throwables.propagate(e);
+					throw new RuntimeException(e);
 				}
 				throw new IllegalStateException("Could not get server's listening port. Illegal concurrent state.");
 			}

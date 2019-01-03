@@ -44,12 +44,12 @@ import org.obm.provisioning.ldap.client.Configuration;
 import org.obm.provisioning.ldap.client.samba.NTLMPasswordGenerator;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -103,7 +103,9 @@ public class LdapUser {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this).add("uid", uid).toString();
+			return MoreObjects.toStringHelper(this)
+					.add("uid", uid)
+					.toString();
 		}
 	}
 	
@@ -205,7 +207,7 @@ public class LdapUser {
 			try {
 				return NTLMPasswordGenerator.computeNTLMPassword(obmUser.getPassword().getStringValue());
 			} catch (Exception e) {
-				throw Throwables.propagate(e);
+				throw new RuntimeException(e);
 			}
 		}
 
@@ -749,7 +751,7 @@ public class LdapUser {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("uid", uid)
 			.add("uidNumber", uidNumber)
 			.add("gidNumber", gidNumber)

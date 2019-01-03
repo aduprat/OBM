@@ -40,6 +40,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.obm.healthcheck.HealthCheckHandler;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
@@ -62,7 +63,7 @@ public class RootHandler implements HealthCheckHandler {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Set<EndpointDescription> root() {
 		Set<EndpointDescription> endpoints = Sets.newHashSet();
-		Iterable<Class<?>> classes = Iterables.filter(application.getClasses(), Predicates.assignableFrom(HealthCheckHandler.class));
+		Iterable<Class<?>> classes = Iterables.filter(application.getClasses(), Predicates.subtypeOf(HealthCheckHandler.class));
 
 		for (Class<?> handlerClass : classes) {
 			AbstractResource resource = IntrospectionModeller.createResource(handlerClass);
@@ -111,7 +112,10 @@ public class RootHandler implements HealthCheckHandler {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this).add("path", path).add("method", method).toString();
+			return MoreObjects.toStringHelper(this)
+					.add("path", path)
+					.add("method", method)
+					.toString();
 		}
 
 	}

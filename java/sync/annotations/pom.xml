@@ -11,7 +11,6 @@
 	<packaging>jar</packaging>
 	<name>obm annotations</name>
 	<url>http://www.obm.org/</url>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<licenses>
 		<license>
@@ -45,10 +44,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>be.bitronix.btm</groupId>
-			<artifactId>btm</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
@@ -57,12 +52,16 @@
 			<artifactId>guice</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.btm</groupId>
+			<artifactId>btm</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>

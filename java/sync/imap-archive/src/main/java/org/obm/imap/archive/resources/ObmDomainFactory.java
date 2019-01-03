@@ -40,8 +40,6 @@ import org.obm.domain.dao.DomainDao;
 import org.obm.provisioning.dao.exceptions.DaoException;
 import org.obm.provisioning.dao.exceptions.DomainNotFoundException;
 
-import com.google.common.base.Throwables;
-
 import fr.aliacom.obm.common.domain.ObmDomain;
 import fr.aliacom.obm.common.domain.ObmDomainUuid;
 
@@ -77,7 +75,7 @@ public class ObmDomainFactory implements Factory<ObmDomain> {
 		} catch (DomainNotFoundException e) {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		} catch (DaoException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 	

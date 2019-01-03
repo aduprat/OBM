@@ -131,7 +131,7 @@ public class MailboxImplTest {
 	public void selectShouldNotThrowWhenSuccess() throws Exception {
 		expect(storeClient.select("mailbox"))
 			.andReturn(true);
-		logger.debug(anyObject(String.class), anyObject());
+		logger.debug(anyObject(String.class), (Object) anyObject());
 		expectLastCall().anyTimes();
 		
 		control.replay();

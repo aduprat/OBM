@@ -39,7 +39,6 @@ import java.sql.SQLException;
 import org.obm.dbcp.DatabaseConnectionProvider;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -61,9 +60,9 @@ public class H2Initializer {
 			Connection connection = connectionProvider.getConnection();
 			connection.prepareStatement(getInitialDBScript()).executeUpdate();
 		} catch (SQLException e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		} catch (IOException e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

@@ -819,6 +819,7 @@ public class BatchProcessorImplUserTest extends BatchProcessorImplTestEnv {
 		expectLastCall();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void expectLdapdeleteUser(ObmUser userToRemove, Group defaultGroup) throws SQLException {
 		LdapManager ldapManager = expectLdapBuild();
 
@@ -1616,6 +1617,7 @@ public class BatchProcessorImplUserTest extends BatchProcessorImplTestEnv {
 		mocksControl.verify();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testModifyWhenUnarchivingArchivedUser() throws Exception {
 		Date date = DateUtils.date("2013-08-01T12:00:00");
@@ -1690,6 +1692,7 @@ public class BatchProcessorImplUserTest extends BatchProcessorImplTestEnv {
 		mocksControl.verify();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testModifyWhenUnarchivingArchivedUserWithNomadAndEmail() throws Exception {
 		Date date = DateUtils.date("2013-08-01T12:00:00");

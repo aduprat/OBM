@@ -33,10 +33,10 @@ package org.obm.imap.archive.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.ZonedDateTime;
 import java.util.EnumSet;
 
 import org.assertj.guava.api.Assertions;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,8 +57,6 @@ import org.obm.imap.archive.beans.Limit;
 import org.obm.imap.archive.dao.SqlTables.MailArchiveRun;
 import org.obm.provisioning.dao.exceptions.DaoException;
 
-import pl.wkr.fluentrule.api.FluentExpectedException;
-
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.ninja_squad.dbsetup.DbSetup;
@@ -66,6 +64,7 @@ import com.ninja_squad.dbsetup.Operations;
 import com.ninja_squad.dbsetup.operation.Operation;
 
 import fr.aliacom.obm.common.domain.ObmDomainUuid;
+import pl.wkr.fluentrule.api.FluentExpectedException;
 
 public class ArchiveTreatmentJdbcImplTest {
 
@@ -96,8 +95,8 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
 				.build();
 
 		expectedException.expect(DaoException.class);
@@ -117,27 +116,27 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
 				.build();
 		
 		ArchiveRunningTreatment running = ArchiveRunningTreatment
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-07-06T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-07-06T00:03:00Z"))
 				.build();
 		
 		ArchiveTerminatedTreatment terminated = ArchiveTerminatedTreatment
 				.forDomain(domainUuid)
 				.runId("a5ac1bc7-7c2d-415e-9933-00c073146d41")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-07-06T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-07-06T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -155,31 +154,31 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("d7a88445-053c-49dc-964a-f38e867ae62a")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2056-01-02T11:11Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2056-01-02T11:11Z"))
 				.build();
 		ArchiveRunningTreatment treatment2 = ArchiveRunningTreatment
 				.forDomain(domainUuid)
 				.runId("94c4856e-aae3-46d6-acd8-7c40d81ff309")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2056-01-01T10:22Z"))
-				.startedAt(DateTime.parse("2056-02-01T10:22Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2056-01-01T10:22Z"))
+				.startedAt(ZonedDateTime.parse("2056-02-01T10:22Z"))
 				.build();
 		ArchiveRunningTreatment treatment3 = ArchiveRunningTreatment
 				.forDomain(ObmDomainUuid.of("72e2be30-ad54-4115-84f2-471fa2688805"))
 				.runId("9d53ef2b-1853-48fe-93c5-e39627fb0c4a")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2056-01-03T20:20Z"))
-				.startedAt(DateTime.parse("2056-02-02T10:22Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2056-01-03T20:20Z"))
+				.startedAt(ZonedDateTime.parse("2056-02-02T10:22Z"))
 				.build();
 		ArchiveScheduledTreatment treatment4 = ArchiveScheduledTreatment
 				.forDomain(ObmDomainUuid.of("72e2be30-ad54-4115-84f2-471fa2688805"))
 				.runId("879e9046-ad73-446a-be66-824ef745de63")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2056-01-02T20:33Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2056-01-02T20:33Z"))
 				.build();
 		
 		testee.insert(treatment1);
@@ -202,18 +201,18 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(ObmDomainUuid.of("254933bc-fad8-488e-98cd-f302c2a22fb3"))
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
 				.build();
 
 		ArchiveTerminatedTreatment expectedDomain = ArchiveTerminatedTreatment
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-07-06T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-07-06T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -229,18 +228,18 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
 				.build();
 
 		ArchiveTerminatedTreatment two = ArchiveTerminatedTreatment
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -248,9 +247,9 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-01-01T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-01-01T00:03:00Z"))
 				.build();
 
 		testee.insert(one);
@@ -266,18 +265,18 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
 				.build();
 
 		ArchiveTerminatedTreatment two = ArchiveTerminatedTreatment
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -285,9 +284,9 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-01-01T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-01-01T00:03:00Z"))
 				.build();
 
 		testee.insert(one);
@@ -308,10 +307,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(ObmDomainUuid.of("254933bc-fad8-488e-98cd-f302c2a22fb3"))
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-07-06T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-07-06T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -319,10 +318,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-07-06T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-07-06T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -338,18 +337,18 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
 				.build();
 
 		ArchiveTerminatedTreatment two = ArchiveTerminatedTreatment
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -357,9 +356,9 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-01-01T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-01-01T00:03:00Z"))
 				.build();
 
 		testee.insert(one);
@@ -375,10 +374,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -386,10 +385,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -397,10 +396,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 
@@ -417,8 +416,8 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
 				.build();
 
 		testee.insert(treatment);
@@ -441,8 +440,8 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
 				.build());
 	}
 	
@@ -452,18 +451,18 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-11-11T00:00:00Z"))
-				.scheduledAt(DateTime.parse("2014-11-11T11:00:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-11-11T00:00:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-11-11T11:00:00Z"))
 				.build();
 
 		ArchiveTerminatedTreatment terminated = ArchiveTerminatedTreatment
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-02-02T00:00:00Z"))
-				.scheduledAt(DateTime.parse("2014-02-02T02:00:00Z"))
-				.startedAt(DateTime.parse("2014-07-06T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-02-02T00:00:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-02-02T02:00:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-07-06T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -491,8 +490,8 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(ObmDomainUuid.of("254933bc-fad8-488e-98cd-f302c2a22fb3"))
 				.runId(runId)
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
 				.build();
 
 		testee.insert(treatment);
@@ -507,9 +506,9 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId(runId)
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-01-01T00:03:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-01-01T00:03:00Z"))
 				.build();
 
 		testee.insert(treatment);
@@ -524,10 +523,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId(runId)
 				.recurrent(false)
-				.higherBoundary(DateTime.parse("2014-02-02T00:00:00Z"))
-				.scheduledAt(DateTime.parse("2014-02-02T02:00:00Z"))
-				.startedAt(DateTime.parse("2014-07-06T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-02-02T00:00:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-02-02T02:00:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-07-06T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 
@@ -543,10 +542,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId(runId)
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-02-02T00:00:00Z"))
-				.scheduledAt(DateTime.parse("2014-02-02T02:00:00Z"))
-				.startedAt(DateTime.parse("2014-07-06T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-02-02T00:00:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-02-02T02:00:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-07-06T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -586,10 +585,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -597,10 +596,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(ObmDomainUuid.of("72e2be30-ad54-4115-84f2-471fa2688805"))
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -608,10 +607,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 
@@ -628,10 +627,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SCHEDULED)
 				.build();
 
@@ -639,10 +638,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -650,10 +649,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 
@@ -670,10 +669,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -681,10 +680,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -692,10 +691,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 
@@ -712,10 +711,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -723,10 +722,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -734,10 +733,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid) 
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 
@@ -754,10 +753,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 
@@ -765,10 +764,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 		
@@ -776,10 +775,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid) 
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -801,10 +800,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 
@@ -813,10 +812,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid2)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -824,10 +823,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid) 
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 
@@ -846,10 +845,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("a860eecd-e608-4cbe-9d7a-6ef907b56367")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-05T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-05T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.ERROR)
 				.build();
 
@@ -857,10 +856,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid)
 				.runId("21d3c634-5f5a-4e4d-bf89-dec6e699f007")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-01T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 		
@@ -868,10 +867,10 @@ public class ArchiveTreatmentJdbcImplTest {
 				.forDomain(domainUuid) 
 				.runId("31534c25-2012-45d7-9808-586a488e6c8b")
 				.recurrent(true)
-				.higherBoundary(DateTime.parse("2014-07-01T00:03:00Z"))
-				.scheduledAt(DateTime.parse("2014-07-02T00:03:00Z"))
-				.startedAt(DateTime.parse("2014-11-11T00:03:00Z"))
-				.terminatedAt(DateTime.parse("2014-07-06T11:11:00Z"))
+				.higherBoundary(ZonedDateTime.parse("2014-07-01T00:03:00Z"))
+				.scheduledAt(ZonedDateTime.parse("2014-07-02T00:03:00Z"))
+				.startedAt(ZonedDateTime.parse("2014-11-11T00:03:00Z"))
+				.terminatedAt(ZonedDateTime.parse("2014-07-06T11:11:00Z"))
 				.status(ArchiveStatus.SUCCESS)
 				.build();
 

@@ -30,7 +30,7 @@
 
 package org.obm.imap.archive.beans;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 import com.google.common.base.Preconditions;
 
@@ -61,7 +61,7 @@ public class ArchiveRunningTreatment extends ArchiveTreatment {
 	}
 
 	private ArchiveRunningTreatment(ArchiveTreatmentRunId runId, ObmDomainUuid  domainUuid, 
-			ArchiveStatus archiveStatus, DateTime scheduledTime, DateTime startTime, DateTime higherBoundary, boolean recurrent) {
+			ArchiveStatus archiveStatus, ZonedDateTime scheduledTime, ZonedDateTime startTime, ZonedDateTime higherBoundary, boolean recurrent) {
 		super(runId, domainUuid, archiveStatus, scheduledTime, startTime, NO_DATE, higherBoundary, recurrent);
 	}
 }

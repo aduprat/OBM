@@ -50,7 +50,7 @@ import javax.mail.util.ByteArrayDataSource;
 import org.obm.sync.calendar.Attendee;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 
 import fr.aliacom.obm.common.ObmSyncVersion;
@@ -82,7 +82,7 @@ public class EventMail {
 				this.bodyHtml = bodyHtml;
 				this.icsContent = icsContent;
 				this.icsMethod = icsMethod;
-				this.calendarEncoding = Objects.firstNonNull(calendarEncoding, CalendarEncoding.Auto);
+				this.calendarEncoding = MoreObjects.firstNonNull(calendarEncoding, CalendarEncoding.Auto);
 	}
 	
 	public MimeMessage buildMimeMail(Session session) throws MessagingException, IOException {

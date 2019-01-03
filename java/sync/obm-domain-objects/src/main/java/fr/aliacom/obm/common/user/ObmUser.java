@@ -40,6 +40,7 @@ import org.obm.provisioning.ProfileName;
 import org.obm.sync.dao.EntityId;
 import org.obm.sync.host.ObmHost;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -284,16 +285,16 @@ public class ObmUser {
 			Preconditions.checkState(login != null);
 			Preconditions.checkState(domain != null);
 
-			admin = Objects.firstNonNull(admin, false);
-			archived = Objects.firstNonNull(archived, false);			
-			hidden = Objects.firstNonNull(hidden, false);
+			admin = MoreObjects.firstNonNull(admin, false);
+			archived = MoreObjects.firstNonNull(archived, false);			
+			hidden = MoreObjects.firstNonNull(hidden, false);
 
-			UserIdentity identity = Objects.firstNonNull(this.identity, UserIdentity.empty());
-			UserAddress address = Objects.firstNonNull(this.address, UserAddress.empty());
-			UserPhones phones = Objects.firstNonNull(this.phones, UserPhones.empty());
-			UserWork work = Objects.firstNonNull(this.work, UserWork.empty());
-			UserEmails emails = Objects.firstNonNull(this.emails, UserEmails.builder().domain(domain).build());
-			UserNomad nomad = Objects.firstNonNull(this.nomad, UserNomad.empty());
+			UserIdentity identity = MoreObjects.firstNonNull(this.identity, UserIdentity.empty());
+			UserAddress address = MoreObjects.firstNonNull(this.address, UserAddress.empty());
+			UserPhones phones = MoreObjects.firstNonNull(this.phones, UserPhones.empty());
+			UserWork work = MoreObjects.firstNonNull(this.work, UserWork.empty());
+			UserEmails emails = MoreObjects.firstNonNull(this.emails, UserEmails.builder().domain(domain).build());
+			UserNomad nomad = MoreObjects.firstNonNull(this.nomad, UserNomad.empty());
 			
 			if (!Strings.isNullOrEmpty(sambaHomeFolder)) {
 				sambaHomeFolder = sambaHomeFolder.replaceAll("%u", login.getStringValue());
@@ -698,7 +699,7 @@ public class ObmUser {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("uid", uid)
 			.add("entityId", entityId)
 			.add("login", login)

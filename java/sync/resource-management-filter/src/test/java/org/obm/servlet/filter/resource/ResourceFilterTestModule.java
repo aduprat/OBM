@@ -41,7 +41,6 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.thread.QueuedThreadPool;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.GuiceFilter;
@@ -93,7 +92,7 @@ public class ResourceFilterTestModule extends ServletModule {
 						return getLocalPort();
 					}
 				} catch (InterruptedException e) {
-					Throwables.propagate(e);
+					throw new RuntimeException(e);
 				}
 				throw new IllegalStateException("Could not get server's listening port. Illegal concurrent state.");
 			}

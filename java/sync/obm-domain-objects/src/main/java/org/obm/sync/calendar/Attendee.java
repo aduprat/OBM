@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import org.obm.sync.dao.EntityId;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public abstract class Attendee implements Cloneable, Serializable {
 	
@@ -227,7 +227,7 @@ public abstract class Attendee implements Cloneable, Serializable {
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(getClass()).
+		return MoreObjects.toStringHelper(getClass()).
 				add("email", getEmail()).
 				add("participation", getParticipation()).
 				add("canWriteOnCalendar", isCanWriteOnCalendar()).toString();

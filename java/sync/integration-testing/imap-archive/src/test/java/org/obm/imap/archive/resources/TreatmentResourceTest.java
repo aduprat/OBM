@@ -37,8 +37,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.obm.imap.archive.DBData.admin;
 import static org.obm.imap.archive.DBData.domain;
 import static org.obm.imap.archive.DBData.domainId;
+import static org.obm.push.utils.DateUtils.date;
 
 import java.io.File;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -47,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.FileUtils;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -158,10 +160,10 @@ public class TreatmentResourceTest {
 			.body("runId", equalTo(runId.toString()),
 				"domainUuid", equalTo(domainId.getUUID().toString()),
 				"archiveStatus", equalTo(ArchiveStatus.SUCCESS.asSpecificationValue()),
-				"scheduledTime", equalTo(DateTime.parse("2014-06-01T00:00:00.000Z").toString()),
-				"startTime", equalTo(DateTime.parse("2014-06-01T00:01:00.000Z").toString()),
-				"endTime", equalTo(DateTime.parse("2014-06-01T00:02:00.000Z").toString()),
-				"higherBoundary", equalTo(DateTime.parse("2014-06-01T00:03:00.000Z").toString()),
+				"scheduledTime", equalTo("2014-06-01T00:00:00.000+0000"),
+				"startTime", equalTo("2014-06-01T00:01:00.000+0000"),
+				"endTime", equalTo("2014-06-01T00:02:00.000+0000"),
+				"higherBoundary", equalTo("2014-06-01T00:03:00.000+0000"),
 				"recurrent", equalTo(true))
 			.statusCode(Status.OK.getStatusCode()).
 		when()
@@ -355,7 +357,7 @@ public class TreatmentResourceTest {
 			.expectTrustedLogin(domain);
 		
 		ArchiveTreatmentRunId runId = ArchiveTreatmentRunId.from(TestImapArchiveModules.uuid);
-		final DateTime scheduled = TestImapArchiveModules.LOCAL_DATE_TIME.plusSeconds(2);
+		final ZonedDateTime scheduled = TestImapArchiveModules.LOCAL_DATE_TIME.plusSeconds(2);
 		play(Operations.sequenceOf(DatabaseOperations.cleanDB(), 
 				DatabaseOperations.insertDomainConfiguration(domainId, ConfigurationState.ENABLE), 
 				Operations.insertInto(MailArchiveRun.NAME)
@@ -368,8 +370,8 @@ public class TreatmentResourceTest {
 					.values(runId.serialize(),
 							domainId.get(),
 							ArchiveStatus.SCHEDULED, 
-							scheduled.toDate(), 
-							DateTime.parse("2014-06-01T00:03:00.000Z").toDate(),
+							Date.from(scheduled.toInstant()), 
+							date("2014-06-01T00:03:00.000Z"),
 							true)
 					.build()));
 		

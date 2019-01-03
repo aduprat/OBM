@@ -37,6 +37,7 @@ import java.util.Set;
 import org.obm.sync.host.ObmHost;
 import org.obm.sync.serviceproperty.ServiceProperty;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -142,7 +143,7 @@ public class ObmDomain implements Serializable {
 		}
 
 		public ObmDomain build() {
-			global = Objects.firstNonNull(global, false);
+			global = MoreObjects.firstNonNull(global, false);
 			
 			return new ObmDomain(id, name, uuid, label, aliases.build(), hosts.build(), global, mailChooserHookId, samba);
 		}
@@ -250,7 +251,7 @@ public class ObmDomain implements Serializable {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("id", id)
 			.add("name", name)
 			.add("label", label)

@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.service.user;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.obm.domain.dao.UserDao;
 import org.obm.provisioning.dao.exceptions.FindException;
 import org.obm.service.domain.DomainService;

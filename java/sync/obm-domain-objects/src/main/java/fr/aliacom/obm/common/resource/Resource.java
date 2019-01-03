@@ -31,6 +31,7 @@ package fr.aliacom.obm.common.resource;
 
 import org.obm.sync.dao.EntityId;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class Resource {
@@ -119,7 +120,7 @@ public class Resource {
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(this)
 				.add("id", id)
 				.add("name", name)

@@ -33,6 +33,7 @@ package org.obm.sync.book;
 
 import java.util.Date;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -242,7 +243,7 @@ public class AddressBook {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("name", name)
 			.add("uid", uid)
 			.add("readOnly", readOnly)

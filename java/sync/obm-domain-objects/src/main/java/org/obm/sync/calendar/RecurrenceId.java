@@ -33,6 +33,7 @@ package org.obm.sync.calendar;
 
 import java.io.Serializable;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
@@ -67,7 +68,7 @@ public class RecurrenceId implements Serializable{
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("recurrenceId", recurrenceId)
 			.toString();
 	}

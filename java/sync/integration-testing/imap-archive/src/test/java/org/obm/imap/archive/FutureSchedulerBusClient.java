@@ -38,7 +38,6 @@ import org.obm.annotations.transactional.Transactional;
 import org.obm.imap.archive.scheduling.ArchiveSchedulerBus;
 import org.obm.imap.archive.scheduling.ArchiveSchedulerBus.Events.TaskStatusChanged;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.Queues;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -60,7 +59,7 @@ public class FutureSchedulerBusClient implements ArchiveSchedulerBus.Client {
 			events.put(event);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

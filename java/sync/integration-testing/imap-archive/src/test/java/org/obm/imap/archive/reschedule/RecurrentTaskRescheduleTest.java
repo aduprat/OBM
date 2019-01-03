@@ -32,10 +32,10 @@ package org.obm.imap.archive.reschedule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -134,8 +134,8 @@ public class RecurrentTaskRescheduleTest {
 	@Test
 	public void recurrentTaskShouldBeRescheduledWhenTerminated() throws Exception {
 		ArchiveTreatmentRunId runId = ArchiveTreatmentRunId.from("b3de5c2b-daaa-48ae-9b01-ba390dea47a9");
-		DateTime when = DateTime.parse("2026-11-02T13:37Z");
-		DateTime higherBoundary = DateTime.parse("2026-11-02T23:59Z");
+		ZonedDateTime when = ZonedDateTime.parse("2026-11-02T13:37Z");
+		ZonedDateTime higherBoundary = ZonedDateTime.parse("2026-11-02T23:59Z");
 		
 		DomainConfiguration domainConfiguration = DomainConfiguration.builder()
 			.domain(ObmDomain.builder().uuid(DBData.domainId).name("mydomain.org").build())

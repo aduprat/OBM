@@ -46,14 +46,12 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.fortuna.ical4j.util.TimeZones;
-
 import org.easymock.IMocksControl;
 import org.junit.Before;
 import org.junit.Test;
-import org.obm.DateUtils;
 import org.obm.icalendar.Ical4jHelper;
 import org.obm.icalendar.Ical4jUser;
+import org.obm.push.utils.DateUtils;
 import org.obm.sync.LoggerService;
 import org.obm.sync.calendar.Event;
 import org.obm.sync.calendar.EventExtId;
@@ -67,6 +65,7 @@ import org.obm.sync.utils.DateHelper;
 
 import fr.aliacom.obm.ToolBox;
 import fr.aliacom.obm.common.calendar.ResourceNotFoundException;
+import net.fortuna.ical4j.util.TimeZones;
 
 public class ResourceServletTest {
 

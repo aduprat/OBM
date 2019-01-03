@@ -12,7 +12,6 @@
 	<packaging>jar</packaging>
 	<name>obm-locator</name>
 	<url>http://www.obm.org/</url>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<licenses>
 		<license>
@@ -54,48 +53,47 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>be.bitronix.btm</groupId>
-			<artifactId>btm</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-servlet</artifactId>
 		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
-		<dependency>
+        <dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+        <dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.btm</groupId>
+			<artifactId>btm</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>

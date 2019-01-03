@@ -29,6 +29,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.ldap.client.bean;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -97,7 +98,7 @@ public class NTLMPassword {
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(this)
 				.add("lmHash", lmHash)
 				.add("ntHash", ntHash)

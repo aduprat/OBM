@@ -33,6 +33,7 @@ import java.util.Map;
 
 import org.obm.sync.Right;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -115,7 +116,7 @@ public class ModuleCheckBoxStates {
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(this)
 				.add("module", module)
 				.add("checkBoxStates", checkBoxStates)

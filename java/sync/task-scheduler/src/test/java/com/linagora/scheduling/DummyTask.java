@@ -31,15 +31,13 @@
  * ***** END LICENSE BLOCK ***** */
 package com.linagora.scheduling;
 
-import org.joda.time.Duration;
-
-import com.google.common.base.Throwables;
+import java.time.Duration;
 
 final class DummyTask implements Task {
 	private final Duration duration;
 
 	DummyTask() {
-		this(Duration.standardSeconds(1));
+		this(Duration.ofSeconds(1));
 	}
 	
 	DummyTask(Duration duration) {
@@ -49,9 +47,9 @@ final class DummyTask implements Task {
 	@Override
 	public void run() {
 		try {
-			Thread.sleep(duration.getMillis());
+			Thread.sleep(duration.toMillis());
 		} catch (InterruptedException e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

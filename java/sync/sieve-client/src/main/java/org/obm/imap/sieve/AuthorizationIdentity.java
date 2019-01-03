@@ -29,7 +29,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.imap.sieve;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public class AuthorizationIdentity {
 
@@ -45,7 +45,7 @@ public class AuthorizationIdentity {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("login", this.login)
 				.toString();
 	}

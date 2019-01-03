@@ -52,8 +52,6 @@ import java.util.concurrent.Executor;
 
 import org.obm.servlet.filter.resource.Resource;
 
-import com.google.common.base.Throwables;
-
 public class ConnectionResource implements Resource, Connection {
 	
 	public static ConnectionResource wrap(Connection connection) {
@@ -76,7 +74,7 @@ public class ConnectionResource implements Resource, Connection {
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

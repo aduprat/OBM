@@ -33,10 +33,9 @@ package org.obm.imap.archive.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.obm.imap.archive.beans.ArchiveRecurrence;
@@ -45,7 +44,8 @@ import org.obm.imap.archive.beans.DayOfWeek;
 import org.obm.imap.archive.beans.DayOfYear;
 import org.obm.imap.archive.beans.RepeatKind;
 import org.obm.imap.archive.beans.SchedulingConfiguration;
-import org.obm.sync.date.DateProvider;
+
+import com.linagora.scheduling.DateTimeProvider;
 
 
 public class SchedulingDatesServiceTest {
@@ -54,11 +54,11 @@ public class SchedulingDatesServiceTest {
 	
 	@Before
 	public void setup() {
-		schedulingDatesService = new SchedulingDatesService(new DateProvider() {
+		schedulingDatesService = new SchedulingDatesService(new DateTimeProvider() {
 			
 			@Override
-			public Date getDate() {
-				return DateTime.parse("2014-06-18T16:01:00.000Z").toDate();
+			public ZonedDateTime now() {
+				return ZonedDateTime.parse("2014-06-18T16:01:00.000Z");
 			}
 		});
 	}
@@ -72,8 +72,8 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("22:58"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-06-18T22:58:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-06-18T22:58:00.000Z"));
 	}
 	
 	@Test
@@ -85,8 +85,8 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("16:01"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-06-19T16:01:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-06-19T16:01:00.000Z"));
 	}
 	
 	@Test
@@ -98,8 +98,8 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("12:15"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-06-19T12:15:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-06-19T12:15:00.000Z"));
 	}
 	
 	@Test
@@ -112,8 +112,8 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-06-24T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-06-24T23:59:00.000Z"));
 	}
 	
 	@Test
@@ -126,8 +126,8 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-06-18T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-06-18T23:59:00.000Z"));
 	}
 	
 	@Test
@@ -140,8 +140,8 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-06-21T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-06-21T23:59:00.000Z"));
 	}
 	
 	@Test
@@ -154,8 +154,8 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-07-10T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-07-10T23:59:00.000Z"));
 	}
 	
 	@Test
@@ -168,8 +168,8 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-06-20T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-06-20T23:59:00.000Z"));
 	}
 	
 	@Test
@@ -182,17 +182,17 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-06-30T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-06-30T23:59:00.000Z"));
 	}
 	
 	@Test
 	public void nextTreatmentDateShouldBeEndOfJulyWhenMonthlyRepeatKindAnd30DaysMonth() {
-		SchedulingDatesService schedulingDatesService = new SchedulingDatesService(new DateProvider() {
+		SchedulingDatesService schedulingDatesService = new SchedulingDatesService(new DateTimeProvider() {
 					
 					@Override
-					public Date getDate() {
-						return DateTime.parse("2014-07-02T16:01:00.000Z").toDate();
+					public ZonedDateTime now() {
+						return ZonedDateTime.parse("2014-07-02T16:01:00.000Z");
 					}
 				});
 		
@@ -204,17 +204,17 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-07-31T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-07-31T23:59:00.000Z"));
 	}
 	
 	@Test
 	public void nextTreatmentDateShouldBeEndOfFebruaryWhenMonthlyRepeatKindAnd28DaysMonth() {
-		SchedulingDatesService schedulingDatesService = new SchedulingDatesService(new DateProvider() {
+		SchedulingDatesService schedulingDatesService = new SchedulingDatesService(new DateTimeProvider() {
 					
 					@Override
-					public Date getDate() {
-						return DateTime.parse("2014-02-02T16:01:00.000Z").toDate();
+					public ZonedDateTime now() {
+						return ZonedDateTime.parse("2014-02-02T16:01:00.000Z");
 					}
 				});
 		
@@ -226,17 +226,17 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-02-28T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-02-28T23:59:00.000Z"));
 	}
 	
 	@Test
 	public void nextTreatmentDateShouldBeSameMonthSameDayWhenMonthlyRepeatKindAndLowerTime() {
-		SchedulingDatesService schedulingDatesService = new SchedulingDatesService(new DateProvider() {
+		SchedulingDatesService schedulingDatesService = new SchedulingDatesService(new DateTimeProvider() {
 					
 					@Override
-					public Date getDate() {
-						return DateTime.parse("2014-06-30T16:01:00.000Z").toDate();
+					public ZonedDateTime now() {
+						return ZonedDateTime.parse("2014-06-30T16:01:00.000Z");
 					}
 				});
 		
@@ -248,17 +248,17 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-06-30T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-06-30T23:59:00.000Z"));
 	}
 	
 	@Test
 	public void nextTreatmentDateShouldBeNextMonthWhenMonthlyRepeatKindAndHigherTime() {
-		SchedulingDatesService schedulingDatesService = new SchedulingDatesService(new DateProvider() {
+		SchedulingDatesService schedulingDatesService = new SchedulingDatesService(new DateTimeProvider() {
 					
 					@Override
-					public Date getDate() {
-						return DateTime.parse("2014-06-30T16:01:00.000Z").toDate();
+					public ZonedDateTime now() {
+						return ZonedDateTime.parse("2014-06-30T16:01:00.000Z");
 					}
 				});
 		
@@ -270,8 +270,8 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("10:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-07-31T10:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-07-31T10:59:00.000Z"));
 	}
 	
 	@Test
@@ -284,8 +284,8 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2015-02-10T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2015-02-10T23:59:00.000Z"));
 	}
 	
 	@Test
@@ -298,35 +298,35 @@ public class SchedulingDatesServiceTest {
 				.time(LocalTime.parse("23:59"))
 				.build();
 		
-		DateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
-		assertThat(nextTreatmentDate).isEqualTo(DateTime.parse("2014-07-31T23:59:00.000Z"));
+		ZonedDateTime nextTreatmentDate = schedulingDatesService.nextTreatmentDate(build);
+		assertThat(nextTreatmentDate).isEqualTo(ZonedDateTime.parse("2014-07-31T23:59:00.000Z"));
 	}
 	
 	@Test
 	public void higherBoundaryShouldBePreviousDayWhenDailyRepeatKind() {
-		DateTime treatmentDate = DateTime.parse("2014-06-18T16:01:00.000Z");
-		DateTime higherBoundary = schedulingDatesService.higherBoundary(treatmentDate, RepeatKind.DAILY);
-		assertThat(higherBoundary).isEqualTo(DateTime.parse("2014-06-17T23:59:59.999Z"));
+		ZonedDateTime treatmentDate = ZonedDateTime.parse("2014-06-18T16:01:00.000Z");
+		ZonedDateTime higherBoundary = schedulingDatesService.higherBoundary(treatmentDate, RepeatKind.DAILY);
+		assertThat(higherBoundary).isEqualTo(ZonedDateTime.parse("2014-06-17T23:59:59.999999999Z"));
 	}
 	
 	@Test
 	public void higherBoundaryShouldBePreviousWeekWhenWeeklyRepeatKind() {
-		DateTime treatmentDate = DateTime.parse("2014-06-18T16:01:00.000Z");
-		DateTime higherBoundary = schedulingDatesService.higherBoundary(treatmentDate, RepeatKind.WEEKLY);
-		assertThat(higherBoundary).isEqualTo(DateTime.parse("2014-06-11T23:59:59.999Z"));
+		ZonedDateTime treatmentDate = ZonedDateTime.parse("2014-06-18T16:01:00.000Z");
+		ZonedDateTime higherBoundary = schedulingDatesService.higherBoundary(treatmentDate, RepeatKind.WEEKLY);
+		assertThat(higherBoundary).isEqualTo(ZonedDateTime.parse("2014-06-11T23:59:59.999999999Z"));
 	}
 	
 	@Test
 	public void higherBoundaryShouldBePreviousMonthWhenMonthlyRepeatKind() {
-		DateTime treatmentDate = DateTime.parse("2014-06-18T16:01:00.000Z");
-		DateTime higherBoundary = schedulingDatesService.higherBoundary(treatmentDate, RepeatKind.MONTHLY);
-		assertThat(higherBoundary).isEqualTo(DateTime.parse("2014-05-18T23:59:59.999Z"));
+		ZonedDateTime treatmentDate = ZonedDateTime.parse("2014-06-18T16:01:00.000Z");
+		ZonedDateTime higherBoundary = schedulingDatesService.higherBoundary(treatmentDate, RepeatKind.MONTHLY);
+		assertThat(higherBoundary).isEqualTo(ZonedDateTime.parse("2014-05-18T23:59:59.999999999Z"));
 	}
 	
 	@Test
 	public void higherBoundaryShouldBePreviousYearWhenYearlyRepeatKind() {
-		DateTime treatmentDate = DateTime.parse("2014-06-18T16:01:00.000Z");
-		DateTime higherBoundary = schedulingDatesService.higherBoundary(treatmentDate, RepeatKind.YEARLY);
-		assertThat(higherBoundary).isEqualTo(DateTime.parse("2013-06-18T23:59:59.999Z"));
+		ZonedDateTime treatmentDate = ZonedDateTime.parse("2014-06-18T16:01:00.000Z");
+		ZonedDateTime higherBoundary = schedulingDatesService.higherBoundary(treatmentDate, RepeatKind.YEARLY);
+		assertThat(higherBoundary).isEqualTo(ZonedDateTime.parse("2013-06-18T23:59:59.999999999Z"));
 	}
 }

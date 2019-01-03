@@ -48,7 +48,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.joda.time.Months;
+import org.apache.commons.lang3.time.DateUtils;
 import org.obm.annotations.transactional.Transactional;
 import org.obm.domain.dao.CalendarDao;
 import org.obm.domain.dao.CommitedOperationDao;
@@ -376,7 +376,7 @@ public class CalendarBindingImpl implements ICalendar {
 				return calendarDao.findEventByExtId(token, calendarUser, extId);
 			}
 		} catch (Throwable e) {
-			Throwables.propagateIfInstanceOf(e, NotAllowedException.class);
+			Throwables.throwIfInstanceOf(e, NotAllowedException.class);
 			
 			logger.error(e.getMessage(), e);
 			throw new ServerFault(e.getMessage());
@@ -411,8 +411,8 @@ public class CalendarBindingImpl implements ICalendar {
 
 			return inheritAlertFromOwnerIfNotSet(token.getObmId(), calendarUser.getUid(), toReturn);
 		} catch (Throwable e) {
-			Throwables.propagateIfInstanceOf(e, NotAllowedException.class);
-			Throwables.propagateIfInstanceOf(e, PermissionException.class);
+			Throwables.throwIfInstanceOf(e, NotAllowedException.class);
+			Throwables.throwIfInstanceOf(e, PermissionException.class);
 			
 			logger.error(e.getMessage(), e);
 			throw new ServerFault(e);
@@ -496,7 +496,7 @@ public class CalendarBindingImpl implements ICalendar {
             
 			return after;
 		} catch (Throwable e) {
-			Throwables.propagateIfInstanceOf(e, PermissionException.class);
+			Throwables.throwIfInstanceOf(e, PermissionException.class);
 			logger.error(e.getMessage(), e);
 			throw new ServerFault(e.getMessage());
 		}
@@ -590,6 +590,7 @@ public class CalendarBindingImpl implements ICalendar {
 		return treeMap;
 	}
 	
+	@SuppressWarnings("serial")
 	private static class RecurrenceIdComparator implements Serializable, Comparator<Event> {
 		public int compare(Event first, Event second) {
 			return Ordering.natural().nullsFirst().compare(first.getRecurrenceId(), second.getRecurrenceId());
@@ -886,8 +887,8 @@ public class CalendarBindingImpl implements ICalendar {
 	
 	private SyncRange defaultSyncRange(Date date) {
 		return new SyncRange(
-				new org.joda.time.DateTime(date).plus(Months.SIX).toDate(),
-				new org.joda.time.DateTime(date).minus(Months.THREE).toDate());
+				DateUtils.addMonths(date, 6),
+				DateUtils.addMonths(date, -3));
 	}
 	
 	@Override

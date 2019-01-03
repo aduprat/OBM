@@ -39,6 +39,7 @@ import org.eclipse.jetty.continuation.Continuation;
 import org.eclipse.jetty.continuation.ContinuationSupport;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class QoSContinuationSupportJettyUtils implements QoSContinuationSupport {
@@ -96,7 +97,7 @@ public class QoSContinuationSupportJettyUtils implements QoSContinuationSupport 
 		
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(getClass())
+			return MoreObjects.toStringHelper(getClass())
 					.add("id", id)
 					.toString();
 		}

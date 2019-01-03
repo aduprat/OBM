@@ -40,8 +40,6 @@ import org.obm.configuration.ConfigurationService;
 import org.obm.configuration.Hash;
 import org.obm.configuration.TransactionConfiguration;
 
-import com.google.common.base.Throwables;
-
 public class StaticConfigurationService extends StaticLocatorConfiguration implements ConfigurationService {
 
 	public static class Transaction implements TransactionConfiguration {
@@ -105,9 +103,8 @@ public class StaticConfigurationService extends StaticLocatorConfiguration imple
 		try {
 			return configuration.dataDir.getCanonicalPath();
 		} catch (IOException e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
-		throw new IllegalStateException();
 	}
 
 	@Override

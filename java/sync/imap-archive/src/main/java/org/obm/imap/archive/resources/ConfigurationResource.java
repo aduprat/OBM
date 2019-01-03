@@ -54,7 +54,7 @@ import org.obm.provisioning.dao.exceptions.DaoException;
 import org.obm.provisioning.dao.exceptions.DomainNotFoundException;
 import org.obm.provisioning.dao.exceptions.UserNotFoundException;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import fr.aliacom.obm.common.domain.ObmDomain;
 
@@ -76,7 +76,7 @@ public class ConfigurationResource {
 	@GET
 	public DomainConfigurationDto configuration() throws DaoException {
 		return DomainConfigurationDto.from(
-				Objects.firstNonNull(domainConfigurationDao.get(domain), 
+				MoreObjects.firstNonNull(domainConfigurationDao.get(domain), 
 						DomainConfiguration.DEFAULT_VALUES_BUILDER
 							.domain(domain)
 							.build()));

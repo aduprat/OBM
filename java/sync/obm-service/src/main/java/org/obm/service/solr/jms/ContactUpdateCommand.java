@@ -49,7 +49,6 @@ import org.obm.sync.book.Contact;
 import org.obm.sync.book.InstantMessagingId;
 import org.obm.utils.ObmHelper;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -86,7 +85,7 @@ public class ContactUpdateCommand extends ContactCommand {
 		try {
 			return new SolrDocumentIndexer(getDomain(), getSolrService(), dataToDocument());
 		} catch (Exception e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

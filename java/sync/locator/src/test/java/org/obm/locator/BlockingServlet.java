@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpStatus;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -59,7 +58,7 @@ public class BlockingServlet extends HttpServlet {
 		try {
 			reply = nextResponses.take();
 		} catch (InterruptedException e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 		resp.setStatus(reply.status);
 		resp.getWriter().write(reply.content);

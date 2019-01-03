@@ -35,9 +35,10 @@ package org.obm.domain.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,8 +75,9 @@ public class TrustTokenDaoTest implements H2TestClass {
 
 	@Test
 	public void shouldReturnTokenWhenFound() throws Exception {
+		ZonedDateTime dateTime = ZonedDateTime.of(2014, 6, 5, 13, 36, 0, 0, ZoneId.of(ZoneOffset.UTC.getId()));
 		TrustToken expectedTrustToken = new TrustToken("7f6f35f8-10e1-4d40-8556-1583b6a12d10", 
-				new Timestamp(new DateTime(2014, 6, 5, 13, 36, DateTimeZone.getDefault()).getMillis()));
+				new Timestamp(dateTime.toInstant().toEpochMilli()));
 		assertThat(dao.getTrustToken("user1")).isEqualTo(expectedTrustToken);
 	}
 }

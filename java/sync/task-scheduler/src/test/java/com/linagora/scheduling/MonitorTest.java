@@ -33,11 +33,10 @@ package com.linagora.scheduling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.guava.api.Assertions;
-import org.joda.time.Duration;
-import org.joda.time.Period;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +72,6 @@ public class MonitorTest {
 		assertThat(monitor.all()).isEmpty();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void allShouldReturnScheduledTasks() throws Exception {
 		FutureTestListener<Task> futureListener = new FutureTestListener<>();
@@ -91,7 +89,7 @@ public class MonitorTest {
 	@Test
 	public void allShouldNotReturnCanceledTasks() throws Exception {
 		FutureTestListener<Task> futureListener = new FutureTestListener<>();
-		ScheduledTask<Task> scheduledTask = scheduler.schedule(new DummyTask()).addListener(futureListener).in(Period.days(1));
+		ScheduledTask<Task> scheduledTask = scheduler.schedule(new DummyTask()).addListener(futureListener).in(Duration.ofDays(1));
 		assertThat(scheduledTask.cancel()).isTrue();
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.WAITING);
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.CANCELED);
@@ -101,7 +99,7 @@ public class MonitorTest {
 	@Test
 	public void allShouldNotReturnFailingTasks() throws Exception {
 		FutureTestListener<Task> futureListener = new FutureTestListener<>();
-		scheduler.schedule(new FailingTask(Duration.millis(1))).addListener(futureListener).at(timeProvider.now());
+		scheduler.schedule(new FailingTask(Duration.ofMillis(1))).addListener(futureListener).at(timeProvider.now());
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.WAITING);
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.RUNNING);
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.FAILED);
@@ -111,7 +109,7 @@ public class MonitorTest {
 	@Test
 	public void findByIdShouldFindAScheduledTasks() throws Exception {
 		FutureTestListener<Task> futureListener = new FutureTestListener<>();
-		ScheduledTask<Task> scheduledTask = scheduler.schedule(new DummyTask()).addListener(futureListener).in(Period.days(1));
+		ScheduledTask<Task> scheduledTask = scheduler.schedule(new DummyTask()).addListener(futureListener).in(Duration.ofDays(1));
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.WAITING);
 		assertThat(monitor.findById(scheduledTask.id()).get()).isEqualTo(scheduledTask);
 	}
@@ -141,7 +139,7 @@ public class MonitorTest {
 	@Test
 	public void findByIdShouldNotFindACanceledTasks() throws Exception {
 		FutureTestListener<Task> futureListener = new FutureTestListener<>();
-		ScheduledTask<Task> scheduledTask = scheduler.schedule(new DummyTask()).addListener(futureListener).in(Period.days(1));
+		ScheduledTask<Task> scheduledTask = scheduler.schedule(new DummyTask()).addListener(futureListener).in(Duration.ofDays(1));
 		assertThat(scheduledTask.cancel()).isTrue();
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.WAITING);
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.CANCELED);
@@ -151,7 +149,7 @@ public class MonitorTest {
 	@Test
 	public void findByIdShouldNotFindAFailingTasks() throws Exception {
 		FutureTestListener<Task> futureListener = new FutureTestListener<>();
-		ScheduledTask<Task> scheduledTask = scheduler.schedule(new FailingTask(Duration.millis(1))).addListener(futureListener).at(timeProvider.now());
+		ScheduledTask<Task> scheduledTask = scheduler.schedule(new FailingTask(Duration.ofMillis(1))).addListener(futureListener).at(timeProvider.now());
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.WAITING);
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.RUNNING);
 		assertThat(futureListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.FAILED);
@@ -202,7 +200,7 @@ public class MonitorTest {
 	
 	@Test
 	public void schedulerFailedNotificationShouldBePropagated() throws Exception {
-		scheduler.schedule(new FailingTask(Duration.millis(1))).at(timeProvider.now());
+		scheduler.schedule(new FailingTask(Duration.ofMillis(1))).at(timeProvider.now());
 		assertThat(monitorListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.WAITING);
 		assertThat(monitorListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.RUNNING);
 		assertThat(monitorListener.getNextState(1500, TimeUnit.MILLISECONDS)).isEqualTo(State.FAILED);

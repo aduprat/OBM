@@ -37,7 +37,7 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.obm.DateUtils;
+import org.obm.push.utils.DateUtils;
 import org.obm.sync.calendar.Attendee;
 import org.obm.sync.calendar.ContactAttendee;
 import org.obm.sync.calendar.DeletedEvent;

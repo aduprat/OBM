@@ -32,7 +32,7 @@
 package org.obm.sync.server.mailer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.obm.DateUtils.date;
+import static org.obm.push.utils.DateUtils.date;
 
 import java.io.IOException;
 import java.io.StringWriter;

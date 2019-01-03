@@ -13,7 +13,6 @@
 	<packaging>jar</packaging>
 	<name>opush org.obm.push.utils</name>
 	<url>http://www.obm.org/</url>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<licenses>
 		<license>
@@ -45,12 +44,8 @@
 			<artifactId>commons-codec</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -60,6 +55,10 @@
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.assertj</groupId>

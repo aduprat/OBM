@@ -32,6 +32,8 @@ package org.obm.service.solr;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import fr.aliacom.obm.common.domain.ObmDomain;
 
 public class SolrDocumentIndexer extends SolrRequest {
@@ -49,4 +51,7 @@ public class SolrDocumentIndexer extends SolrRequest {
 		server.commit();
 	}
 
+	@VisibleForTesting SolrInputDocument document() {
+		return document;
+	}
 }

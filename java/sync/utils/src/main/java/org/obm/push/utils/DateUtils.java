@@ -32,14 +32,16 @@
 package org.obm.push.utils;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
 
 import com.google.common.collect.Iterables;
 import com.google.common.primitives.Ints;
@@ -127,11 +129,11 @@ public class DateUtils {
 
 	public static int minutesToSeconds(long minutes) {
 		return Ints.checkedCast( 
-				Duration.standardMinutes(minutes).getStandardSeconds() );
+				Duration.ofMinutes(minutes).getSeconds() );
 	}
 
 	public static long daysToSeconds(long days) {
-		return Duration.standardDays(days).getStandardSeconds();
+		return Duration.ofMinutes(days).getSeconds();
 	}
 
 	public static long yearsToSeconds(long years) {
@@ -147,11 +149,32 @@ public class DateUtils {
 	}
 
 	public static Date date(String dateAsString) {
-		return new DateTime(dateAsString).toDate();
+		if (dateAsString == null) {
+			return new Date();
+		}
+		try {
+			return org.apache.commons.lang3.time.DateUtils.parseDate(dateAsString,
+					"yyyy-MM-dd'T'HH:mm:ss.SSSX",
+					"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+					"yyyy-MM-dd'T'HH:mm:ssX",
+					"yyyy-MM-dd'T'HH:mm:ssZ",
+					"yyyy-MM-dd'T'HH:mm:ss",
+					"yyyy-MM-dd'T'HH:mm",
+					"yyyy-MM-dd'T'HH",
+					"yyyy-MM-dd",
+					"yyyy-MM",
+					"yyyy");
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	public static Date dateUTC(String dateAsString) {
-		return new DateTime(dateAsString, DateTimeZone.UTC).toDate();
+		return dateInZone(dateAsString, ZoneOffset.UTC.getId());
 	}
 
+	public static Date dateInZone(String dateAsString, String tzid) {
+		LocalDateTime local = LocalDateTime.ofInstant(date(dateAsString).toInstant(), ZoneId.of("GMT"));
+		return Date.from(ZonedDateTime.ofLocal(local, ZoneId.of(tzid), null).toInstant());
+	}
 }

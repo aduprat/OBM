@@ -37,6 +37,7 @@ import java.util.Map;
 
 import org.obm.push.mail.bean.MessageSet;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -134,7 +135,7 @@ public class MappedMessageSets {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("origin", origin)
 			.add("destination", destination)
 			.toString();

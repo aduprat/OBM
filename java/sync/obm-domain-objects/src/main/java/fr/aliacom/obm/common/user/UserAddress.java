@@ -37,6 +37,7 @@ import java.util.List;
 
 import org.obm.push.utils.collection.ImmutableFixedSizeList;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class UserAddress {
@@ -177,7 +178,7 @@ public class UserAddress {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("addresses", addressParts)
 				.add("town", town)
 				.add("zipcode", zipCode)

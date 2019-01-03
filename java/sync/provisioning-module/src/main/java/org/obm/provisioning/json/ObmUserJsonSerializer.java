@@ -86,7 +86,7 @@ import org.obm.provisioning.bean.GroupIdentifier;
 import org.obm.provisioning.utils.SerializationUtils;
 import org.obm.sync.host.ObmHost;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
@@ -126,7 +126,7 @@ public class ObmUserJsonSerializer extends JsonSerializer<ObmUser> {
 		jgen.writeStringField(MOBILE.asSpecificationValue(), value.getMobile());
 		writeObjectsField(jgen, FAXES.asSpecificationValue(), value.getFax(), value.getFax2());
 		jgen.writeBooleanField(ARCHIVED.asSpecificationValue(), value.isArchived());
-		jgen.writeStringField(MAIL_QUOTA.asSpecificationValue(), String.valueOf(Objects.firstNonNull(value.getMailQuota(), 0)));
+		jgen.writeStringField(MAIL_QUOTA.asSpecificationValue(), String.valueOf(MoreObjects.firstNonNull(value.getMailQuota(), 0)));
 		jgen.writeStringField(MAIL_SERVER.asSpecificationValue(), getMailHostName(value));
 		jgen.writeObjectField(MAILS.asSpecificationValue(), SerializationUtils.serializeUserEmailAddresses(value.getUserEmails()));
 		jgen.writeObjectField(EFFECTIVEMAILS.asSpecificationValue(), Iterables.toArray(value.expandAllEmailDomainTuples(), String.class));

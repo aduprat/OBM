@@ -34,6 +34,7 @@ import java.util.List;
 import org.obm.servlet.filter.qos.QoSContinuationSupport.QoSContinuation;
 
 import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.FluentIterable;
@@ -140,7 +141,7 @@ public class KeyRequestsInfo<K> {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("key", key)
 			.add("numberOfRunningRequests", numberOfRunningRequests)
 			.add("waitingRequests", FluentIterable.from(continuations).transform(new Function<QoSContinuation, Long>() {

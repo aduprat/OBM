@@ -32,7 +32,8 @@ package org.obm.imap.archive.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,15 +43,15 @@ public class ArchiveScheduledTreatmentTest {
 
 	ObmDomainUuid domainUuid;
 	ArchiveTreatmentRunId runId;
-	DateTime scheduledTime;
-	DateTime higherBoundary;
+	ZonedDateTime scheduledTime;
+	ZonedDateTime higherBoundary;
 
 	@Before
 	public void setUp() {
 		domainUuid = ObmDomainUuid.of("b7e91835-68de-498f-bff8-97d43acf222c");
 		runId = ArchiveTreatmentRunId.from("f393aab2-4a98-4f59-8a25-4b7a8db2b377");
-		scheduledTime = DateTime.parse("2020-10-1T02:00Z");
-		higherBoundary = DateTime.parse("2020-10-8T02:00Z");
+		scheduledTime = ZonedDateTime.parse("2020-10-01T02:00Z");
+		higherBoundary = ZonedDateTime.parse("2020-10-08T02:00Z");
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -118,7 +119,7 @@ public class ArchiveScheduledTreatmentTest {
 
 	@Test
 	public void asRunningShouldBuildWithSameProperty() {
-		DateTime startTime = DateTime.parse("2020-10-4T02:00Z");
+		ZonedDateTime startTime = ZonedDateTime.parse("2020-10-04T02:00Z");
 		ArchiveRunningTreatment testee = ArchiveScheduledTreatment
 				.forDomain(domainUuid)
 				.runId(runId)

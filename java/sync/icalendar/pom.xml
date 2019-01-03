@@ -12,8 +12,6 @@
 
 	<artifactId>icalendar</artifactId>
 	<packaging>jar</packaging>
-	<groupId>com.linagora.obm</groupId>
-	<version>3.2.2-SNAPSHOT</version>
 	<name>icalendar org.obm.icalendar</name>
 	<url>http://www.obm.org/</url>
 

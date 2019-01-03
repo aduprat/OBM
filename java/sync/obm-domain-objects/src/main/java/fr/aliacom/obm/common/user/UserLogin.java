@@ -31,6 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package fr.aliacom.obm.common.user;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -67,7 +68,7 @@ public class UserLogin {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("login", login)
 				.toString();
 	}

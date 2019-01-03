@@ -36,12 +36,12 @@ import static org.obm.imap.archive.DBData.admin;
 import static org.obm.imap.archive.DBData.domain;
 import static org.obm.imap.archive.DBData.domainId;
 
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -143,8 +143,8 @@ public class RestoreOnStartUpTest {
 				.name("mydomain.org")
 				.label("mydomain.org")
 				.build();
-		DateTime expectedScheduledHigherBoundary = DateTime.parse("2026-11-02T01:04Z");
-		DateTime expectedScheduledTime = DateTime.parse("2026-11-02T03:04Z");
+		ZonedDateTime expectedScheduledHigherBoundary = ZonedDateTime.parse("2026-11-02T01:04Z");
+		ZonedDateTime expectedScheduledTime = ZonedDateTime.parse("2026-11-02T03:04Z");
 		DomainConfiguration expectedScheduledDomainConfiguration = DomainConfiguration.builder()
 				.domain(expectedScheduledDomain)
 				.state(ConfigurationState.ENABLE)
@@ -166,9 +166,9 @@ public class RestoreOnStartUpTest {
 				.name("mydomain2.org")
 				.label("mydomain2.org")
 				.build();
-		DateTime expectedFailedHigherBoundary = DateTime.parse("2026-10-02T01:04Z");
-		DateTime expectedFailedScheduleTime = DateTime.parse("2026-11-02T03:04Z");
-		DateTime expectedFailedStartTime = DateTime.parse("2026-10-01T01:01Z");
+		ZonedDateTime expectedFailedHigherBoundary = ZonedDateTime.parse("2026-10-02T01:04Z");
+		ZonedDateTime expectedFailedScheduleTime = ZonedDateTime.parse("2026-11-02T03:04Z");
+		ZonedDateTime expectedFailedStartTime = ZonedDateTime.parse("2026-10-01T01:01Z");
 		DomainConfiguration expectedFailedDomainConfiguration = DomainConfiguration.builder()
 				.domain(expectedFailedDomain)
 				.state(ConfigurationState.ENABLE)

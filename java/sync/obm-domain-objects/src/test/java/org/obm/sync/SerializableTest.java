@@ -31,11 +31,15 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.sync;
 
+import java.sql.Date;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Set;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
+import org.obm.push.utils.DateUtils;
 import org.obm.sync.base.DomainName;
 import org.obm.sync.base.EmailAddress;
 import org.obm.sync.base.EmailLogin;
@@ -98,7 +102,7 @@ public class SerializableTest {
 		event.setCreatorDisplayName("creator");
 		event.setCreatorEmail("creator@email.com");
 		event.setLocation("location");
-		event.setStartDate(new DateTime(2012, Calendar.APRIL, 25, 14, 0).toDate());
+		event.setStartDate(Date.from(ZonedDateTime.of(2012, 3, 25, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
 		event.setDuration(3660);
 		event.setAlert(3);
 		event.setCategory("category");
@@ -109,8 +113,8 @@ public class SerializableTest {
 		event.setOpacity(EventOpacity.TRANSPARENT);
 		event.setMeetingStatus(EventMeetingStatus.IS_A_MEETING);
 		event.setPrivacy(EventPrivacy.CONFIDENTIAL);
-		event.setTimeCreate(new DateTime(2012, Calendar.APRIL, 24, 14, 0).toDate());
-		event.setTimeUpdate(new DateTime(2012, Calendar.APRIL, 24, 18, 0).toDate());
+		event.setTimeCreate(Date.from(ZonedDateTime.of(2012, Calendar.APRIL, 24, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
+		event.setTimeUpdate(Date.from(ZonedDateTime.of(2012, Calendar.APRIL, 24, 18, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
 		event.setTimezoneName("timezone");
 		event.setInternalEvent(false);
 		event.setSequence(2);
@@ -119,7 +123,7 @@ public class SerializableTest {
 		EventRecurrence recurrence = new EventRecurrence();
 		recurrence.setKind(RecurrenceKind.daily);
 		recurrence.setDays(new RecurrenceDays(RecurrenceDay.Sunday));
-		recurrence.setEnd(new DateTime("2012-02-01T14:00:00Z").toDate());
+		recurrence.setEnd(DateUtils.date("2012-02-01T14:00:00Z"));
 		recurrence.setFrequence(1);
 		event.setRecurrence(recurrence);
 		

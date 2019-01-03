@@ -33,7 +33,7 @@ package org.obm.configuration.utils;
 
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
 public class TimeUnitMapper {
@@ -49,7 +49,7 @@ public class TimeUnitMapper {
 
 	public TimeUnit getTimeUnitOrDefault(String timeUnit, TimeUnit defaultUnit) {
 		if (timeUnit != null) {
-			return Objects.firstNonNull(timeUnits.get(timeUnit.toLowerCase()), defaultUnit);
+			return MoreObjects.firstNonNull(timeUnits.get(timeUnit.toLowerCase()), defaultUnit);
 		}
 		return defaultUnit;
 	}

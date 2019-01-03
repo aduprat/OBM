@@ -31,13 +31,12 @@
  * ***** END LICENSE BLOCK ***** */
 package com.linagora.scheduling;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
-
-import org.joda.time.DateTime;
-import org.joda.time.Seconds;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -86,7 +85,7 @@ public class ScheduledTask<T extends Task> implements Delayed {
 	
 	public static class Builder<T extends Task> {
 		
-		private DateTime scheduledTime;
+		private ZonedDateTime scheduledTime;
 		private T task;
 		private ImmutableList.Builder<Listener<T>> listeners;
 
@@ -94,7 +93,7 @@ public class ScheduledTask<T extends Task> implements Delayed {
 			listeners = ImmutableList.<Listener<T>>builder();
 		}
 		
-		public Builder<T> scheduledTime(DateTime scheduledTime) {
+		public Builder<T> scheduledTime(ZonedDateTime scheduledTime) {
 			this.scheduledTime = scheduledTime;
 			return this;
 		}
@@ -123,13 +122,13 @@ public class ScheduledTask<T extends Task> implements Delayed {
 	}
 	
 	private final Id id;
-	private final DateTime scheduledTime;
+	private final ZonedDateTime scheduledTime;
 	private final T task;
 	private final Scheduler<T> scheduler;
 	private final ListenersNotifier<T> listenersNotifier;
 	private State state;
 	
-	protected ScheduledTask(Id id, DateTime scheduledTime, T task, Scheduler<T> scheduler, ListenersNotifier<T> listenersNotifier) {
+	protected ScheduledTask(Id id, ZonedDateTime scheduledTime, T task, Scheduler<T> scheduler, ListenersNotifier<T> listenersNotifier) {
 		this.id = id;
 		this.scheduledTime = scheduledTime;
 		this.task = task;
@@ -160,7 +159,7 @@ public class ScheduledTask<T extends Task> implements Delayed {
 		return id;
 	}
 	
-	public DateTime scheduledTime() {
+	public ZonedDateTime scheduledTime() {
 		return scheduledTime;
 	}
 	
@@ -217,7 +216,7 @@ public class ScheduledTask<T extends Task> implements Delayed {
 	public long getDelay(TimeUnit unit) {
 		return 
 			unit.convert(
-				Seconds.secondsBetween(scheduler.now(), scheduledTime).getSeconds(), 
+				Duration.between(scheduler.now(), scheduledTime).getSeconds(), 
 				TimeUnit.SECONDS);
 	}
 

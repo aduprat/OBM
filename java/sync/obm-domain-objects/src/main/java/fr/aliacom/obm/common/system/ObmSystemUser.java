@@ -29,6 +29,7 @@
  * ***** END LICENSE BLOCK ***** */
 package fr.aliacom.obm.common.system;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -116,7 +117,7 @@ public class ObmSystemUser {
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(this)
 				.add("id", id)
 				.add("login", login)

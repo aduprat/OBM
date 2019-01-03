@@ -70,6 +70,7 @@ public class LdapUtilsTest {
 	private SearchResult searchResult;
 	private Attributes attributes;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
 		control = createControl();
@@ -81,6 +82,7 @@ public class LdapUtilsTest {
 		ldapUtils = new LdapUtils(ctx, "baseDN");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testNamingEnumerationAreClosed() throws NamingException {
 		expect(ctx.search(eq("baseDN"), eq("aFilter"), anyObject(SearchControls.class))).andReturn(namingEnumeration);
@@ -116,6 +118,7 @@ public class LdapUtilsTest {
 		assertThat(results).isEmpty();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void getAttributesShouldReturnEmptyEntryWhenEmtpyAtttributes() throws NamingException {
 		expect(ctx.search(eq("baseDN"), eq("aFilter"), anyObject(SearchControls.class))).andReturn(namingEnumeration);
@@ -139,6 +142,7 @@ public class LdapUtilsTest {
 		assertThat(results.get(0)).isEmpty();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void getAttributesShouldReturnEntryWhenOne() throws NamingException {
 		Attribute attribute = new BasicAttribute("key", "value");
@@ -162,12 +166,13 @@ public class LdapUtilsTest {
 		List<Map<String, List<String>>> results = ldapUtils.getAttributes("aFilter", "aQuery", null);
 		control.verify();
 		
-		LinkedList<Object> expectedValues = Lists.newLinkedList();
+		LinkedList<String> expectedValues = Lists.newLinkedList();
 		expectedValues.add("value");
 		assertThat(results).hasSize(1);
 		assertThat(results.get(0)).contains(MapEntry.entry("key", expectedValues));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void getAttributesShouldReturnSilentlyWhenSizeLimitExceededException() throws NamingException {
 		expect(ctx.search(eq("baseDN"), eq("aFilter"), anyObject(SearchControls.class))).andReturn(namingEnumeration);
@@ -191,6 +196,7 @@ public class LdapUtilsTest {
 		assertThat(results.get(0)).isEmpty();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void getAttributesShouldRespectLimit() throws NamingException {
 		int limit = 1;
@@ -214,7 +220,7 @@ public class LdapUtilsTest {
 		List<Map<String, List<String>>> results = ldapUtils.getAttributes("aFilter", "aQuery", limit, null);
 		control.verify();
 
-		LinkedList<Object> expectedValues = Lists.newLinkedList();
+		LinkedList<String> expectedValues = Lists.newLinkedList();
 		expectedValues.add("value");
 		assertThat(results).hasSize(1);
 		assertThat(results.get(0)).contains(MapEntry.entry("key", expectedValues));

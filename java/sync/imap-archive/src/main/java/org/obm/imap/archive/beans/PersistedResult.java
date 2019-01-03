@@ -31,6 +31,7 @@
 
 package org.obm.imap.archive.beans;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class PersistedResult {
@@ -88,7 +89,7 @@ public class PersistedResult {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("persistedKind", persistedKind)
 			.add("domainConfiguration", domainConfiguration)
 			.toString();

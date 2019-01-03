@@ -37,11 +37,11 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.easymock.IMocksControl;
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -149,7 +149,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();
@@ -192,7 +192,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();
@@ -236,7 +236,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();
@@ -297,7 +297,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();
@@ -359,7 +359,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();
@@ -409,7 +409,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();
@@ -456,7 +456,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();
@@ -502,7 +502,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();
@@ -546,7 +546,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();
@@ -603,7 +603,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();
@@ -658,7 +658,7 @@ public class UserMailboxesProcessorTest {
 		ProcessedTask processedTask = ProcessedTask.builder()
 				.archiveConfiguration(archiveConfiguration)
 				.higherBoundary(HigherBoundary.builder()
-						.higherBoundary(DateTime.parse("2014-07-26T08:46:00.000Z"))
+						.higherBoundary(ZonedDateTime.parse("2014-07-26T08:46:00.000Z"))
 						.build())
 				.previousArchiveTreatment(Optional.<ArchiveTreatment> absent())
 				.build();

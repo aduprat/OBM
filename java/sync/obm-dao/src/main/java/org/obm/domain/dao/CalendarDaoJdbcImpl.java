@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.domain.dao;
 
-import static org.apache.commons.lang.StringUtils.startsWithIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -105,7 +105,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
@@ -1606,7 +1606,7 @@ public class CalendarDaoJdbcImpl implements CalendarDao {
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				EventObmId eventId = new EventObmId(rs.getInt("eventalert_event_id"));
-				int alertDuration = rs.getInt("eventalert_duration");
+				Integer alertDuration = rs.getInt("eventalert_duration");
 				//eventalert_duration is sometimes set to -1 to disable an alert, 
 				//this behaviour does not conform to the rfc but happens in OBM nonetheless
 				if (alertDuration >= 0) {
@@ -2153,7 +2153,7 @@ public class CalendarDaoJdbcImpl implements CalendarDao {
 			Set<EntityId> alreadyAddedAttendees = Sets.newHashSet();
 			
 			for (final Attendee at : listAttendee) {
-				boolean isOrganizer = Objects.firstNonNull(at.isOrganizer(), false);
+				boolean isOrganizer = MoreObjects.firstNonNull(at.isOrganizer(), false);
 				
 				String attendeeEmail = at.getEmail();
 				EntityId userEntity = at.getEntityId();

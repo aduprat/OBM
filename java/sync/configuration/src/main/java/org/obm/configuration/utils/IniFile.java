@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
 public class IniFile {
@@ -117,11 +117,11 @@ public class IniFile {
 	}
 
 	public String getStringValue(String prop, String defaultValue) {
-		return Objects.firstNonNull(getStringValue(prop), defaultValue);
+		return MoreObjects.firstNonNull(getStringValue(prop), defaultValue);
 	}
 
 	public String getIniStringValue(String section, String prop, String defaultValue) {
-		return Objects.firstNonNull(getIniStringValue(section, prop), defaultValue);
+		return MoreObjects.firstNonNull(getIniStringValue(section, prop), defaultValue);
 	}
 
 	public boolean getBooleanValue(String prop) {

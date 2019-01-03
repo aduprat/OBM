@@ -31,9 +31,10 @@
 
 package org.obm.imap.archive.services;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
-import org.joda.time.DateTime;
 import org.obm.imap.archive.beans.ArchiveConfiguration;
 import org.obm.imap.archive.beans.ArchiveStatus;
 import org.obm.imap.archive.beans.ArchiveTreatment;
@@ -48,7 +49,6 @@ import org.slf4j.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -102,7 +102,7 @@ public class ImapArchiveProcessing {
 			logger.info("End of IMAP Archive for domain {}", configuration.getDomain().getName());
 		} catch (Exception e) {
 			logger.error("Error on archive treatment: ", e);
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class ImapArchiveProcessing {
 		return FluentIterable.from(archiveTreatmentDao.findLastTerminated(domainId, Limit.from(1))).first();
 	}
 	
-	@VisibleForTesting HigherBoundary calculateHigherBoundary(DateTime start, RepeatKind repeatKind, Optional<ArchiveTreatment> previousArchiveTreatment, Logger archiveLogger) {
+	@VisibleForTesting HigherBoundary calculateHigherBoundary(ZonedDateTime start, RepeatKind repeatKind, Optional<ArchiveTreatment> previousArchiveTreatment, Logger archiveLogger) {
 		HigherBoundary.Builder builder = HigherBoundary.builder();
 		if (previousArchiveTreatment.isPresent()) {
 			ArchiveTreatment lastArchiveTreatment = previousArchiveTreatment.get();
@@ -127,7 +127,7 @@ public class ImapArchiveProcessing {
 			builder.higherBoundary(schedulingDatesService.higherBoundary(start, repeatKind));
 		}
 		HigherBoundary higherBoundary = builder.build();
-		archiveLogger.debug("HigherBoundary: upto {}", higherBoundary.getHigherBoundary().toString("YYYY-MM-dd"));
+		archiveLogger.debug("HigherBoundary: upto {}", higherBoundary.getHigherBoundary().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")));
 		return higherBoundary;
 	}
 
@@ -142,7 +142,7 @@ public class ImapArchiveProcessing {
 
 		return isSuccess;
 	}
-	@VisibleForTesting boolean continuePrevious(Optional<ArchiveTreatment> previousArchiveTreatment, DateTime higherBoundary) {
+	@VisibleForTesting boolean continuePrevious(Optional<ArchiveTreatment> previousArchiveTreatment, ZonedDateTime higherBoundary) {
 		return previousArchiveTreatment.isPresent() && previousArchiveTreatment.get().getArchiveStatus() != ArchiveStatus.SUCCESS
 				&& previousArchiveTreatment.get().getHigherBoundary().equals(higherBoundary);
 	}

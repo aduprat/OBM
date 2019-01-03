@@ -88,6 +88,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testCreateEvent(EventAlreadyExistException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testCreateEvent(Class<? extends Exception> exceptionClass) throws Exception {
 		Event event = createEvent();
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -103,6 +104,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testRemoveEventByExtId(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testRemoveEventByExtId(Class<? extends Exception> exceptionClass) throws Exception {
 		EventExtId extId = new EventExtId("ExtId");
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -123,6 +125,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testRemoveEventById(EventNotFoundException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testRemoveEventById(Class<? extends Exception> exceptionClass) throws Exception {
 		EventObmId id = new EventObmId(1);
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -138,6 +141,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testModifyEvent(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testModifyEvent(Class<? extends Exception> exceptionClass) throws Exception {
 		Event event = createEvent();
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -153,6 +157,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetSyncInRange(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetSyncInRange(Class<? extends Exception> exceptionClass) throws Exception {
 		Document document = mockErrorDocument(exceptionClass, null);
 		
@@ -167,6 +172,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetSyncWithSortedChanges(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetSyncWithSortedChanges(Class<? extends Exception> exceptionClass) throws Exception {
 		Document document = mockErrorDocument(exceptionClass, null);
 		
@@ -181,6 +187,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetSync(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetSync(Class<? extends Exception> exceptionClass) throws Exception {
 		Document document = mockErrorDocument(exceptionClass, null);
 		
@@ -195,6 +202,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetSyncEventDate(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetSyncEventDate(Class<? extends Exception> exceptionClass) throws Exception {
 		Document document = mockErrorDocument(exceptionClass, null);
 		
@@ -214,6 +222,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetEventFromId(EventNotFoundException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetEventFromId(Class<? extends Exception> exceptionClass) throws Exception {
 		EventObmId id = new EventObmId(1);
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -234,6 +243,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetEventObmIdFromExtId(EventNotFoundException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetEventObmIdFromExtId(Class<? extends Exception> exceptionClass) throws Exception {
 		EventExtId extId = new EventExtId("ExtId");
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -249,6 +259,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetEventTwinKeys(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetEventTwinKeys(Class<? extends Exception> exceptionClass) throws Exception {
 		Event event = createEvent();
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -264,6 +275,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetRefusedKeys(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetRefusedKeys(Class<? extends Exception> exceptionClass) throws Exception {
 		Document document = mockErrorDocument(exceptionClass, null);
 		
@@ -283,6 +295,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetEventFromExtId(EventNotFoundException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetEventFromExtId(Class<? extends Exception> exceptionClass) throws Exception {
 		EventExtId extId = new EventExtId("ExtId");
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -298,6 +311,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetListEventsFromIntervalDate(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetListEventsFromIntervalDate(Class<? extends Exception> exceptionClass) throws Exception {
 		Date start = new Date(123456789), end = new Date(123456780);
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -313,6 +327,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testGetLastUpdate(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testGetLastUpdate(Class<? extends Exception> exceptionClass) throws Exception {
 		Document document = mockErrorDocument(exceptionClass, null);
 		
@@ -327,6 +342,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testIsWritableCalendar(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testIsWritableCalendar(Class<? extends Exception> exceptionClass) throws Exception {
 		Document document = mockErrorDocument(exceptionClass, null);
 		
@@ -341,6 +357,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testChangeParticipationState(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testChangeParticipationState(Class<? extends Exception> exceptionClass) throws Exception {
 		EventExtId extId = new EventExtId("ExtId");
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -356,6 +373,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testChangeParticipationStateRec(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testChangeParticipationStateRec(Class<? extends Exception> exceptionClass) throws Exception {
 		EventExtId extId = new EventExtId("ExtId");
 		RecurrenceId recId = new RecurrenceId("RecId");
@@ -372,6 +390,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		testImportICalendar(NotAllowedException.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void testImportICalendar(Class<? extends Exception> exceptionClass) throws Exception {
 		String ics = "ICS";
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -397,6 +416,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		storeEvent(ServerFault.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void storeEvent(Class<? extends Exception> exceptionClass) throws ServerFault, NotAllowedException {
 		Event event = createEvent();
 		Document document = mockErrorDocument(exceptionClass, null);
@@ -407,6 +427,7 @@ public class AbstractEventSyncClientTest extends AbstractClientTest {
 		client.storeEvent(token, CALENDAR, event, false, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void testPurge(Class<? extends Exception> exceptionClass) throws Exception {
 		Document document = mockErrorDocument(exceptionClass, null);
 		

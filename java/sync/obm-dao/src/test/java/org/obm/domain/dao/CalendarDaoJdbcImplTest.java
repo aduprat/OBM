@@ -39,13 +39,14 @@ import static org.easymock.EasyMock.createControl;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
-import static org.obm.DateUtils.date;
+import static org.obm.push.utils.DateUtils.date;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -54,7 +55,6 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.easymock.IMocksControl;
-import org.joda.time.DateTimeZone;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.obm.configuration.DatabaseConfiguration;
@@ -344,7 +344,7 @@ public class CalendarDaoJdbcImplTest {
 	@Test
 	public void testEventFromCursor() throws Exception {
 		TimeZone beforeDefaultTimeZone = TimeZone.getDefault();
-		TimeZone.setDefault(DateTimeZone.UTC.toTimeZone());
+		TimeZone.setDefault(TimeZone.getTimeZone(ZoneOffset.UTC.getId()));
 		
 		ResultSet resultSet = mocksControl.createMock(ResultSet.class);
 		expect(resultSet.getInt("event_id")).andReturn(12);

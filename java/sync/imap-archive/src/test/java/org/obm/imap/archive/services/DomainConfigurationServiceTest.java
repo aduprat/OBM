@@ -33,9 +33,10 @@ package org.obm.imap.archive.services;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 
+import java.time.LocalTime;
+
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.obm.domain.dao.UserDao;
@@ -43,8 +44,8 @@ import org.obm.imap.archive.beans.ArchiveRecurrence;
 import org.obm.imap.archive.beans.ArchiveTreatmentRunId;
 import org.obm.imap.archive.beans.ConfigurationState;
 import org.obm.imap.archive.beans.DomainConfiguration;
-import org.obm.imap.archive.beans.ScopeUser;
 import org.obm.imap.archive.beans.SchedulingConfiguration;
+import org.obm.imap.archive.beans.ScopeUser;
 import org.obm.imap.archive.dao.DomainConfigurationDao;
 import org.obm.imap.archive.exception.LoginMismatchException;
 import org.obm.imap.archive.scheduling.ArchiveScheduler;

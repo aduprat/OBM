@@ -31,7 +31,6 @@
  * ***** END LICENSE BLOCK ***** */
 package com.linagora.scheduling;
 
-import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.SettableFuture;
 
 class RemotelyControlledTask implements Task {
@@ -67,7 +66,7 @@ class RemotelyControlledTask implements Task {
 		try {
 			terminator.future.get();
 		} catch (Exception e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 	

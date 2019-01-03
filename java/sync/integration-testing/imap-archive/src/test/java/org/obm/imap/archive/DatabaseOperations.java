@@ -31,7 +31,8 @@
 
 package org.obm.imap.archive;
 
-import org.joda.time.DateTime;
+import static org.obm.push.utils.DateUtils.date;
+
 import org.obm.imap.archive.beans.ArchiveStatus;
 import org.obm.imap.archive.beans.ArchiveTreatmentRunId;
 import org.obm.imap.archive.beans.ConfigurationState;
@@ -93,10 +94,10 @@ public class DatabaseOperations {
 			.values(runId.serialize(),
 					domainId.get(),
 					ArchiveStatus.SUCCESS, 
-					DateTime.parse("2014-06-01T00:00:00.000Z").toDate(), 
-					DateTime.parse("2014-06-01T00:01:00.000Z").toDate(), 
-					DateTime.parse("2014-06-01T00:02:00.000Z").toDate(), 
-					DateTime.parse("2014-06-01T00:03:00.000Z").toDate(),
+					date("2014-06-01T00:00:00.000Z"), 
+					date("2014-06-01T00:01:00.000Z"), 
+					date("2014-06-01T00:02:00.000Z"), 
+					date("2014-06-01T00:03:00.000Z"),
 					true)
 			.build();
 	}

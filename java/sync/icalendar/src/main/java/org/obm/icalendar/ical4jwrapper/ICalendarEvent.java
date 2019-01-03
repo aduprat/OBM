@@ -32,8 +32,14 @@
 package org.obm.icalendar.ical4jwrapper;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Date;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
@@ -54,13 +60,6 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Trigger;
 import net.fortuna.ical4j.model.property.Uid;
-
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 
 
 public class ICalendarEvent {
@@ -164,7 +163,7 @@ public class ICalendarEvent {
 
 	private long alarmFromRelatedDateTime(Trigger trigger) {
 		Date relatedDate = isRelatedEndDate(trigger) ? endDate() : startDate();
-		return alarmFromStartDateToDate(trigger.getDuration().getTime(relatedDate));
+		return alarmFromStartDateToDate(Date.from(relatedDate.toInstant().plus(trigger.getDuration())));
 	}
 
 	private boolean isRelatedEndDate(Trigger trigger) {
@@ -176,10 +175,8 @@ public class ICalendarEvent {
 	}
 
 	private long alarmFromStartDateToDate(Date toDate) {
-		return new Duration(
-				new DateTime(startDate()),
-				new DateTime(toDate))
-			.getStandardSeconds();
+		return Duration.between(startDate().toInstant(), toDate.toInstant())
+			.get(ChronoUnit.SECONDS);
 	}
 	
 	private VAlarm firstVAlarm(VEvent vEvent) {

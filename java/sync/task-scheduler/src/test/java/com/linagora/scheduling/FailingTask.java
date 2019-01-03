@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package com.linagora.scheduling;
 
-import org.joda.time.Duration;
+import java.time.Duration;
 
 final class FailingTask implements Task {
 	private final Duration duration;
@@ -43,7 +43,7 @@ final class FailingTask implements Task {
 	@Override
 	public void run() {
 		try {
-			Thread.sleep(duration.getMillis());
+			Thread.sleep(duration.toMillis());
 		} catch (InterruptedException e) {
 		}
 		throw new RuntimeException("failing task message");

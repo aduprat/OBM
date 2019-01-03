@@ -43,7 +43,7 @@ import org.apache.http.client.fluent.Async;
 import org.apache.http.client.fluent.Request;
 import org.obm.push.utils.jvm.VMArgumentsUtils;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 
 public class AsyncServletRequestUtils {
@@ -85,7 +85,7 @@ public class AsyncServletRequestUtils {
 	}
 
 	private int getTimeout() {
-		return Objects.firstNonNull(VMArgumentsUtils.integerArgumentValue(QOS_TIMEOUT), DEFAULT_TIMEOUT);
+		return MoreObjects.firstNonNull(VMArgumentsUtils.integerArgumentValue(QOS_TIMEOUT), DEFAULT_TIMEOUT);
 	}
 
 	private TimeUnit getTimeUnit() {

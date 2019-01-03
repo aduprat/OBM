@@ -31,8 +31,9 @@
 
 package org.obm.imap.archive.beans;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -43,11 +44,11 @@ public class HigherBoundary {
 	}
 	
 	public static class Builder {
-		private DateTime higherBoundary;
+		private ZonedDateTime higherBoundary;
 		
 		private Builder() {}
 		
-		public Builder higherBoundary(DateTime higherBoundary) {
+		public Builder higherBoundary(ZonedDateTime higherBoundary) {
 			Preconditions.checkNotNull(higherBoundary);
 			this.higherBoundary = higherBoundary;
 			return this;
@@ -59,13 +60,13 @@ public class HigherBoundary {
 		}
 	}
 	
-	private final DateTime higherBoundary;
+	private final ZonedDateTime higherBoundary;
 
-	private HigherBoundary(DateTime higherBoundary) {
+	private HigherBoundary(ZonedDateTime higherBoundary) {
 		this.higherBoundary = higherBoundary;
 	}
 
-	public DateTime getHigherBoundary() {
+	public ZonedDateTime getHigherBoundary() {
 		return higherBoundary;
 	}
 
@@ -85,7 +86,7 @@ public class HigherBoundary {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("higherBoundary", higherBoundary)
 			.toString();
 	}

@@ -51,8 +51,8 @@ import com.google.inject.Provider;
 
 import fr.aliacom.obm.common.domain.ObmDomain;
 import fr.aliacom.obm.common.user.ObmUser;
-import fr.aliacom.obm.common.user.UserLogin;
 import fr.aliacom.obm.common.user.UserIdentity;
+import fr.aliacom.obm.common.user.UserLogin;
 
 @RunWith(GuiceRunner.class)
 public class LdapManagerImplTest {
@@ -64,6 +64,7 @@ public class LdapManagerImplTest {
 		control = createControl();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testCreate() {
 		Connection mockConnection = control.createMock(Connection.class);
@@ -93,6 +94,7 @@ public class LdapManagerImplTest {
 		control.verify();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testDelete() {
 		Connection mockConnection = control.createMock(Connection.class);

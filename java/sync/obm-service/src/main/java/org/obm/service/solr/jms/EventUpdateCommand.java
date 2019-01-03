@@ -48,7 +48,6 @@ import org.obm.utils.ObmHelper;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -89,7 +88,7 @@ public class EventUpdateCommand extends EventCommand {
 		try {
 			return new SolrDocumentIndexer(getDomain(), getSolrService(), dataToDocument());
 		} catch (Exception e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

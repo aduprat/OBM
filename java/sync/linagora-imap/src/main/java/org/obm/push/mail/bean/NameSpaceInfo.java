@@ -33,7 +33,7 @@ package org.obm.push.mail.bean;
 
 import java.util.List;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 
 public class NameSpaceInfo {
@@ -87,7 +87,7 @@ public class NameSpaceInfo {
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).
+		return MoreObjects.toStringHelper(this).
 			add("personal", personal).
 			add("otherUsers", otherUsers).
 			add("mailShares", mailShares).toString();

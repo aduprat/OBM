@@ -30,24 +30,24 @@
 
 package org.obm.imap.archive.scheduling;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 import com.linagora.scheduling.DateTimeProvider;
 
 public class TestDateTimeProvider implements DateTimeProvider {
 	
-	private DateTime current;
+	private ZonedDateTime current;
 
-	public TestDateTimeProvider(DateTime start) {
+	public TestDateTimeProvider(ZonedDateTime start) {
 		this.current = start;
 	}
 	
-	public void setCurrent(DateTime current) {
+	public void setCurrent(ZonedDateTime current) {
 		this.current = current;
 	}
 	
 	@Override
-	public DateTime now() {
+	public ZonedDateTime now() {
 		return current;
 	}
 }

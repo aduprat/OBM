@@ -111,7 +111,7 @@ public class UIDFetchPartCommandTest {
 		UIDFetchPartCommand command = new UIDFetchPartCommand(12, "part");
 		command.handleResponses(ImmutableList.of(response));
 		
-		assertThat(command.getReceivedData()).hasContentEqualTo(expectedStream);
+		assertThat(command.getReceivedData()).hasSameContentAs(expectedStream);
 	}
 	
 	@Test
@@ -145,6 +145,6 @@ public class UIDFetchPartCommandTest {
 		UIDFetchPartCommand command = new UIDFetchPartCommand(12, "part");
 		command.handleResponses(ImmutableList.of(response));
 		
-		assertThat(command.getReceivedData()).hasContentEqualTo(expectedStream);
+		assertThat(command.getReceivedData()).hasSameContentAs(expectedStream);
 	}
 }

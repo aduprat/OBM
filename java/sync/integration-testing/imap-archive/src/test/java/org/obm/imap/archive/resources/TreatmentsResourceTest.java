@@ -51,7 +51,6 @@ import javax.mail.internet.MimeMessage;
 import javax.ws.rs.core.Response.Status;
 
 import org.hamcrest.Matchers;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -75,6 +74,7 @@ import org.obm.imap.archive.beans.DayOfWeek;
 import org.obm.imap.archive.beans.DayOfYear;
 import org.obm.imap.archive.beans.RepeatKind;
 import org.obm.imap.archive.dto.DomainConfigurationDto;
+import org.obm.push.utils.DateUtils;
 import org.obm.server.WebServer;
 
 import com.github.restdriver.clientdriver.ClientDriverRule;
@@ -207,7 +207,7 @@ public class TreatmentsResourceTest {
 			.body(domainConfigurationDto).
 		expect()
 			.contentType(ContentType.JSON)
-			.body("nextTreatmentDate", equalTo("2014-06-19T00:00:00.000Z"))
+			.body("nextTreatmentDate", equalTo("2014-06-19T00:00:00.000+0000"))
 			.statusCode(Status.OK.getStatusCode()).
 		when()
 			.post("/imap-archive/service/v1/domains/" + domainId.get() + "/treatments/next");
@@ -552,7 +552,7 @@ public class TreatmentsResourceTest {
 		mimeMessage.setSubject("subject");
 		mimeMessage.setFrom(new InternetAddress("user/usera@mydomain.org"));
 		mimeMessage.setText("msg");
-		mailbox.appendMessage(mimeMessage, new Flags(), DateTime.parse("2014-05-19T00:00:00.000Z").toDate());
+		mailbox.appendMessage(mimeMessage, new Flags(), DateUtils.date("2014-05-19T00:00:00.000+0000"));
 
 		server.start();
 		

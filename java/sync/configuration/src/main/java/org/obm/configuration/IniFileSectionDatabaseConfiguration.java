@@ -31,6 +31,7 @@ package org.obm.configuration;
 
 import org.obm.configuration.utils.IniFile;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class IniFileSectionDatabaseConfiguration implements DatabaseConfiguration {
@@ -140,7 +141,7 @@ public class IniFileSectionDatabaseConfiguration implements DatabaseConfiguratio
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(getClass())
 				.add("host", getDatabaseHost())
 				.add("port", getDatabasePort())

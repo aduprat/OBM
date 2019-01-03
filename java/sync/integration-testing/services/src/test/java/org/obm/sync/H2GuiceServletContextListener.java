@@ -43,7 +43,6 @@ import org.obm.dbcp.DatabaseConnectionProvider;
 import org.obm.utils.DBUtils;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
 
@@ -77,7 +76,7 @@ public class H2GuiceServletContextListener extends GuiceServletContextListener {
 				ps.close();
 			}
 		} catch (Exception e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		} finally {
 			DBUtils.cleanup(null, ps, null); // Cannot close the connection as this will kill the DB
 		}

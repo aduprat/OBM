@@ -39,6 +39,7 @@ import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,6 +58,57 @@ import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import org.obm.icalendar.ical4jwrapper.EventDate;
+import org.obm.sync.auth.AccessToken;
+import org.obm.sync.calendar.Attendee;
+import org.obm.sync.calendar.CalendarUserType;
+import org.obm.sync.calendar.Event;
+import org.obm.sync.calendar.EventExtId;
+import org.obm.sync.calendar.EventExtId.Factory;
+import org.obm.sync.calendar.EventOpacity;
+import org.obm.sync.calendar.EventPrivacy;
+import org.obm.sync.calendar.EventRecurrence;
+import org.obm.sync.calendar.EventType;
+import org.obm.sync.calendar.FreeBusy;
+import org.obm.sync.calendar.FreeBusyInterval;
+import org.obm.sync.calendar.FreeBusyRequest;
+import org.obm.sync.calendar.Participation;
+import org.obm.sync.calendar.ParticipationRole;
+import org.obm.sync.calendar.RecurrenceDay;
+import org.obm.sync.calendar.RecurrenceDays;
+import org.obm.sync.calendar.RecurrenceKind;
+import org.obm.sync.date.DateProvider;
+import org.obm.sync.exception.IllegalRecurrenceKindException;
+import org.obm.sync.services.AttendeeService;
+import org.obm.sync.utils.RecurrenceHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+import fr.aliacom.obm.common.domain.ObmDomain;
+import fr.aliacom.obm.common.domain.ObmDomainUuid;
+import fr.aliacom.obm.common.resource.Resource;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.data.ParserException;
@@ -64,18 +116,19 @@ import net.fortuna.ical4j.data.UnfoldingReader;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Parameter;
+import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyFactoryImpl;
+import net.fortuna.ical4j.model.PropertyFactory;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.Recur.Frequency;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
-import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
@@ -119,63 +172,11 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Trigger;
 import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.UtcProperty;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.model.property.XProperty;
 import net.fortuna.ical4j.util.TimeZones;
-
-import org.apache.commons.lang.StringUtils;
-import org.obm.icalendar.ical4jwrapper.EventDate;
-import org.obm.sync.auth.AccessToken;
-import org.obm.sync.calendar.Attendee;
-import org.obm.sync.calendar.CalendarUserType;
-import org.obm.sync.calendar.Event;
-import org.obm.sync.calendar.EventExtId;
-import org.obm.sync.calendar.EventExtId.Factory;
-import org.obm.sync.calendar.EventOpacity;
-import org.obm.sync.calendar.EventPrivacy;
-import org.obm.sync.calendar.EventRecurrence;
-import org.obm.sync.calendar.EventType;
-import org.obm.sync.calendar.FreeBusy;
-import org.obm.sync.calendar.FreeBusyInterval;
-import org.obm.sync.calendar.FreeBusyRequest;
-import org.obm.sync.calendar.Participation;
-import org.obm.sync.calendar.ParticipationRole;
-import org.obm.sync.calendar.RecurrenceDay;
-import org.obm.sync.calendar.RecurrenceDays;
-import org.obm.sync.calendar.RecurrenceKind;
-import org.obm.sync.date.DateProvider;
-import org.obm.sync.exception.IllegalRecurrenceKindException;
-import org.obm.sync.services.AttendeeService;
-import org.obm.sync.utils.RecurrenceHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import fr.aliacom.obm.common.domain.ObmDomain;
-import fr.aliacom.obm.common.domain.ObmDomainUuid;
-import fr.aliacom.obm.common.resource.Resource;
+import net.fortuna.ical4j.validate.ValidationException;
 
 @Singleton
 public class Ical4jHelper implements RecurrenceHelper {
@@ -195,10 +196,10 @@ public class Ical4jHelper implements RecurrenceHelper {
 			.put(RecurrenceDay.Thursday, WeekDay.TH).put(RecurrenceDay.Friday, WeekDay.FR)
 			.put(RecurrenceDay.Saturday, WeekDay.SA).build();
 	private static final BiMap<WeekDay, RecurrenceDay> WEEK_DAY_TO_RECURRENCE_DAY = RECURRENCE_DAY_TO_WEEK_DAY.inverse();
-	private static final Map<RecurrenceKind, String> RECURRENCEKIND_TO_RECUR = new ImmutableMap.Builder<RecurrenceKind, String>()
-			.put(RecurrenceKind.daily, Recur.DAILY).put(RecurrenceKind.weekly, Recur.WEEKLY)
-			.put(RecurrenceKind.monthlybydate, Recur.MONTHLY).put(RecurrenceKind.monthlybyday, Recur.MONTHLY)
-			.put(RecurrenceKind.yearly, Recur.YEARLY).put(RecurrenceKind.yearlybyday, Recur.YEARLY).build();
+	private static final Map<RecurrenceKind, Frequency> RECURRENCEKIND_TO_RECUR = new ImmutableMap.Builder<RecurrenceKind, Frequency>()
+			.put(RecurrenceKind.daily, Frequency.DAILY).put(RecurrenceKind.weekly, Frequency.WEEKLY)
+			.put(RecurrenceKind.monthlybydate, Frequency.MONTHLY).put(RecurrenceKind.monthlybyday, Frequency.MONTHLY)
+			.put(RecurrenceKind.yearly, Frequency.YEARLY).put(RecurrenceKind.yearlybyday, Frequency.YEARLY).build();
 	
 	private static final BiMap<EventPrivacy, Clazz> PRIVACY_TO_CLASSIFICATION = new ImmutableBiMap.Builder<EventPrivacy, Clazz>()
 			.put(EventPrivacy.PUBLIC, Clazz.PUBLIC)
@@ -283,7 +284,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 
 	private VEvent buildIcsInvitationVEventDefaultValue(Calendar calendar, Event event, boolean dtStartWithTimeZone) {
 		VEvent vEvent = new VEvent();
-		PropertyList prop = vEvent.getProperties();
+		PropertyList<Property> prop = vEvent.getProperties();
 		appendDtstamp(event, vEvent);
 		appendCreated(prop, event);
 		appendLastModified(prop, event);
@@ -312,7 +313,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 	
 	private VEvent buildIcsInvitationVEvent(Calendar calendar, Ical4jUser iCal4jUser, Event event, AccessToken token, boolean dtStartWithTimeZone) {
 		VEvent vEvent = buildIcsInvitationVEventDefaultValue(calendar, event, dtStartWithTimeZone);
-		PropertyList prop = vEvent.getProperties();
+		PropertyList<Property> prop = vEvent.getProperties();
 		appendUidToICS(prop, event, null);
 		appendXObmDomainProperties(iCal4jUser, prop);
 		appendXObmOrigin(prop, token);
@@ -325,7 +326,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 		Calendar calendar = builder.build(new StringReader(ics));
 		FreeBusyRequest freeBusy = new FreeBusyRequest();
 		if (calendar != null) {
-			ComponentList comps = getComponents(calendar, Component.VFREEBUSY);
+			ComponentList<?> comps = getComponents(calendar, Component.VFREEBUSY);
 			if (comps.size() > 0) {
 				VFreeBusy vFreeBusy = (VFreeBusy) comps.get(0);
 				freeBusy = getFreeBusy(vFreeBusy, domain, ownerId);
@@ -373,7 +374,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 	
 	private Collection<Event> getTodos(Ical4jUser ical4jUser, Calendar calendar, Integer ownerId, Cache<String, Optional<Attendee>> cache) {
 		List<Event> todos = Lists.newArrayList();
-		ComponentList comps = getComponents(calendar, Component.VTODO);
+		ComponentList<?> comps = getComponents(calendar, Component.VTODO);
 		for (Object obj: comps) {
 			VToDo vTodo = (VToDo) obj;
 			Event event = convertVTodoToEvent(ical4jUser, vTodo, ownerId, cache);
@@ -385,7 +386,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 	private Collection<Event> getEvents(Calendar calendar, Ical4jUser ical4jUser, Integer ownerId, Cache<String, Optional<Attendee>> cache) {
 		Map<EventExtId, Event> mapEvents = Maps.newHashMap();
 		Multimap<EventExtId, Event> mapExceptionEvents = HashMultimap.create();
-		ComponentList comps = getComponents(calendar, Component.VEVENT);
+		ComponentList<?> comps = getComponents(calendar, Component.VEVENT);
 		for (Object obj: comps) {
 			VEvent vEvent = (VEvent) obj;
 			Event event = convertVEventToEvent(ical4jUser, vEvent, ownerId, cache);
@@ -597,13 +598,20 @@ public class Ical4jHelper implements RecurrenceHelper {
 			return false;
 		}
 
-		Dur dur = duration.getDuration();
-		boolean isAllDay = dur.getDays() > 0
-				&& dur.getWeeks() == 0
-				&& dur.getHours() == 0
-				&& dur.getMinutes() == 0
-				&& dur.getSeconds() == 0;
-		return isAllDay;
+		TemporalAmount temporalAmount = duration.getDuration();
+		if (temporalAmount instanceof java.time.Period) {
+			java.time.Period period = (java.time.Period) temporalAmount;
+			return period.getMonths() == 0
+				&& period.getYears() == 0
+				&& period.getDays() < 7;
+		}
+		java.time.Duration dur = (java.time.Duration) temporalAmount;
+		long days = dur.toDays();
+		if (days >= 7) {
+			return false;
+		}
+		return java.time.Duration.ofDays(days)
+			.equals(dur);
 	}
 
 	private void appendDuration(Event event, DtStart startDate,
@@ -656,7 +664,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 				event.setOwnerEmail(organizer.getValue().substring(
 						mailToIndex + MAILTO.length()));
 				
-				if (StringUtils.isEmpty(event.getOwner())) {
+				if (Strings.isNullOrEmpty(event.getOwner())) {
 					event.setOwner(organizer.getValue().substring(
 							mailToIndex + MAILTO.length()));
 				}
@@ -666,7 +674,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 
 	private void appendPrivacy(Event event, Clazz classification) {
 		EventPrivacy eventPrivacy = CLASSIFICATION_TO_PRIVACY.get(classification);
-		event.setPrivacy(Objects.firstNonNull(eventPrivacy, EventPrivacy.PUBLIC));
+		event.setPrivacy(MoreObjects.firstNonNull(eventPrivacy, EventPrivacy.PUBLIC));
 	}
 
 	private void appendUid(Event event, Uid uid) {
@@ -752,7 +760,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 
 	private VEvent getVEvent(Calendar calendar, Ical4jUser iCal4jUser, Event event, EventExtId parentExtID, Event parent, Attendee replyAttendee, Method method, AccessToken token, boolean dtStartWithTimeZone) {
 		VEvent vEvent = new VEvent();
-		PropertyList prop = vEvent.getProperties();
+		PropertyList<Property> prop = vEvent.getProperties();
 
 		if (Method.REPLY.equals(method)) {
 			appendDtstamp(dateProvider.getDate(), vEvent);
@@ -805,7 +813,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 			return;
 		}
 		
-		appendDtstamp(Objects.firstNonNull(eventTimeUpdate, eventTimeCreate), vEvent);
+		appendDtstamp(MoreObjects.firstNonNull(eventTimeUpdate, eventTimeCreate), vEvent);
 	}
 	
 	private void appendDtstamp(Date time, VEvent vEvent) {
@@ -826,7 +834,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 
 	private VToDo getVTodo(Event event, EventExtId parentExtID, Ical4jUser iCal4jUser, Event pere) {
 		VToDo vTodo = new VToDo();
-		PropertyList prop = vTodo.getProperties();
+		PropertyList<Property> prop = vTodo.getProperties();
 
 		appendUidToICS(prop, event, parentExtID);
 		appendCreated(prop, event);
@@ -857,23 +865,54 @@ public class Ical4jHelper implements RecurrenceHelper {
 		return vTodo;
 	}
 
-	private void appendDtStartToICS(PropertyList prop, Event event) {
+	private void appendDtStartToICS(PropertyList<Property> prop, Event event) {
 			prop.add(getDtStart(event.getStartDate()));
 	}
 
-	private void appendXMozLastAck(PropertyList prop) {
+	private void appendXMozLastAck(PropertyList<Property> prop) {
 		java.util.Calendar cal = java.util.Calendar.getInstance(TimeZone
 				.getTimeZone("GMT"));
 		cal.setTimeInMillis(System.currentTimeMillis());
-		DateProperty p = new DateProperty("X-MO-LASTACK",
-				PropertyFactoryImpl.getInstance()) {
-					private static final long serialVersionUID = -2237202839701797737L;
-		};
-		p.setDate(new DateTime(cal.getTime()));
+		XMozLastAck p = new XMozLastAck();
+		DateTime dateTime = new DateTime(cal.getTime());
+		dateTime.setUtc(true);
+		p.setDate(dateTime);
 		prop.add(p);
 	}
 	
-	private void appendXObmDomainProperties(Ical4jUser iCal4jUser, PropertyList prop) {
+	private static class XMozLastAck extends UtcProperty {
+
+		private static final String X_MOZ_LASTACK = "X-MO-LASTACK";
+		private static final long serialVersionUID = -3843759478796584984L;
+		
+		public XMozLastAck() {
+			super(X_MOZ_LASTACK, new Factory());
+		}
+
+		public XMozLastAck(ParameterList aList, String aValue) throws ParseException {
+			super(X_MOZ_LASTACK, aList, new Factory());
+			setValue(aValue);
+		  }
+
+		public static class Factory extends Content.Factory implements PropertyFactory<Property> {
+			private static final long serialVersionUID = 1L;
+
+			public Factory() {
+				super(X_MOZ_LASTACK);
+			}
+
+			public Property createProperty(final ParameterList parameters, final String value)
+					throws IOException, URISyntaxException, ParseException {
+				return new XMozLastAck(parameters, value);
+			}
+
+			public Property createProperty() {
+				return new XMozLastAck();
+			}
+		}
+	}
+	
+	private void appendXObmDomainProperties(Ical4jUser iCal4jUser, PropertyList<Property> prop) {
 		ObmDomain obmDomain = iCal4jUser.getObmDomain();
 		XProperty domainProp = new XProperty(X_OBM_DOMAIN, obmDomain.getName());
 		XProperty uuidDomainProp = new XProperty(X_OBM_DOMAIN_UUID, obmDomain.getUuid().get());	
@@ -881,12 +920,12 @@ public class Ical4jHelper implements RecurrenceHelper {
 		prop.add(uuidDomainProp);
 	}
 
-	private void appendXObmOrigin(PropertyList prop, AccessToken token) {
+	private void appendXObmOrigin(PropertyList<Property> prop, AccessToken token) {
 		XProperty p = new XProperty(XOBMORIGIN, token.getOrigin());
 		prop.add(p);
 	}
 
-	private void appendStatusToICS(PropertyList prop, Event event, Ical4jUser iCal4jUser) {
+	private void appendStatusToICS(PropertyList<Property> prop, Event event, Ical4jUser iCal4jUser) {
 		for (Attendee att : event.getAttendees()) {
 			if (att.getEmail().equals(iCal4jUser.getEmail())) {
 				if (Participation.needsAction().equals(att.getParticipation())) {
@@ -905,7 +944,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 		}
 	}
 
-	private void appendPercentCompleteToICS(PropertyList prop, Event event, Ical4jUser iCal4jUser) {
+	private void appendPercentCompleteToICS(PropertyList<Property> prop, Event event, Ical4jUser iCal4jUser) {
 		for (Attendee att : event.getAttendees()) {
 			if (att.getEmail().equals(iCal4jUser.getEmail())) {
 				prop.add(new PercentComplete(att.getPercent()));
@@ -914,7 +953,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 
 	}
 
-	private void appendDuedToICS(PropertyList prop, Event event) {
+	private void appendDuedToICS(PropertyList<Property> prop, Event event) {
 		if (event.getDuration() != 0) {
 			Due dtEnd = getDue(event.getStartDate(), event.getDuration());
 			if (dtEnd != null) {
@@ -923,27 +962,27 @@ public class Ical4jHelper implements RecurrenceHelper {
 		}
 	}
 
-	private void appendRecurenceIdToICS(PropertyList prop, Event event) {
+	private void appendRecurenceIdToICS(PropertyList<Property> prop, Event event) {
 		if (event.getRecurrenceId() != null) {
 			prop.add(getRecurrenceId(event));
 		}
 	}
 
-	private void appendVAlarmToICS(ComponentList prop, Event event) {
+	private void appendVAlarmToICS(ComponentList<VAlarm> prop, Event event) {
 		VAlarm vAlarm = getVAlarm(event.getAlert());
 		if (vAlarm != null) {
 			prop.add(vAlarm);
 		}
 	}
 
-	private void appendExDateToICS(PropertyList prop, Event event) {
+	private void appendExDateToICS(PropertyList<Property> prop, Event event) {
 		ExDate exDate = getExDate(event);
 		if (exDate != null) {
 			prop.add(exDate);
 		}
 	}
 
-	private void appendRRuleToICS(PropertyList prop, Event event) {
+	private void appendRRuleToICS(PropertyList<Property> prop, Event event) {
 		if (event.getRecurrenceId() == null) {
 			RRule rrule = getRRule(event);
 			if (rrule != null) {
@@ -952,11 +991,11 @@ public class Ical4jHelper implements RecurrenceHelper {
 		}
 	}
 
-	private void appendSummaryToICS(PropertyList prop, Event event) {
+	private void appendSummaryToICS(PropertyList<Property> prop, Event event) {
 		prop.add(new Summary(event.getTitle()));
 	}
 
-	private void appendReplyCommentToICS(PropertyList prop, Attendee attendee) {
+	private void appendReplyCommentToICS(PropertyList<Property> prop, Attendee attendee) {
 		Participation status = attendee.getParticipation();
 
 		if (status.hasDefinedComment()) {
@@ -965,11 +1004,11 @@ public class Ical4jHelper implements RecurrenceHelper {
 		}
 	}
 
-	private void appendPrivacyToICS(PropertyList prop, Event event) {
+	private void appendPrivacyToICS(PropertyList<Property> prop, Event event) {
 		prop.add(getClazz(event.getPrivacy()));
 	}
 
-	private void appendPriorityToICS(PropertyList prop, Event event) {
+	private void appendPriorityToICS(PropertyList<Property> prop, Event event) {
 		int priority = 5;
 		if (event.getPriority() != null) {
 			if (event.getPriority() == 1) {
@@ -983,7 +1022,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 		prop.add(new Priority(priority));
 	}
 
-	private void appendOrganizerToICS(PropertyList prop, Event event) {
+	private void appendOrganizerToICS(PropertyList<Property> prop, Event event) {
 		final Attendee organizer = event.findOrganizer();
 		if (organizer != null) {
 			prop.add(getOrganizer(organizer.getDisplayName(), organizer.getEmail()));	
@@ -992,24 +1031,24 @@ public class Ical4jHelper implements RecurrenceHelper {
 		}
 	}
 
-	private void appendTranspToICS(PropertyList prop, Event event) {
+	private void appendTranspToICS(PropertyList<Property> prop, Event event) {
 		prop.add(getTransp(event.getOpacity()));
 	}
 
-	private void appendLocationToICS(PropertyList prop, Event event) {
+	private void appendLocationToICS(PropertyList<Property> prop, Event event) {
 		if (!isEmpty(event.getLocation())) {
 			prop.add(new Location(event.getLocation()));
 		}
 	}
 
-	private void appendDescriptionToICS(PropertyList prop, Event event) {
+	private void appendDescriptionToICS(PropertyList<Property> prop, Event event) {
 		if (!isEmpty(event.getDescription())) {
 			prop.add(new Description(event.getDescription()));
 		}
 
 	}
 
-	private void appendEventDates(Calendar calendar, PropertyList prop, Event event, boolean dtStartWithTimeZone) {
+	private void appendEventDates(Calendar calendar, PropertyList<Property> prop, Event event, boolean dtStartWithTimeZone) {
 		if(event.isAllday()) {
 			appendDtStartAsDateToICS(prop, event);
 			appendDtEndAsDateToICS(prop, event);
@@ -1023,16 +1062,16 @@ public class Ical4jHelper implements RecurrenceHelper {
 		}
 	}
 
-	private void appendDtEndAsDateToICS(PropertyList prop, Event event) {
+	private void appendDtEndAsDateToICS(PropertyList<Property> prop, Event event) {
 		prop.add(new DtEnd(new EventDate(event.getEndDate(), TimeZone.getTimeZone(event.getTimezoneName())), true));
 	}
 
-	private void appendDtStartAsDateToICS(PropertyList prop, Event event) {
+	private void appendDtStartAsDateToICS(PropertyList<Property> prop, Event event) {
 		prop.add(new DtStart(new EventDate(event.getStartDate(), TimeZone.getTimeZone(event.getTimezoneName())), true));
 	}
 
-	private void appendDtStartAsDateTimeToICSWithTimeZone(Calendar calendar, PropertyList prop, Event event) {
-		String timezoneName = Objects.firstNonNull(event.getTimezoneName(), TimeZones.GMT_ID);
+	private void appendDtStartAsDateTimeToICSWithTimeZone(Calendar calendar, PropertyList<Property> prop, Event event) {
+		String timezoneName = MoreObjects.firstNonNull(event.getTimezoneName(), TimeZones.GMT_ID);
 		net.fortuna.ical4j.model.TimeZone zone = tzRegistry.getTimeZone(timezoneName);
 		DateTime icalDate = new DateTime();
 		icalDate.setTime(event.getStartDate().getTime());
@@ -1057,38 +1096,38 @@ public class Ical4jHelper implements RecurrenceHelper {
 		prop.add(dts);
 	}
 	
-	private void appendDtStartAsDateTimeToICS(PropertyList prop, Event event) {
+	private void appendDtStartAsDateTimeToICS(PropertyList<Property> prop, Event event) {
 		prop.add(new DtStart(new DateTime(event.getStartDate()), true));
 	}
 
 
-	private void appendLastModified(PropertyList prop, Event event) {
+	private void appendLastModified(PropertyList<Property> prop, Event event) {
 		if(event.getTimeUpdate() != null) {
 			prop.add(new LastModified(new DateTime(event.getTimeUpdate().getTime())));
 		}
 	}
 
-	private void appendSequence(PropertyList prop, Event event) {
+	private void appendSequence(PropertyList<Property> prop, Event event) {
 		prop.add(new Sequence(event.getSequence()));
 	}
 	
-	private void appendCreated(PropertyList prop, Event event) {
+	private void appendCreated(PropertyList<Property> prop, Event event) {
 		if(event.getTimeCreate() != null){
 			prop.add(new Created(new DateTime(event.getTimeCreate().getTime())));
 		}
 	}
 
-	private void appendDurationToICS(PropertyList prop, Event event) {
-		prop.add(new Duration(new Dur(event.getStartDate(), event.getEndDate())));
+	private void appendDurationToICS(PropertyList<Property> prop, Event event) {
+		prop.add(new Duration(java.time.Duration.between(event.getStartDate().toInstant(), event.getEndDate().toInstant())));
 	}
 
-	private void appendCategoryToICS(PropertyList prop, Event event) {
+	private void appendCategoryToICS(PropertyList<Property> prop, Event event) {
 		if (!isEmpty(event.getCategory())) {
 			prop.add(new Categories(event.getCategory()));
 		}
 	}
 
-	private void appendAttendeesToICS(PropertyList prop, List<Attendee> attendees) {
+	private void appendAttendeesToICS(PropertyList<Property> prop, List<Attendee> attendees) {
 		for (final Attendee attendee: attendees) {
 			prop.add(getAttendee(attendee));
 		}
@@ -1123,7 +1162,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 		return att;
 	}
 
-	private void appendUidToICS(PropertyList prop, Event event,
+	private void appendUidToICS(PropertyList<Property> prop, Event event,
 			EventExtId parentExtId) {
 		if (parentExtId != null && parentExtId.getExtId() != null) {
 			prop.add(new Uid(parentExtId.serializeToString()));
@@ -1194,13 +1233,15 @@ public class Ical4jHelper implements RecurrenceHelper {
 				throw new IllegalRecurrenceKindException(recurrenceKind);
 			}
 
-			String recurFrequency = RECURRENCEKIND_TO_RECUR.get(recurrenceKind);
+			Frequency recurFrequency = RECURRENCEKIND_TO_RECUR.get(recurrenceKind);
 
 			recur = getRecurFrom(eventRecurrence, recurFrequency);
 			if (RecurrenceKind.monthlybyday.equals(recurrenceKind)) {
 				addMonthlyOffsetToRecurDayList(eventStartDate, recur);
 			}
-			recur.setInterval(eventRecurrence.getFrequence());
+			if (eventRecurrence.getFrequence() > 0) {
+				recur.setInterval(eventRecurrence.getFrequence());
+			}
 			setRecurDayList(eventRecurrence, recur);
 		}
 		return recur;
@@ -1219,14 +1260,14 @@ public class Ical4jHelper implements RecurrenceHelper {
 		}
 	}
 
-	private Recur getRecurFrom(EventRecurrence eventRecurrence, String frequency) {
+	private Recur getRecurFrom(EventRecurrence eventRecurrence, Frequency recurFrequency) {
 		if (eventRecurrence.getEnd() == null) {
-			return new Recur(frequency, null);
+			return new Recur(recurFrequency, null);
 		} else {
 			GregorianCalendar cal = new GregorianCalendar();
 			cal.setTime(eventRecurrence.getEnd());
 			cal.set(GregorianCalendar.SECOND, 0);
-			return new Recur(frequency, new DateTime(cal.getTime()));
+			return new Recur(recurFrequency, new DateTime(cal.getTime()));
 		}
 	}
 
@@ -1252,33 +1293,27 @@ public class Ical4jHelper implements RecurrenceHelper {
 		return 0;
 	}
 
-	private void appendAlert(Event event, ComponentList cl) {
+	private void appendAlert(Event event, ComponentList<VAlarm> cl) {
 		if (cl.size() > 0) {
 			
 			final VAlarm valarm = (VAlarm) cl.get(0);
 			if (valarm != null) {
 
-				if (	(isVAlarmRepeat(valarm) && valarm.getDuration()!=null)
-					||	(!isVAlarmRepeat(valarm) && valarm.getDuration()==null)
-				) {
+				if ((isVAlarmRepeat(valarm) && valarm.getDuration() != null)
+					|| (!isVAlarmRepeat(valarm) && valarm.getDuration() == null)) {
 					final Trigger trigger = valarm.getTrigger();
 					
-					Dur dur = trigger.getDuration();
-					Dur durZero = new Dur(0, 0, 0, 0);
+					java.time.Duration dur = (java.time.Duration) trigger.getDuration();
+					java.time.Duration durZero = java.time.Duration.ofNanos(0);
 					
-					if (dur==null || dur.equals(durZero)) {
+					if (dur == null || dur.equals(durZero)) {
 						event.setAlert(null);
 						return;
 					} else if (dur.isNegative()) {
-						dur = dur.negate();
+						dur = dur.abs();
 					}
 					
-					int day = (dur.getWeeks() * 7) + dur.getDays();
-					int hours = (day * 24) + dur.getHours();
-					int min = (hours * 60) + dur.getMinutes();
-					int sec = min * 60 + dur.getSeconds();
-					
-					event.setAlert(sec);	
+					event.setAlert(Long.valueOf(dur.getSeconds()).intValue());	
 					return;
 				}
 			}
@@ -1302,14 +1337,14 @@ public class Ical4jHelper implements RecurrenceHelper {
 
 		if (rrule != null) {
 			Recur recur = rrule.getRecur();
-			String frequency = recur.getFrequency();
+			Frequency frequency = recur.getFrequency();
 
-			if (Recur.WEEKLY.equals(frequency) || Recur.DAILY.equals(frequency)) {
+			if (Frequency.WEEKLY.equals(frequency) || Frequency.DAILY.equals(frequency)) {
 				for (Object ob : recur.getDayList()) {
 					recurrenceDays.add(weekDayToRecurrenceDay((WeekDay) ob));
 				}
 
-				if (Recur.WEEKLY.equals(frequency) && recurrenceDays.isEmpty()) {
+				if (Frequency.WEEKLY.equals(frequency) && recurrenceDays.isEmpty()) {
 					GregorianCalendar cal = getEventStartCalendar(event);
 					WeekDay eventStartWeekDay = WeekDay.getDay(cal.get(GregorianCalendar.DAY_OF_WEEK));
 
@@ -1322,11 +1357,11 @@ public class Ical4jHelper implements RecurrenceHelper {
 			er.setFrequence(Math.max(recur.getInterval(), 1)); // getInterval() returns -1 if no interval is defined
 
 			if (er.getDays().isEmpty()) {
-				if (Recur.DAILY.equals(frequency)) {
+				if (Frequency.DAILY.equals(frequency)) {
 					er.setKind(RecurrenceKind.daily);
-				} else if (Recur.WEEKLY.equals(frequency)) {
+				} else if (Frequency.WEEKLY.equals(frequency)) {
 					er.setKind(RecurrenceKind.weekly);
-				} else if (Recur.MONTHLY.equals(frequency)) {
+				} else if (Frequency.MONTHLY.equals(frequency)) {
 					WeekDayList wdl = recur.getDayList();
 
 					if (wdl.size() > 0) {
@@ -1341,7 +1376,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 						er.setKind(RecurrenceKind.monthlybydate);
 					}
 
-				} else if (Recur.YEARLY.equals(frequency)) {
+				} else if (Frequency.YEARLY.equals(frequency)) {
 					er.setKind(RecurrenceKind.yearly);
 				}
 			} else {
@@ -1354,7 +1389,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 		appendNegativeExceptions(event, component.getProperties(Property.EXDATE));
 	}
 
-	private void appendNegativeExceptions(Event event, PropertyList exdates) {
+	private void appendNegativeExceptions(Event event, PropertyList<Property> exdates) {
 		for (Object ob : exdates) {
 			for (Object date : ((ExDate) ob).getDates()) {
 				event.getRecurrence().addException((Date) date);
@@ -1432,7 +1467,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 	private String removeMailto(Property prop) {
 		String email = extractEmail(prop);
 		
-		return Objects.firstNonNull(email, prop.getValue());
+		return MoreObjects.firstNonNull(email, prop.getValue());
 	}
 	
 	private String extractEmail(Property prop) {
@@ -1483,9 +1518,8 @@ public class Ical4jHelper implements RecurrenceHelper {
 	}
 
 	/* package */ VAlarm getVAlarm(Integer alert) {
-		if (alert != null && !alert.equals(0)) {
-			Dur dur = new Dur(0, 0, 0, -alert);
-			VAlarm va = new VAlarm(dur);
+		if (alert != null && alert != 0l) {
+			VAlarm va = new VAlarm(java.time.Duration.ofSeconds(-alert));
 			va.getProperties().add(Action.DISPLAY);
 			va.getProperties().add(new Description("Default Obm Description"));
 			Trigger ti = va.getTrigger();
@@ -1496,7 +1530,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 	}
 
 	/* package */ Clazz getClazz(EventPrivacy privacy) {
-		return Objects.firstNonNull(PRIVACY_TO_CLASSIFICATION.get(privacy), Clazz.PUBLIC);
+		return MoreObjects.firstNonNull(PRIVACY_TO_CLASSIFICATION.get(privacy), Clazz.PUBLIC);
 	}
 
 	/* package */ Organizer getOrganizer(String owner, String ownerEmail) {
@@ -1603,14 +1637,14 @@ public class Ical4jHelper implements RecurrenceHelper {
 		return rrule;
 	}
 
-	/* package */ ComponentList getComponents(Calendar calendar,
+	/* package */ ComponentList<VEvent> getComponents(Calendar calendar,
 			String component) {
 		return calendar.getComponents(component);
 	}
 
 	private List<Property> getProperties(Component comp, String property) {
 		List<Property> propsSet = new ArrayList<Property>();
-		PropertyList propList = comp.getProperties(property);
+		PropertyList<Property> propList = comp.getProperties(property);
 		for (Iterator<Property> it = propList.iterator(); it.hasNext();) {
 			Property prop = it.next();
 			propsSet.add(prop);
@@ -1694,7 +1728,7 @@ public class Ical4jHelper implements RecurrenceHelper {
 			}).orNull();
 		}
 		catch (ExecutionException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -1823,7 +1857,6 @@ public class Ical4jHelper implements RecurrenceHelper {
 		return new Timestamp(new DateTime(dateAsString).getTime());
 	}
 
-	@SuppressWarnings("unchecked")
 	public Set<Resource> parseResources(String ics) throws IOException, ParserException {
 		return FluentIterable
 			.from(getComponents(buildCalendar(ics), Component.VEVENT))

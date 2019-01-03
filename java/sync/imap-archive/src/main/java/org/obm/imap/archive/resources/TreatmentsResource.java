@@ -31,6 +31,7 @@
 package org.obm.imap.archive.resources;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -49,7 +50,6 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.glassfish.jersey.process.internal.RequestScoped;
-import org.joda.time.DateTime;
 import org.obm.imap.archive.beans.ArchiveStatus;
 import org.obm.imap.archive.beans.ArchiveTreatmentKind;
 import org.obm.imap.archive.beans.ArchiveTreatmentRunId;
@@ -68,7 +68,7 @@ import org.obm.provisioning.dao.exceptions.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Sets;
 import com.linagora.scheduling.DateTimeProvider;
 
@@ -103,7 +103,7 @@ public class TreatmentsResource {
 			return Response.noContent().build();
 		}
 		
-		DateTime nextTreatmentDate = schedulingDateService.nextTreatmentDate(domainConfiguration.getSchedulingConfiguration());
+		ZonedDateTime nextTreatmentDate = schedulingDateService.nextTreatmentDate(domainConfiguration.getSchedulingConfiguration());
 		return Response.ok(SchedulingDates.builder()
 				.nextTreatmentDate(nextTreatmentDate)
 				.build()).build();
@@ -112,7 +112,7 @@ public class TreatmentsResource {
 	@POST
 	public Response startArchiving(@QueryParam("archive_treatment_kind") ArchiveTreatmentKind archiveTreatmentKind) {
 		try {
-			ArchiveTreatmentKind actualTreatmentKind = Objects.firstNonNull(archiveTreatmentKind, ArchiveTreatmentKind.REAL_RUN);
+			ArchiveTreatmentKind actualTreatmentKind = MoreObjects.firstNonNull(archiveTreatmentKind, ArchiveTreatmentKind.REAL_RUN);
 			ArchiveTreatmentRunId runId = archiveSchedulingService.schedule(domain, dateTimeProvider.now(), actualTreatmentKind);
 			return Response.seeOther(buildUri(runId)).build();
 		} catch (DaoException e) {

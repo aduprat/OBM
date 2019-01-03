@@ -31,8 +31,6 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.sync;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -43,11 +41,11 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import net.fortuna.ical4j.model.property.Method;
-
 import org.assertj.core.api.StringAssert;
 
 import com.google.common.collect.Lists;
+
+import net.fortuna.ical4j.model.property.Method;
 
 public class IntegrationTestICSUtils {
 
@@ -60,7 +58,7 @@ public class IntegrationTestICSUtils {
 	}
 
 	public static StringAssert assertIcsMethodFormat(Message message, Method method) throws JMSException {
-		return assertThat(((TextMessage)message).getText())
+		return new StringAssert(((TextMessage)message).getText())
 			.startsWith(
 				"BEGIN:VCALENDAR\r\n" +
 				"PRODID:-//Aliasource Groupe LINAGORA//OBM Calendar //FR\r\n" +

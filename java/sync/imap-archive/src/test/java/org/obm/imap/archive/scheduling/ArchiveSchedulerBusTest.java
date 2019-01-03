@@ -54,6 +54,7 @@ public class ArchiveSchedulerBusTest {
 	ArchiveSchedulerBus testee;
 	ScheduledTask<ArchiveDomainTask> scheduledTask;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
 		mocks = EasyMock.createControl();
@@ -62,6 +63,7 @@ public class ArchiveSchedulerBusTest {
 		testee = new ArchiveSchedulerBus(bus);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void scheduledShouldPostAsTaskStatusChanged() {
 		ScheduledTask<ArchiveDomainTask> task = mocks.createMock(ScheduledTask.class);
@@ -83,6 +85,7 @@ public class ArchiveSchedulerBusTest {
 		assertThat(postTaskCapture.getValue().state()).isEqualTo(State.WAITING);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void runningShouldPostAsTaskStatusChanged() {
 		ScheduledTask<ArchiveDomainTask> task = mocks.createMock(ScheduledTask.class);
@@ -104,6 +107,7 @@ public class ArchiveSchedulerBusTest {
 		assertThat(postTaskCapture.getValue().state()).isEqualTo(State.RUNNING);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void terminatedShouldPostAsTaskStatusChanged() {
 		ScheduledTask<ArchiveDomainTask> task = mocks.createMock(ScheduledTask.class);
@@ -125,6 +129,7 @@ public class ArchiveSchedulerBusTest {
 		assertThat(postTaskCapture.getValue().state()).isEqualTo(State.TERMINATED);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void failedShouldPostAsTaskStatusChanged() {
 		Throwable exception = new IllegalStateException();
@@ -147,6 +152,7 @@ public class ArchiveSchedulerBusTest {
 		assertThat(postTaskCapture.getValue().state()).isEqualTo(State.FAILED);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void cancelShouldPostAsTaskStatusChanged() {
 		ScheduledTask<ArchiveDomainTask> task = mocks.createMock(ScheduledTask.class);
@@ -168,6 +174,7 @@ public class ArchiveSchedulerBusTest {
 		assertThat(postTaskCapture.getValue().state()).isEqualTo(State.CANCELED);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void eventsAreImmutable() {
 		ScheduledTask<ArchiveDomainTask> task = mocks.createMock(ScheduledTask.class);

@@ -33,12 +33,14 @@ package org.obm.imap.archive.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.expect;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 import org.obm.sync.date.DateProvider;
@@ -58,15 +60,15 @@ public class DateTimeProviderImplTest {
 
 	@Test
 	public void nowShouldCallDateProviderEachTime() {
-		expect(dateProvider.getDate()).andReturn(new Date(1000000l));
-		expect(dateProvider.getDate()).andReturn(new Date(2000000l));
+		expect(dateProvider.getDate()).andReturn(Date.from(Instant.ofEpochMilli(1000000l)));
+		expect(dateProvider.getDate()).andReturn(Date.from(Instant.ofEpochMilli(2000000l)));
 		
 		mocks.replay();
-		DateTime now1 = testee.now();
-		DateTime now2 = testee.now();
+		ZonedDateTime now1 = testee.now();
+		ZonedDateTime now2 = testee.now();
 		mocks.verify();
 		
-		assertThat(now1).isEqualTo(new DateTime(1000000l, DateTimeZone.UTC));
-		assertThat(now2).isEqualTo(new DateTime(2000000l, DateTimeZone.UTC));
+		assertThat(now1).isEqualTo(ZonedDateTime.ofInstant(Instant.ofEpochMilli(1000000l), ZoneId.of(ZoneOffset.UTC.getId())));
+		assertThat(now2).isEqualTo(ZonedDateTime.ofInstant(Instant.ofEpochMilli(2000000l), ZoneId.of(ZoneOffset.UTC.getId())));
 	}
 }

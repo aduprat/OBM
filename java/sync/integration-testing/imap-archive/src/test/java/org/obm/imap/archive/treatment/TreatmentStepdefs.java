@@ -35,7 +35,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.obm.imap.archive.DBData.domain;
+import static org.obm.push.utils.DateUtils.date;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +46,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.junit.rules.TemporaryFolder;
 import org.obm.dao.utils.H2Destination;
 import org.obm.dao.utils.H2InMemoryDatabase;
@@ -170,7 +170,7 @@ public class TreatmentStepdefs {
 						.dayOfMonth(DayOfMonth.last())
 						.dayOfYear(DayOfYear.of(365))
 						.build())
-				.time(new LocalTime(hour, minute))
+				.time(LocalTime.of(hour, minute))
 				.build());
 	}
 
@@ -259,7 +259,7 @@ public class TreatmentStepdefs {
 	public void appendMails(int numberOfMails, String internalDate, String subject) throws Exception {
 		for (int i = 0; i < numberOfMails; i++) {
 			imapFolder.store(GreenMailUtil.buildSimpleMessage("from@" + domain.getName(), subject, "message", imapServer.getSmtp().getServerSetup()), 
-					DateTime.parse(internalDate).toDate());
+					date(internalDate));
 		}
 	}
 
@@ -267,7 +267,7 @@ public class TreatmentStepdefs {
 	public void appendMailsInSharedMailboxFolder(int numberOfMails, String internalDate, String subject) throws Exception {
 		for (int i = 0; i < numberOfMails; i++) {
 			imapFolder.store(GreenMailUtil.buildSimpleMessage("from@" + domain.getName(), subject, "message", imapServer.getSmtp().getServerSetup()), 
-					DateTime.parse(internalDate).toDate());
+					date(internalDate));
 		}
 	}
 
@@ -275,7 +275,7 @@ public class TreatmentStepdefs {
 	public void appendMailsToSharedMailbox(int numberOfMails, String internalDate, String subject) throws Exception {
 		for (int i = 0; i < numberOfMails; i++) {
 			sharedMailbox.store(GreenMailUtil.buildSimpleMessage("from@" + domain.getName(), subject, "message", imapServer.getSmtp().getServerSetup()), 
-					DateTime.parse(internalDate).toDate());
+					date(internalDate));
 		}
 	}
 

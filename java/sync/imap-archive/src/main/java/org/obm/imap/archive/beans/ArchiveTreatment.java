@@ -30,9 +30,11 @@
 
 package org.obm.imap.archive.beans;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -50,10 +52,10 @@ public class ArchiveTreatment {
 		protected ArchiveTreatmentRunId runId;
 		protected ArchiveStatus status;
 		protected Boolean recurrent;
-		protected DateTime scheduledTime;
-		protected DateTime startTime;
-		protected DateTime endTime;
-		protected DateTime higherBoundary;
+		protected ZonedDateTime scheduledTime;
+		protected ZonedDateTime startTime;
+		protected ZonedDateTime endTime;
+		protected ZonedDateTime higherBoundary;
 
 		protected Builder(ObmDomainUuid domainUuid) {
 			Preconditions.checkNotNull(domainUuid);
@@ -70,23 +72,23 @@ public class ArchiveTreatment {
 			return this;
 		}
 		
-		public Builder<T> scheduledAt(DateTime scheduledTime) {
+		public Builder<T> scheduledAt(ZonedDateTime scheduledTime) {
 			Preconditions.checkNotNull(scheduledTime);
 			this.scheduledTime = scheduledTime;
 			return this;
 		}
 		
-		public Builder<T> startedAt(DateTime startTime) {
+		public Builder<T> startedAt(ZonedDateTime startTime) {
 			this.startTime = startTime;
 			return this;
 		}
 		
-		public Builder<T> terminatedAt(DateTime endTime) {
+		public Builder<T> terminatedAt(ZonedDateTime endTime) {
 			this.endTime = endTime;
 			return this;
 		}
 		
-		public Builder<T> higherBoundary(DateTime higherBoundary) {
+		public Builder<T> higherBoundary(ZonedDateTime higherBoundary) {
 			Preconditions.checkNotNull(higherBoundary);
 			this.higherBoundary = higherBoundary;
 			return this;
@@ -114,20 +116,20 @@ public class ArchiveTreatment {
 		}
 	}
 	
-	public static final DateTime FAILED_AT_UNKOWN_DATE = new DateTime(0, DateTimeZone.UTC);
-	public static final DateTime NO_DATE = null;
+	public static final ZonedDateTime FAILED_AT_UNKOWN_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneOffset.UTC);
+	public static final ZonedDateTime NO_DATE = null;
 	
 	protected final ArchiveTreatmentRunId runId;
 	protected final ObmDomainUuid domainUuid;
 	protected final ArchiveStatus archiveStatus;
-	protected final DateTime scheduledTime;
-	protected final DateTime startTime;
-	protected final DateTime endTime;
-	protected final DateTime higherBoundary;
+	protected final ZonedDateTime scheduledTime;
+	protected final ZonedDateTime startTime;
+	protected final ZonedDateTime endTime;
+	protected final ZonedDateTime higherBoundary;
 	protected final boolean recurrent;
 
 	protected ArchiveTreatment(ArchiveTreatmentRunId runId, ObmDomainUuid  domainUuid, ArchiveStatus archiveStatus, 
-			DateTime scheduledTime, DateTime startTime, DateTime endTime, DateTime higherBoundary, boolean recurrent) {
+			ZonedDateTime scheduledTime, ZonedDateTime startTime, ZonedDateTime endTime, ZonedDateTime higherBoundary, boolean recurrent) {
 		this.runId = runId;
 		this.domainUuid = domainUuid;
 		this.archiveStatus = archiveStatus;
@@ -150,19 +152,19 @@ public class ArchiveTreatment {
 		return archiveStatus;
 	}
 
-	public DateTime getScheduledTime() {
+	public ZonedDateTime getScheduledTime() {
 		return scheduledTime;
 	}
 
-	public DateTime getStartTime() {
+	public ZonedDateTime getStartTime() {
 		return startTime;
 	}
 
-	public DateTime getEndTime() {
+	public ZonedDateTime getEndTime() {
 		return endTime;
 	}
 
-	public DateTime getHigherBoundary() {
+	public ZonedDateTime getHigherBoundary() {
 		return higherBoundary;
 	}
 
@@ -170,15 +172,15 @@ public class ArchiveTreatment {
 		return recurrent;
 	}
 
-	public ArchiveTerminatedTreatment asSuccess(DateTime endTime) {
+	public ArchiveTerminatedTreatment asSuccess(ZonedDateTime endTime) {
 		return asTerminatedBuilder(endTime).status(ArchiveStatus.SUCCESS).build();
 	}
 
-	public ArchiveTerminatedTreatment asError(DateTime endTime) {
+	public ArchiveTerminatedTreatment asError(ZonedDateTime endTime) {
 		return asTerminatedBuilder(endTime).status(ArchiveStatus.ERROR).build();
 	}
 	
-	private ArchiveTerminatedTreatment.Builder<ArchiveTerminatedTreatment> asTerminatedBuilder(DateTime endTime) {
+	private ArchiveTerminatedTreatment.Builder<ArchiveTerminatedTreatment> asTerminatedBuilder(ZonedDateTime endTime) {
 		return ArchiveTerminatedTreatment
 				.forDomain(domainUuid)
 				.runId(runId)
@@ -212,7 +214,7 @@ public class ArchiveTreatment {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("runId", runId)
 			.add("domainUuid", domainUuid)
 			.add("recurrent", recurrent)

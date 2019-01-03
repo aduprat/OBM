@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.obm.sync.ServerCapability;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.inject.Singleton;
 
 import fr.aliacom.obm.common.domain.ObmDomain;
@@ -228,7 +228,7 @@ public class AccessToken {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("login", userLogin)
 				.add("email", userEmail)
 				.toString();

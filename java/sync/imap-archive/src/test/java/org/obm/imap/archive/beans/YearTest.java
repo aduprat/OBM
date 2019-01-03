@@ -33,9 +33,8 @@ package org.obm.imap.archive.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.obm.push.mail.bean.InternalDate;
 
@@ -87,8 +86,8 @@ public class YearTest {
 	
 	@Test
 	public void toDate() {
-		Date expectedDate = DateTime.parse("2014-01-01T00:00:00.000Z").toDate();
-		Date nextOnFirstSecond = Year.from(2014).toDate();
+		ZonedDateTime expectedDate = ZonedDateTime.parse("2014-01-01T00:00:00.000Z");
+		ZonedDateTime nextOnFirstSecond = Year.from(2014).toDate();
 		assertThat(nextOnFirstSecond).isEqualTo(expectedDate);
 	}
 }

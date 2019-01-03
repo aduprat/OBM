@@ -32,10 +32,10 @@ package org.obm.imap.archive.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalTime;
 import java.util.UUID;
 
 import org.assertj.core.data.MapEntry;
-import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.obm.imap.archive.beans.ArchiveRecurrence;
 import org.obm.imap.archive.beans.ConfigurationState;

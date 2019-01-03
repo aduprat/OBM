@@ -30,7 +30,8 @@
 
 package org.obm.imap.archive.scheduling;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+
 import org.obm.annotations.transactional.Transactional;
 import org.obm.imap.archive.beans.ArchiveTreatmentKind;
 import org.obm.imap.archive.beans.ArchiveTreatmentRunId;
@@ -71,10 +72,10 @@ public class ArchiveSchedulingService {
 		this.domainConfigDao = domainConfigDao;
 	}
 	
-	public ArchiveTreatmentRunId schedule(ObmDomain domain, DateTime when, ArchiveTreatmentKind kind) throws DaoException {
+	public ArchiveTreatmentRunId schedule(ObmDomain domain, ZonedDateTime when, ArchiveTreatmentKind kind) throws DaoException {
 		DomainConfiguration configuration = loadDomainConfiguration(domain);
 		ArchiveTreatmentRunId runId = generateRunId();
-		DateTime higherBoundary = schedulingDatesService.higherBoundary(when, configuration.getRepeatKind());
+		ZonedDateTime higherBoundary = schedulingDatesService.higherBoundary(when, configuration.getRepeatKind());
 		
 		ArchiveDomainTask task = taskFactory.create(configuration, when, higherBoundary, runId, kind);
 		scheduler.schedule(task);
@@ -89,8 +90,8 @@ public class ArchiveSchedulingService {
 	
 	public ArchiveTreatmentRunId scheduleAsRecurrent(DomainConfiguration configuration) {
 		ArchiveTreatmentRunId runId = generateRunId();
-		DateTime when = schedulingDatesService.nextTreatmentDate(configuration.getSchedulingConfiguration());
-		DateTime higherBoundary = schedulingDatesService.higherBoundary(when, configuration.getRepeatKind());
+		ZonedDateTime when = schedulingDatesService.nextTreatmentDate(configuration.getSchedulingConfiguration());
+		ZonedDateTime higherBoundary = schedulingDatesService.higherBoundary(when, configuration.getRepeatKind());
 		
 		ArchiveDomainTask task = taskFactory.createAsRecurrent(configuration, when, higherBoundary, runId);
 		scheduler.schedule(task);

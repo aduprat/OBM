@@ -33,17 +33,17 @@ package org.obm.push.mail.greenmail;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.time.LocalDateTime;
 
 import javax.net.SocketFactory;
 
-import org.joda.time.DateTime;
 import org.junit.Assert;
 
 public class GreenMailServerUtil {
 
 	public static void waitForGreenmailAvailability(String imapHost, int imapPort) throws InterruptedException {
 		SocketFactory socketFactory = SocketFactory.getDefault();
-		DateTime end = new DateTime().plusSeconds(30);
+		LocalDateTime end = LocalDateTime.now().plusSeconds(30);
 		
 		while (true) {
 			try {
@@ -51,7 +51,7 @@ public class GreenMailServerUtil {
 				socket.close();
 				return;
 			} catch (IOException e) {
-				if (new DateTime().isAfter(end)) {
+				if (LocalDateTime.now().isAfter(end)) {
 					Assert.fail("greenmail is not reachable");
 				}
 				Thread.sleep(50);

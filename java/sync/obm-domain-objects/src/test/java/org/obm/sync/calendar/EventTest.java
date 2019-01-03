@@ -32,8 +32,11 @@
 package org.obm.sync.calendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.obm.DateUtils.date;
+import static org.obm.push.utils.DateUtils.date;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -42,7 +45,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.obm.sync.calendar.Participation.State;
@@ -313,7 +315,7 @@ public class EventTest {
 	public void testGetEventExceptionsWithImportantChangesWithNullRecurrence() {
 		Event before = createOneEvent(5);
 		Event after = before.clone();
-		after.setRecurrence(createDailyRecurrenceUntil(new DateTime(before.getStartDate()).plusDays(3).toDate()));
+		after.setRecurrence(createDailyRecurrenceUntil(Date.from(ZonedDateTime.ofInstant(before.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusDays(3).toInstant())));
 		assertThat(after.getEventExceptionsWithImportantChanges(before)).isEmpty();
 	}
 
@@ -321,8 +323,8 @@ public class EventTest {
 	public void testGetEventExceptionsWithImportantChangesWithNullInBeforeRecurrenceAndEventExceptionAfter() {
 		Event before = createOneEvent(5);
 		Event after = before.clone();
-		after.setRecurrence(createDailyRecurrenceUntil(new DateTime(before.getStartDate()).plusDays(3).toDate()));
-		Event secondOccurrence = after.getOccurrence(new DateTime(before.getStartDate()).plusDays(1).toDate());
+		after.setRecurrence(createDailyRecurrenceUntil(Date.from(ZonedDateTime.ofInstant(before.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusDays(3).toInstant())));
+		Event secondOccurrence = after.getOccurrence(Date.from(ZonedDateTime.ofInstant(before.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusDays(1).toInstant()));
 		secondOccurrence.setLocation("new location");
 		after.addEventException(secondOccurrence);
 		assertThat(after.getEventExceptionsWithImportantChanges(before)).containsSequence(secondOccurrence);
@@ -399,15 +401,15 @@ public class EventTest {
 	public void testModifiedEventExceptionHasImportantChanges() {
 		Event before = createOneEvent(5);
 
-		DateTime recurrenceEnd = new DateTime(before.getStartDate()).plusDays(5);
-		EventRecurrence recurrence = createDailyRecurrenceUntil(recurrenceEnd.toDate());
+		ZonedDateTime recurrenceEnd = ZonedDateTime.ofInstant(before.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusDays(5);
+		EventRecurrence recurrence = createDailyRecurrenceUntil(Date.from(recurrenceEnd.toInstant()));
 		before.setRecurrence(recurrence);
 
-		DateTime dateTime = new DateTime(before.getStartDate());
-		Event secondOccurrence = before.getOccurrence(dateTime.plusDays(1).toDate());
+		ZonedDateTime dateTime = ZonedDateTime.ofInstant(before.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId()));
+		Event secondOccurrence = before.getOccurrence(Date.from(dateTime.plusDays(1).toInstant()));
 
-		DateTime secondOccurrenceRecurrenceId = new DateTime(secondOccurrence.getStartDate());
-		secondOccurrence.setStartDate(secondOccurrenceRecurrenceId.plusHours(10).toDate());
+		ZonedDateTime secondOccurrenceRecurrenceId = ZonedDateTime.ofInstant(secondOccurrence.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId()));
+		secondOccurrence.setStartDate(Date.from(secondOccurrenceRecurrenceId.plusHours(10).toInstant()));
 
 		recurrence.getEventExceptions().add(secondOccurrence);
 
@@ -415,7 +417,7 @@ public class EventTest {
 		EventRecurrence updateRecurrence = after.getRecurrence();
 
 		Event firstException = Iterables.getOnlyElement(updateRecurrence.getEventExceptions());
-		firstException.setStartDate(new DateTime(firstException.getStartDate()).plusHours(4).toDate());
+		firstException.setStartDate(Date.from(ZonedDateTime.ofInstant(firstException.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusHours(4).toInstant()));
 
 		assertThat(after.hasImportantChanges(before)).isTrue();
 	}
@@ -424,15 +426,15 @@ public class EventTest {
 	public void testHasImportantChangesWithModifiedDescriptionEventException() {
 		Event before = createOneEvent(5);
 
-		DateTime recurrenceEnd = new DateTime(before.getStartDate()).plusDays(5);
-		EventRecurrence recurrence = createDailyRecurrenceUntil(recurrenceEnd.toDate());
+		ZonedDateTime recurrenceEnd = ZonedDateTime.ofInstant(before.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusDays(5);
+		EventRecurrence recurrence = createDailyRecurrenceUntil(Date.from(recurrenceEnd.toInstant()));
 		before.setRecurrence(recurrence);
 
-		DateTime dateTime = new DateTime(before.getStartDate());
-		Event secondOccurrence = before.getOccurrence(dateTime.plusDays(1).toDate());
+		ZonedDateTime dateTime = ZonedDateTime.ofInstant(before.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId()));
+		Event secondOccurrence = before.getOccurrence(Date.from(dateTime.plusDays(1).toInstant()));
 
-		DateTime secondOccurrenceRecurrenceId = new DateTime(secondOccurrence.getStartDate());
-		secondOccurrence.setStartDate(secondOccurrenceRecurrenceId.plusHours(10).toDate());
+		ZonedDateTime secondOccurrenceRecurrenceId = ZonedDateTime.ofInstant(secondOccurrence.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId()));
+		secondOccurrence.setStartDate(Date.from(secondOccurrenceRecurrenceId.plusHours(10).toInstant()));
 
 		recurrence.getEventExceptions().add(secondOccurrence);
 
@@ -450,15 +452,15 @@ public class EventTest {
 	public void testModifiedEventExceptionHasImportantChangesExceptedEventException() {
 		Event before = createOneEvent(5);
 
-		DateTime recurrenceEnd = new DateTime(before.getStartDate()).plusDays(5);
-		EventRecurrence recurrence = createDailyRecurrenceUntil(recurrenceEnd.toDate());
+		ZonedDateTime recurrenceEnd = ZonedDateTime.ofInstant(before.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusDays(5);
+		EventRecurrence recurrence = createDailyRecurrenceUntil(Date.from(recurrenceEnd.toInstant()));
 		before.setRecurrence(recurrence);
 
-		DateTime dateTime = new DateTime(before.getStartDate());
-		Event secondOccurrence = before.getOccurrence(dateTime.plusDays(1).toDate());
+		ZonedDateTime dateTime = ZonedDateTime.ofInstant(before.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId()));
+		Event secondOccurrence = before.getOccurrence(Date.from(dateTime.plusDays(1).toInstant()));
 
-		DateTime secondOccurrenceRecurrenceId = new DateTime(secondOccurrence.getStartDate());
-		secondOccurrence.setStartDate(secondOccurrenceRecurrenceId.plusHours(10).toDate());
+		ZonedDateTime secondOccurrenceRecurrenceId = ZonedDateTime.ofInstant(secondOccurrence.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId()));
+		secondOccurrence.setStartDate(Date.from(secondOccurrenceRecurrenceId.plusHours(10).toInstant()));
 
 		recurrence.getEventExceptions().add(secondOccurrence);
 
@@ -466,7 +468,7 @@ public class EventTest {
 		EventRecurrence updateRecurrence = after.getRecurrence();
 
 		Event firstException = Iterables.getOnlyElement(updateRecurrence.getEventExceptions());
-		firstException.setStartDate(new DateTime(firstException.getStartDate()).plusHours(4).toDate());
+		firstException.setStartDate(Date.from(ZonedDateTime.ofInstant(firstException.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusHours(4).toInstant()));
 
 		assertThat(after.hasImportantChangesExceptedEventException(before)).isFalse();
 	}
@@ -647,8 +649,8 @@ public class EventTest {
 	@Test
 	public void testGetNegativeExceptionsChangesWithDifferentEvents() {
 		Date eventDate = new Date();
-		Date exceptionDate1 = new DateTime(eventDate).plusDays(2).toDate();
-		Date exceptionDate2 = new DateTime(eventDate).plusMonths(1).toDate();
+		Date exceptionDate1 = Date.from(ZonedDateTime.ofInstant(eventDate.toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusDays(2).toInstant());
+		Date exceptionDate2 = Date.from(ZonedDateTime.ofInstant(eventDate.toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusMonths(1).toInstant());
 		Event ev1 = createEventWithNegativeExceptions(eventDate, 1, exceptionDate1, exceptionDate2);
 		Event ev2 = createEventWithNegativeExceptions(eventDate, 2, exceptionDate1);
 		Collection<Date> difference = ev1.getNegativeExceptionsChanges(ev2);
@@ -916,16 +918,16 @@ public class EventTest {
 	@Test
 	public void modifyDescriptionOnEventException() {
 		Event before = new Event();
-		DateTime recurrenceStartDate = new DateTime(2012, Calendar.FEBRUARY, 23, 14, 0);
-		before.setStartDate(recurrenceStartDate.toDate());
+		ZonedDateTime recurrenceStartDate = ZonedDateTime.of(2012, 1, 23, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId()));
+		before.setStartDate(Date.from(recurrenceStartDate.toInstant()));
 
-		DateTime recurrenceEndDate = new DateTime(before.getStartDate()).plusDays(3);
-		EventRecurrence eventRecurrence = createDailyRecurrenceUntil(recurrenceEndDate.toDate());
+		ZonedDateTime recurrenceEndDate = ZonedDateTime.ofInstant(before.getStartDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId())).plusDays(3);
+		EventRecurrence eventRecurrence = createDailyRecurrenceUntil(Date.from(recurrenceEndDate.toInstant()));
 		before.setRecurrence(eventRecurrence);
 
 		Event after = before.clone();
 
-		Event eventException = before.getOccurrence(recurrenceStartDate.plusDays(1).toDate());
+		Event eventException = before.getOccurrence(Date.from(recurrenceStartDate.plusDays(1).toInstant()));
 		eventException.setDescription("my description");
 		after.addEventException(eventException);
 
@@ -937,11 +939,11 @@ public class EventTest {
 	@Test
 	public void testHasImportantChangeWithAddedRecurrence() {
 		Event before = new Event();
-		DateTime recurrenceStartDate = new DateTime(2012, Calendar.FEBRUARY, 23, 14, 0);
-		before.setStartDate(recurrenceStartDate.toDate());
+		ZonedDateTime recurrenceStartDate = ZonedDateTime.of(2012, 1, 23, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId()));
+		before.setStartDate(Date.from(recurrenceStartDate.toInstant()));
 
 		Event after = before.clone();
-		after.setRecurrence(createDailyRecurrenceUntil(recurrenceStartDate.plusDays(4).toDate()));
+		after.setRecurrence(createDailyRecurrenceUntil(Date.from(recurrenceStartDate.plusDays(4).toInstant())));
 
 		assertThat(after.hasImportantChanges(before)).isTrue();
 	}
@@ -949,12 +951,12 @@ public class EventTest {
 	@Test
 	public void testHasImportantChangeWithRemovedRecurrence() {
 		Event before = new Event();
-		DateTime recurrenceStartDate = new DateTime(2012, Calendar.FEBRUARY, 23, 14, 0);
-		before.setStartDate(recurrenceStartDate.toDate());
+		ZonedDateTime recurrenceStartDate = ZonedDateTime.of(2012, 1, 23, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId()));
+		before.setStartDate(Date.from(recurrenceStartDate.toInstant()));
 
 		Event after = before.clone();
 
-		before.setRecurrence(createDailyRecurrenceUntil(recurrenceStartDate.plusDays(4).toDate()));
+		before.setRecurrence(createDailyRecurrenceUntil(Date.from(recurrenceStartDate.plusDays(4).toInstant())));
 
 		assertThat(after.hasImportantChanges(before)).isTrue();
 	}
@@ -962,12 +964,12 @@ public class EventTest {
 	@Test
 	public void testHasImportantChangeWithRemovedOccurrence() {
 		Event before = new Event();
-		DateTime recurrenceStartDate = new DateTime(2012, Calendar.FEBRUARY, 23, 14, 0);
-		before.setStartDate(recurrenceStartDate.toDate());
-		before.setRecurrence(createDailyRecurrenceUntil(recurrenceStartDate.plusDays(4).toDate()));
+		ZonedDateTime recurrenceStartDate = ZonedDateTime.of(2012, 1, 23, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId()));
+		before.setStartDate(Date.from(recurrenceStartDate.toInstant()));
+		before.setRecurrence(createDailyRecurrenceUntil(Date.from(recurrenceStartDate.plusDays(4).toInstant())));
 
 		Event after = before.clone();
-		after.addException(recurrenceStartDate.plusDays(1).toDate());
+		after.addException(Date.from(recurrenceStartDate.plusDays(1).toInstant()));
 
 		assertThat(after.hasImportantChanges(before)).isFalse();
 	}
@@ -975,12 +977,12 @@ public class EventTest {
 	@Test
 	public void testHasImportantChangeExceptedEventExceptionWithRemovedOccurrence() {
 		Event before = new Event();
-		DateTime recurrenceStartDate = new DateTime(2012, Calendar.FEBRUARY, 23, 14, 0);
-		before.setStartDate(recurrenceStartDate.toDate());
-		before.setRecurrence(createDailyRecurrenceUntil(recurrenceStartDate.plusDays(4).toDate()));
+		ZonedDateTime recurrenceStartDate = ZonedDateTime.of(2012, 1, 23, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId()));
+		before.setStartDate(Date.from(recurrenceStartDate.toInstant()));
+		before.setRecurrence(createDailyRecurrenceUntil(Date.from(recurrenceStartDate.plusDays(4).toInstant())));
 
 		Event after = before.clone();
-		after.addException(recurrenceStartDate.plusDays(1).toDate());
+		after.addException(Date.from(recurrenceStartDate.plusDays(1).toInstant()));
 
 		assertThat(after.hasImportantChangesExceptedEventException(before)).isFalse();
 	}
@@ -988,12 +990,12 @@ public class EventTest {
 	@Test
 	public void testHasImportantChangeWithRemovedExceptionalOccurrence() {
 		Event before = new Event();
-		DateTime recurrenceStartDate = new DateTime(2012, Calendar.FEBRUARY, 23, 14, 0);
-		before.setStartDate(recurrenceStartDate.toDate());
-		before.setRecurrence(createDailyRecurrenceUntil(recurrenceStartDate.plusDays(4).toDate()));
+		ZonedDateTime recurrenceStartDate = ZonedDateTime.of(2012, 1, 23, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId()));
+		before.setStartDate(Date.from(recurrenceStartDate.toInstant()));
+		before.setRecurrence(createDailyRecurrenceUntil(Date.from(recurrenceStartDate.plusDays(4).toInstant())));
 
 		Event after = before.clone();
-		Date secondOccurrenceDate = recurrenceStartDate.plusDays(1).toDate();
+		Date secondOccurrenceDate = Date.from(recurrenceStartDate.plusDays(1).toInstant());
 
 		before.addEventException(before.getOccurrence(secondOccurrenceDate));
 		after.addException(secondOccurrenceDate);
@@ -1004,12 +1006,12 @@ public class EventTest {
 	@Test
 	public void testHasImportantChangeExceptedEventExceptionWithRemovedExceptionalOccurrence() {
 		Event before = new Event();
-		DateTime recurrenceStartDate = new DateTime(2012, Calendar.FEBRUARY, 23, 14, 0);
-		before.setStartDate(recurrenceStartDate.toDate());
-		before.setRecurrence(createDailyRecurrenceUntil(recurrenceStartDate.plusDays(4).toDate()));
+		ZonedDateTime recurrenceStartDate = ZonedDateTime.of(2012, 1, 23, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId()));
+		before.setStartDate(Date.from(recurrenceStartDate.toInstant()));
+		before.setRecurrence(createDailyRecurrenceUntil(Date.from(recurrenceStartDate.plusDays(4).toInstant())));
 
 		Event after = before.clone();
-		Date secondOccurrenceDate = recurrenceStartDate.plusDays(1).toDate();
+		Date secondOccurrenceDate = Date.from(recurrenceStartDate.plusDays(1).toInstant());
 
 		before.addEventException(before.getOccurrence(secondOccurrenceDate));
 		after.addException(secondOccurrenceDate);
@@ -1020,12 +1022,12 @@ public class EventTest {
 	@Test
 	public void testGetEventExceptionsWithImportantChangesWithRemovedExceptionalOccurrence() {
 		Event before = new Event();
-		DateTime recurrenceStartDate = new DateTime(2012, Calendar.FEBRUARY, 23, 14, 0);
-		before.setStartDate(recurrenceStartDate.toDate());
-		before.setRecurrence(createDailyRecurrenceUntil(recurrenceStartDate.plusDays(4).toDate()));
+		ZonedDateTime recurrenceStartDate = ZonedDateTime.of(2012, 1, 23, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId()));
+		before.setStartDate(Date.from(recurrenceStartDate.toInstant()));
+		before.setRecurrence(createDailyRecurrenceUntil(Date.from(recurrenceStartDate.plusDays(4).toInstant())));
 
 		Event after = before.clone();
-		Date secondOccurrenceDate = recurrenceStartDate.plusDays(1).toDate();
+		Date secondOccurrenceDate = Date.from(recurrenceStartDate.plusDays(1).toInstant());
 
 		before.addEventException(before.getOccurrence(secondOccurrenceDate));
 		after.addException(secondOccurrenceDate);
@@ -1263,7 +1265,7 @@ public class EventTest {
 		event.setCreatorDisplayName("creator");
 		event.setCreatorEmail("creator@email.com");
 		event.setLocation("location");
-		event.setStartDate(new DateTime(2012, Calendar.APRIL, 25, 14, 0).toDate());
+		event.setStartDate(Date.from(ZonedDateTime.of(2012, 3, 25, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
 		event.setDuration(3660);
 		event.setAlert(3);
 		event.setCategory("category");
@@ -1272,8 +1274,8 @@ public class EventTest {
 		event.setAnonymized(false);
 		event.setType(EventType.VEVENT);
 		event.setOpacity(EventOpacity.TRANSPARENT);
-		event.setTimeCreate(new DateTime(2012, Calendar.APRIL, 24, 14, 0).toDate());
-		event.setTimeUpdate(new DateTime(2012, Calendar.APRIL, 24, 18, 0).toDate());
+		event.setTimeCreate(Date.from(ZonedDateTime.of(2012, Calendar.APRIL, 24, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
+		event.setTimeUpdate(Date.from(ZonedDateTime.of(2012, Calendar.APRIL, 24, 18, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
 		event.setTimezoneName("timezone");
 		event.setInternalEvent(false);
 		event.setSequence(2);
@@ -1298,14 +1300,14 @@ public class EventTest {
 		event.setOwnerEmail("owner@email.com");
 		event.setCreatorDisplayName("creator");
 		event.setCreatorEmail("creator@email.com");
-		event.setStartDate(new DateTime(2012, Calendar.APRIL, 25, 14, 0).toDate());
+		event.setStartDate(Date.from(ZonedDateTime.of(2012, Calendar.APRIL, 25, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
 		event.setDuration(3660);
 		event.setPriority(2);
 		event.setAllday(false);
 		event.setType(EventType.VEVENT);
 		event.setOpacity(EventOpacity.TRANSPARENT);
-		event.setTimeCreate(new DateTime(2012, Calendar.APRIL, 24, 14, 0).toDate());
-		event.setTimeUpdate(new DateTime(2012, Calendar.APRIL, 24, 18, 0).toDate());
+		event.setTimeCreate(Date.from(ZonedDateTime.of(2012, Calendar.APRIL, 24, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
+		event.setTimeUpdate(Date.from(ZonedDateTime.of(2012, Calendar.APRIL, 24, 18, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
 		event.setTimezoneName("timezone");
 		event.setInternalEvent(false);
 		event.setSequence(2);
@@ -1354,7 +1356,7 @@ public class EventTest {
 		recurrence.setKind(RecurrenceKind.daily);
 
 		Event exception = createNonRecurrentEventWithMostFields();
-		exception.setRecurrenceId(new DateTime(2012, Calendar.MAY, 24, 14, 0).toDate());
+		exception.setRecurrenceId(Date.from(ZonedDateTime.of(2012, Calendar.MAY, 24, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
 
 		recurrence.setEventExceptions(Sets.newHashSet(exception));
 
@@ -1373,7 +1375,7 @@ public class EventTest {
 
 		Event exception = createNonRecurrentEventWithMostFields();
 		exception.setPrivacy(EventPrivacy.PRIVATE);
-		exception.setRecurrenceId(new DateTime(2012, Calendar.MAY, 24, 14, 0).toDate());
+		exception.setRecurrenceId(Date.from(ZonedDateTime.of(2012, Calendar.MAY, 24, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
 
 		recurrence.setEventExceptions(Sets.newHashSet(exception));
 		privateEvent.setRecurrence(recurrence);
@@ -1384,7 +1386,7 @@ public class EventTest {
 		anonymizedRecurrence.setKind(RecurrenceKind.daily);
 
 		Event anonymizedException = createPrivateAnonymizedEvent();
-		anonymizedException.setRecurrenceId(new DateTime(2012, Calendar.MAY, 24, 14, 0).toDate());
+		anonymizedException.setRecurrenceId(Date.from(ZonedDateTime.of(2012, Calendar.MAY, 24, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant()));
 
 		anonymizedRecurrence.setEventExceptions(Sets.newHashSet(anonymizedException));
 

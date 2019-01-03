@@ -35,6 +35,7 @@ package org.obm.sync.host;
 
 import java.io.Serializable;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -157,7 +158,7 @@ public class ObmHost implements Serializable{
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("id", id)
 			.add("domainId", domainId)
 			.add("name", name)

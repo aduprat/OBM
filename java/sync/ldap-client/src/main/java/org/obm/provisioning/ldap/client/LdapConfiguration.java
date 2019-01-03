@@ -36,8 +36,6 @@ import org.obm.provisioning.ldap.client.bean.LdapDomain;
 import org.obm.provisioning.ldap.client.bean.LdapGroup;
 import org.obm.provisioning.ldap.client.bean.LdapUser;
 
-import com.google.common.base.Throwables;
-
 import fr.aliacom.obm.common.user.UserPassword;
 
 public class LdapConfiguration implements Configuration {
@@ -63,7 +61,7 @@ public class LdapConfiguration implements Configuration {
 			return new Dn(bindDn);
 		}
 		catch (LdapInvalidDnException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -78,7 +76,7 @@ public class LdapConfiguration implements Configuration {
 			return new Dn(String.format("ou=users,dc=%s,dc=local", domain.get()));
 		}
 		catch (LdapInvalidDnException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -98,7 +96,7 @@ public class LdapConfiguration implements Configuration {
 			return new Dn(String.format("ou=groups,dc=%s,dc=local", domain.get())); // TODO: This si dependant on the Domain
 		}
 		catch (LdapInvalidDnException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

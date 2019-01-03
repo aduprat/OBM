@@ -57,6 +57,7 @@ public class LDAPUtilsTest {
 	private LDAPUtils ldapUtils;
 	private NamingEnumeration<SearchResult> namingEnumeration;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
 		control = createControl();

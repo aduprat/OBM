@@ -45,9 +45,9 @@ import org.junit.Test;
 import org.obm.servlet.filter.qos.QoSAction;
 import org.obm.servlet.filter.qos.QoSContinuationSupport;
 import org.obm.servlet.filter.qos.QoSContinuationSupport.QoSContinuation;
-import org.obm.servlet.filter.qos.handlers.TransactionalKeyRequestsInfoStore.RequestInfoReference;
 import org.obm.servlet.filter.qos.handlers.NPerClientQoSRequestHandler.RequestDoneFunction;
 import org.obm.servlet.filter.qos.handlers.NPerClientQoSRequestHandler.StartRequestFunction;
+import org.obm.servlet.filter.qos.handlers.TransactionalKeyRequestsInfoStore.RequestInfoReference;
 
 public class NPerClientQoSRequestSuspendHandlerTest {
 	
@@ -61,6 +61,7 @@ public class NPerClientQoSRequestSuspendHandlerTest {
 	private String key;
 	private QoSContinuationSupport continuationSupport;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() {
 		control = createStrictControl();
@@ -98,6 +99,7 @@ public class NPerClientQoSRequestSuspendHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void acceptFirstRequest() {
 		testee = new NPerClientQoSRequestSuspendHandler<String>(keyProvider, requestInfoStore, continuationSupport, 2);
@@ -112,6 +114,7 @@ public class NPerClientQoSRequestSuspendHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void acceptSecondRequest() {
 		testee = new NPerClientQoSRequestSuspendHandler<String>(keyProvider, requestInfoStore, continuationSupport, 2);
@@ -126,6 +129,7 @@ public class NPerClientQoSRequestSuspendHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void tooManyRequestsSuspend() {
 		testee = new NPerClientQoSRequestSuspendHandler<String>(keyProvider, requestInfoStore, continuationSupport, 2);
@@ -143,6 +147,7 @@ public class NPerClientQoSRequestSuspendHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void requestDoneTrackNbRequest() {
 		testee = new NPerClientQoSRequestSuspendHandler<String>(keyProvider, requestInfoStore, continuationSupport, 2);
@@ -155,6 +160,7 @@ public class NPerClientQoSRequestSuspendHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void cleanupEmptyInfo() {
 		testee = new NPerClientQoSRequestSuspendHandler<String>(keyProvider, requestInfoStore, continuationSupport, 2);
@@ -166,6 +172,7 @@ public class NPerClientQoSRequestSuspendHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void cleanupBusyInfo() {
 		testee = new NPerClientQoSRequestSuspendHandler<String>(keyProvider, requestInfoStore, continuationSupport, 2);
@@ -176,6 +183,7 @@ public class NPerClientQoSRequestSuspendHandlerTest {
 		control.verify();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void cleanupBusyInfoSuspendedQueue() {
 		testee = new NPerClientQoSRequestSuspendHandler<String>(keyProvider, requestInfoStore, continuationSupport, 2);

@@ -12,7 +12,6 @@
 	<packaging>jar</packaging>
 	<name>Satellite client library</name>
 	<url>http://www.obm.org/</url>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<licenses>
 		<license>
@@ -64,7 +63,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
 	</dependencies>
 

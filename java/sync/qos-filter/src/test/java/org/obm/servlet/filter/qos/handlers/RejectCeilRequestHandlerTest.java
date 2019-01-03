@@ -44,9 +44,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obm.servlet.filter.qos.QoSAction;
 import org.obm.servlet.filter.qos.QoSContinuationSupport;
-import org.obm.servlet.filter.qos.handlers.TransactionalKeyRequestsInfoStore.RequestInfoReference;
 import org.obm.servlet.filter.qos.handlers.NPerClientQoSRequestHandler.RequestDoneFunction;
 import org.obm.servlet.filter.qos.handlers.NPerClientQoSRequestHandler.StartRequestFunction;
+import org.obm.servlet.filter.qos.handlers.TransactionalKeyRequestsInfoStore.RequestInfoReference;
 
 
 public class RejectCeilRequestHandlerTest {
@@ -62,6 +62,7 @@ public class RejectCeilRequestHandlerTest {
 	private String key;
 	private QoSContinuationSupport continuationSupport;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() {
 		control = createStrictControl();
@@ -79,7 +80,6 @@ public class RejectCeilRequestHandlerTest {
 		testee = new RejectCeilRequestHandler<String>(keyProvider, requestInfoStore, continuationSupport, suspendCeil, rejectCeil);
 	}
 	
-	@SuppressWarnings("unused")
 	@Test(expected=IllegalArgumentException.class)
 	public void testRejectCeilEqualsToSuspend() {
 		int suspendCeil = 2;
@@ -87,7 +87,6 @@ public class RejectCeilRequestHandlerTest {
 		new RejectCeilRequestHandler<String>(keyProvider, requestInfoStore, continuationSupport, suspendCeil, rejectCeil);
 	}
 	
-	@SuppressWarnings("unused")
 	@Test(expected=IllegalArgumentException.class)
 	public void testRejectCeilLessThanSuspend() {
 		int suspendCeil = 2;
@@ -95,7 +94,6 @@ public class RejectCeilRequestHandlerTest {
 		new RejectCeilRequestHandler<String>(keyProvider, requestInfoStore, continuationSupport, suspendCeil, rejectCeil);
 	}
 	
-	@SuppressWarnings("unused")
 	@Test
 	public void testRejectCeilGreaterThanSuspend() {
 		int suspendCeil = 2;
@@ -152,6 +150,7 @@ public class RejectCeilRequestHandlerTest {
 		assertThat(actual).isEqualTo(QoSAction.SUSPEND);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void rejectFourthRequest() {
 		HttpServletRequest fourthRequest = control.createMock(HttpServletRequest.class);

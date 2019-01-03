@@ -34,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
@@ -62,12 +63,16 @@ public class MysqlConfigurationCheckingTest {
 				
 			})));
 	
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
 	private @Inject TemporaryFolder temporaryFolder;
 	private @Inject WebServer server;
 
-	@Test(expected=UnsupportedDatabaseFlavourException.class)
+	@Test
 	public void startingShouldFailWhenMysql() throws Exception {
 		try {
+			expectedException.expect(UnsupportedDatabaseFlavourException.class);
 			server.start();
 		} finally {
 			assertThat(server.isStarted()).isFalse();

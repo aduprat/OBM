@@ -35,6 +35,7 @@ import java.util.List;
 
 import org.obm.push.utils.collection.ImmutableFixedSizeList;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class UserPhones {
@@ -160,7 +161,7 @@ public class UserPhones {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("phones", phones)
 				.add("faxes", faxes)
 				.add("mobile", mobile)

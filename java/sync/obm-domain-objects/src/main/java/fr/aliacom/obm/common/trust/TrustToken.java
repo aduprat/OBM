@@ -31,6 +31,7 @@ package fr.aliacom.obm.common.trust;
 
 import java.util.Date;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import fr.aliacom.obm.common.user.UserPassword;
@@ -70,7 +71,10 @@ public class TrustToken {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("token", token).add("creationDate", creationDate).toString();
+		return MoreObjects.toStringHelper(this)
+				.add("token", token)
+				.add("creationDate", creationDate)
+				.toString();
 	}
 
 	@Override

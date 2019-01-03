@@ -32,7 +32,8 @@ package org.obm.imap.archive.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joda.time.LocalTime;
+import java.time.LocalTime;
+
 import org.junit.Test;
 
 

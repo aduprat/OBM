@@ -30,13 +30,14 @@
 
 package org.obm.imap.archive.beans;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.joda.time.LocalTime;
 import org.obm.imap.archive.dto.DomainConfigurationDto;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -69,7 +70,7 @@ public class DomainConfiguration {
 							.dayOfMonth(DayOfMonth.of(configuration.dayOfMonth))
 							.dayOfYear(DayOfYear.of(configuration.dayOfYear))
 							.build())
-						.time(LocalTime.parse(configuration.hour + ":" + configuration.minute))
+						.time(LocalTime.parse(String.format("%02d:%02d", configuration.hour, configuration.minute)))
 						.build())
 				.excludedFolder(configuration.excludedFolder)
 				.scopeUsersIncludes((configuration.scopeUsersIncludes != null) ? configuration.scopeUsersIncludes : DEFAULT_SCOPE_INCLUDES)
@@ -205,12 +206,12 @@ public class DomainConfiguration {
 					schedulingConfiguration, 
 					archiveMainFolder, 
 					excludedFolder, 
-					Objects.firstNonNull(scopeUsersIncludes, DEFAULT_SCOPE_INCLUDES), 
+					MoreObjects.firstNonNull(scopeUsersIncludes, DEFAULT_SCOPE_INCLUDES), 
 					scopeUsers.build(), 
-					Objects.firstNonNull(scopeSharedMailboxesIncludes, DEFAULT_SCOPE_INCLUDES), 
+					MoreObjects.firstNonNull(scopeSharedMailboxesIncludes, DEFAULT_SCOPE_INCLUDES), 
 					scopeSharedMailboxes.build(), 
-					Objects.firstNonNull(mailing, Mailing.empty()),
-					Objects.firstNonNull(moveEnabled, false));
+					MoreObjects.firstNonNull(mailing, Mailing.empty()),
+					MoreObjects.firstNonNull(moveEnabled, false));
 		}
 	}
 	
@@ -355,7 +356,7 @@ public class DomainConfiguration {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("domain", domain)
 			.add("state", state)
 			.add("recurrence", schedulingConfiguration)

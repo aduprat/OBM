@@ -38,10 +38,10 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.easymock.IMocksControl;
-import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

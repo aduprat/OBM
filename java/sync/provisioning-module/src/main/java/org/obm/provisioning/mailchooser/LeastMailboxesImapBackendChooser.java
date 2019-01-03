@@ -40,7 +40,6 @@ import org.obm.sync.serviceproperty.ServiceProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -98,7 +97,7 @@ public class LeastMailboxesImapBackendChooser implements ImapBackendChooser {
 
 			return host;
 		} catch (SQLException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

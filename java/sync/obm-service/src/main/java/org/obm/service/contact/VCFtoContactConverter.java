@@ -147,7 +147,7 @@ public class VCFtoContactConverter {
 	}
 
 	private boolean hasNoWorkPhoneYet(Contact contact) {
-		return contact.getPhones().get(ContactLabel.PHONE) == null;
+		return contact.getPhones().get(ContactLabel.PHONE.getContactLabel()) == null;
 	}
 
 	private void addAddress(Contact contact, List<ezvcard.property.Address> addresses) {

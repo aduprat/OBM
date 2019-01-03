@@ -34,6 +34,7 @@ package fr.aliacom.obm.common.mailshare;
 import org.obm.sync.host.ObmHost;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -112,9 +113,9 @@ public class SharedMailbox {
 			Preconditions.checkState(id != null);
 			Preconditions.checkState(domain != null);
 
-			archive = Objects.firstNonNull(archive, false);
-			quota = Objects.firstNonNull(quota, 0);
-			delegation = Objects.firstNonNull(delegation, "");
+			archive = MoreObjects.firstNonNull(archive, false);
+			quota = MoreObjects.firstNonNull(quota, 0);
+			delegation = MoreObjects.firstNonNull(delegation, "");
 
 			return new SharedMailbox(id, domain, Optional.fromNullable(name), archive, quota,
 					Optional.fromNullable(server), delegation, Optional.fromNullable(description), Optional.fromNullable(email));
@@ -205,7 +206,7 @@ public class SharedMailbox {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("id", id)
 			.add("description", description)
 			.add("domain", domain)

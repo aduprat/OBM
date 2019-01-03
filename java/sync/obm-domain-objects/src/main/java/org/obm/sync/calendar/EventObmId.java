@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import org.obm.push.utils.index.Indexed;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class EventObmId implements Indexed<Integer>, Serializable {
@@ -78,7 +79,7 @@ public class EventObmId implements Indexed<Integer>, Serializable {
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("obmId", obmId)
 			.toString();
 	}

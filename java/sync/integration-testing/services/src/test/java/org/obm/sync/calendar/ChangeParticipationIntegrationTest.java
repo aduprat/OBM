@@ -41,7 +41,6 @@ import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +48,7 @@ import org.junit.runner.RunWith;
 import org.obm.guice.GuiceModule;
 import org.obm.push.arquillian.ManagedTomcatGuiceArquillianRunner;
 import org.obm.push.arquillian.extension.deployment.DeployForEachTests;
+import org.obm.push.utils.DateUtils;
 import org.obm.sync.IntegrationTestICSUtils.StoreMessageReceivedListener;
 import org.obm.sync.ObmSyncArchiveUtils;
 import org.obm.sync.ObmSyncIntegrationTest;
@@ -194,7 +194,7 @@ public class ChangeParticipationIntegrationTest extends ObmSyncIntegrationTest {
 				recurrenceId, Participation.accepted(), 0, true);
 		
 		Event event = calendarClient.getEventFromExtId(ownerToken, ownerEmail, toStoreEvent.getExtId());
-		Event occurrence = event.getOccurrence(new DateTime("2013-06-02T12:00:00Z").toDate());
+		Event occurrence = event.getOccurrence(DateUtils.date("2013-06-02T12:00:00Z"));
 		assertThat(changed).isTrue();
 		assertThat(event.findAttendeeFromEmail(ownerEmail).getParticipation()).isEqualTo(Participation.accepted());
 		assertThat(event.findAttendeeFromEmail(attendeeEmail).getParticipation()).isEqualTo(Participation.needsAction());

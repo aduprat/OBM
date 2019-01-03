@@ -35,6 +35,7 @@ package org.obm.configuration;
 import org.obm.configuration.utils.IniFile;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -159,7 +160,7 @@ public class DatabaseConfigurationImpl implements DatabaseConfiguration {
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(getClass())
 				.add("host", getDatabaseHost())
 				.add("port", getDatabasePort())

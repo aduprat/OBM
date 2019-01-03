@@ -37,6 +37,7 @@ import org.apache.directory.api.ldap.model.entry.ModificationOperation;
 import org.obm.provisioning.Group;
 import org.obm.provisioning.ldap.client.Configuration;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -97,7 +98,7 @@ public class LdapUserMembership {
 			Preconditions.checkState(domain != null, "domain should not be null");
 			Preconditions.checkState(mailBox != null, "mailBox should not be null");
 
-			Boolean groupHasEmail = Objects.firstNonNull(targetGroupHasEmail, false);
+			Boolean groupHasEmail = MoreObjects.firstNonNull(targetGroupHasEmail, false);
 
 			return new LdapUserMembership(memberUid, buildMember(domain), mailBox, groupHasEmail);
 		}
@@ -177,7 +178,7 @@ public class LdapUserMembership {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("memberUid", memberUid)
 			.add("member", member)
 			.add("mailBox", mailBox)

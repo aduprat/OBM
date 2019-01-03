@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Date;
 
 import org.junit.Test;
-import org.obm.DateUtils;
+import org.obm.push.utils.DateUtils;
 import org.obm.sync.book.AddressBook.Id;
 
 

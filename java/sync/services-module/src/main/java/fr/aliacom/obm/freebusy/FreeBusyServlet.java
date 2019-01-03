@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -218,7 +218,7 @@ public class FreeBusyServlet extends HttpServlet {
 		fbr.setStart(dstart);
 		fbr.setEnd(dend);
 		fbr.addAttendee(UserAttendee.builder().email(attendee).build());
-		fbr.setOwner(Objects.firstNonNull(organizer, attendee));
+		fbr.setOwner(MoreObjects.firstNonNull(organizer, attendee));
 		return fbr;
 	}
 }

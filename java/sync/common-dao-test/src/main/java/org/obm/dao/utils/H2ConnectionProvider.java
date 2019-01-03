@@ -39,7 +39,6 @@ import java.sql.Statement;
 import org.obm.dbcp.DatabaseConnectionProvider;
 import org.obm.push.utils.JDBCUtils;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -59,7 +58,7 @@ public class H2ConnectionProvider implements DatabaseConnectionProvider {
 			return h2Instance.getConnection();
 		}
 		catch (Exception e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

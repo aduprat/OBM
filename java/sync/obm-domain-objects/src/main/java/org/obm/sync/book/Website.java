@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import org.obm.annotations.database.DatabaseField;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
@@ -109,7 +110,7 @@ public class Website implements Serializable {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("label", label)
 				.add("url", url)
 				.toString();

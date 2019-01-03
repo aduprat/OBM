@@ -59,6 +59,7 @@ public class DatabaseTruncationServiceImpl implements DatabaseTruncationService 
 		this.metadataService = metadataService;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getTruncatingEntity(T entity) throws SQLException {
 		if (entity == null) {
@@ -99,9 +100,9 @@ public class DatabaseTruncationServiceImpl implements DatabaseTruncationService 
 			return newInstance;
 		}
 		catch (Exception e) {
-			Throwables.propagateIfInstanceOf(e, SQLException.class);
+			Throwables.throwIfInstanceOf(e, SQLException.class);
 
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

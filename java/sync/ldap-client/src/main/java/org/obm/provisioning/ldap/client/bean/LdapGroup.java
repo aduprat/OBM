@@ -43,6 +43,7 @@ import org.obm.provisioning.Group;
 import org.obm.provisioning.ldap.client.Configuration;
 import org.obm.provisioning.ldap.client.LdapEntity;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -263,7 +264,7 @@ public class LdapGroup {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("cn", cn)
 			.add("gidNumber", gidNumber)
 			.add("mailAccess", mailAccess)

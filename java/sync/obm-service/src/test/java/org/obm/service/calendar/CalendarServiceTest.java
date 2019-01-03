@@ -116,27 +116,31 @@ public class CalendarServiceTest {
 	@Test
 	public void testImportEventInThePast() throws Exception {
 		testImportEvent("ics/inPastEvent.ics", ImmutableMap.of(
-			"organizer@test.tlse.lng", Participation.State.ACCEPTED,
-			"user@test.tlse.lng", Participation.State.ACCEPTED)
+				"organizer@test.tlse.lng", Participation.State.ACCEPTED,
+				"user@test.tlse.lng", Participation.State.ACCEPTED),
+			true
 		);
 	}
 
 	@Test
 	public void testImportEventInTheFuture() throws Exception {
 		testImportEvent("ics/inFutureEvent.ics", ImmutableMap.of(
-			"organizer@test.tlse.lng", Participation.State.ACCEPTED,
-			"user@test.tlse.lng", Participation.State.NEEDSACTION)
+				"organizer@test.tlse.lng", Participation.State.ACCEPTED,
+				"user@test.tlse.lng", Participation.State.NEEDSACTION),
+			false
 		);
 	}
 
-	private void testImportEvent(String icsName, Map<String, Participation.State> expectedAttendeesParticipation) throws Exception {
+	private void testImportEvent(String icsName, Map<String, Participation.State> expectedAttendeesParticipation, boolean isInThePast) throws Exception {
 		String ics = IOUtils.toString(getClass().getClassLoader().getResourceAsStream(icsName));
 		UserAttendee organizer = UserAttendee.builder().email("organizer@test.tlse.lng").participation(Participation.needsAction()).build();
 		UserAttendee attendee = UserAttendee.builder().email(user.getLoginAtDomain()).participation(Participation.needsAction()).build();
 
 		expect(userService.getUserFromCalendar(calendar, domainName)).andReturn(user);
 		expect(userService.getUserFromAccessToken(token)).andReturn(user);
-		expect(userService.getUserFromAttendee(eq(organizer), eq(domainName))).andReturn(null);
+		if (isInThePast) {
+			expect(userService.getUserFromAttendee(eq(organizer), eq(domainName))).andReturn(null);
+		}
 		expect(userService.getUserFromAttendee(eq(attendee), eq(domainName))).andReturn(user);
 		expect(attendeeService.findAttendee(null, attendee.getEmail(), true, user.getDomain(), user.getUid())).andReturn(attendee);
 		expect(attendeeService.findAttendee(null, organizer.getEmail(), true, user.getDomain(), user.getUid())).andReturn(organizer);

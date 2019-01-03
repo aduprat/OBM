@@ -35,10 +35,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createControl;
 import static org.easymock.EasyMock.expect;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.easymock.IMocksControl;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.obm.utils.ObmHelper;
@@ -49,18 +52,20 @@ public class TestingDateProviderTest {
 	
 	private ObmHelper obmHelper;
 	private TestingDateProvider testee;
+	private DateFormat dateFormat;
 	
 	@Before
 	public void setup() {
 		control = createControl();
 		
+		dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		obmHelper = control.createMock(ObmHelper.class);
 		testee = new TestingDateProviderImpl(obmHelper);
 	}
 	
 	@Test
-	public void getDateShouldReturnDateFromObmHelperWhenDefaultDuration() {
-		Date expectedDate = DateTime.parse("2014-08-27T12:18:00.000Z").toDate();
+	public void getDateShouldReturnDateFromObmHelperWhenDefaultDuration() throws ParseException {
+		Date expectedDate = dateFormat.parse("2014-08-27");
 		expect(obmHelper.getDate())
 			.andReturn(expectedDate);
 		
@@ -72,16 +77,15 @@ public class TestingDateProviderTest {
 	}
 	
 	@Test
-	public void getDateShouldReturnUpdatedDateWhenDurationHasBeenSet() {
-		DateTime dateTime = DateTime.parse("2014-08-17T12:18:00.000Z");
-		Date currentDate = dateTime.toDate();
+	public void getDateShouldReturnUpdatedDateWhenDurationHasBeenSet() throws ParseException {
+		Date dateTime = dateFormat.parse("2014-08-17");
 		expect(obmHelper.getDate())
-			.andReturn(currentDate).times(2);
+			.andReturn(dateTime).times(2);
 		
-		Date expectedDate = dateTime.plusDays(10).toDate();
+		Date expectedDate = DateUtils.addDays(dateTime, 10);
 		
 		control.replay();
-		testee.setReferenceDate(DateTime.parse("2014-08-27T12:18:00.000Z"));
+		testee.setReferenceDate(dateFormat.parse("2014-08-27"));
 		Date date = testee.getDate();
 		control.verify();
 		
@@ -89,16 +93,15 @@ public class TestingDateProviderTest {
 	}
 	
 	@Test
-	public void getDateShouldReturnUpdatedDateWhenDurationHasBeenSetAndIsNegative() {
-		DateTime dateTime = DateTime.parse("2014-08-17T12:18:00.000Z");
-		Date currentDate = dateTime.toDate();
+	public void getDateShouldReturnUpdatedDateWhenDurationHasBeenSetAndIsNegative() throws ParseException {
+		Date dateTime = dateFormat.parse("2014-08-17");
 		expect(obmHelper.getDate())
-			.andReturn(currentDate).times(2);
+			.andReturn(dateTime).times(2);
 		
-		Date expectedDate = dateTime.minusDays(10).toDate();
+		Date expectedDate = DateUtils.addDays(dateTime, -10);
 		
 		control.replay();
-		testee.setReferenceDate(DateTime.parse("2014-08-07T12:18:00.000Z"));
+		testee.setReferenceDate(dateFormat.parse("2014-08-07"));
 		Date date = testee.getDate();
 		control.verify();
 		

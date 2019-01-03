@@ -54,7 +54,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
-import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
@@ -103,9 +102,11 @@ public class ResetImapArchiveProcessing extends ImapArchiveProcessing {
 			resetDaos(domain);
 			resetArchiveMailboxes(domain, configuration.getLogger(), configuration.getConfiguration());
 			resetArchiveFlag(domain, configuration.getLogger(), configuration.getConfiguration());
+		} catch (TestingModeRequiredException e) {
+			throw e;
 		} catch (Exception e) {
 			logger.error("Error on archive treatment: ", e);
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		} finally {
 			logger.info("End of IMAP Archive reset for domain {}", domain.getName());
 		}

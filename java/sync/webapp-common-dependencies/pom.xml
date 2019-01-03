@@ -11,7 +11,6 @@
 	<artifactId>webapp-common-dependencies</artifactId>
 	<name>Common dependencies to deploy to the servlet container</name>
 	<packaging>pom</packaging>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<build>
 		<plugins>
@@ -53,8 +52,8 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

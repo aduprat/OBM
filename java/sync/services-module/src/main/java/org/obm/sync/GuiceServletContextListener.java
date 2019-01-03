@@ -39,7 +39,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.CreationException;
 import com.google.inject.Guice;
@@ -77,7 +77,7 @@ public class GuiceServletContextListener implements ServletContextListener {
 	@VisibleForTesting Module selectGuiceModule(ServletContext servletContext)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException {
 
-		return Objects.firstNonNull(newWebXmlModuleInstance(servletContext), new ObmSyncModule());
+		return MoreObjects.firstNonNull(newWebXmlModuleInstance(servletContext), new ObmSyncModule());
 	}
 
     @VisibleForTesting Module newWebXmlModuleInstance(ServletContext servletContext)

@@ -41,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -71,8 +70,10 @@ public class ImapArchiveLifeCycleHandler implements LifeCycleHandler {
 		try {
 			checkConfiguration();
 			restoreScheduledTasks();
+		} catch (RuntimeException e) {
+			throw e;
 		} catch (Exception e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

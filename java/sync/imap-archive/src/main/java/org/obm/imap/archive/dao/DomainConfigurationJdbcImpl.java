@@ -34,9 +34,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalTime;
 import java.util.List;
 
-import org.joda.time.LocalTime;
 import org.obm.dbcp.DatabaseConnectionProvider;
 import org.obm.imap.archive.beans.ArchiveRecurrence;
 import org.obm.imap.archive.beans.ConfigurationState;
@@ -221,7 +221,7 @@ public class DomainConfigurationJdbcImpl implements DomainConfigurationDao {
 							.dayOfYear(DayOfYear.of(rs.getInt(FIELDS.DAY_OF_YEAR)))
 							.repeat(RepeatKind.valueOf(rs.getString(FIELDS.REPEAT_KIND)))
 							.build())
-						.time(new LocalTime(rs.getInt(FIELDS.HOUR), rs.getInt(FIELDS.MINUTE)))
+						.time(LocalTime.of(rs.getInt(FIELDS.HOUR), rs.getInt(FIELDS.MINUTE)))
 						.build())
 				.archiveMainFolder(rs.getString(FIELDS.ARCHIVE_MAIN_FOLDER))
 				.excludedFolder(rs.getString(FIELDS.EXCLUDED_FOLDER))

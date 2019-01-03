@@ -33,7 +33,8 @@ package org.obm.imap.archive.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joda.time.LocalTime;
+import java.time.LocalTime;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;

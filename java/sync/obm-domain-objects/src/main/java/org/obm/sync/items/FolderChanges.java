@@ -37,7 +37,7 @@ import java.util.Set;
 import org.obm.push.utils.DateUtils;
 import org.obm.sync.book.Folder;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -84,9 +84,9 @@ public class FolderChanges {
 
 		public FolderChanges build() {
 			return new FolderChanges(
-					Objects.firstNonNull(updated, Sets.<Folder>newHashSet()),
-					Objects.firstNonNull(removed, Sets.<Folder>newHashSet()),
-					Objects.firstNonNull(lastSync, DateUtils.getEpochPlusOneSecondCalendar().getTime())
+					MoreObjects.firstNonNull(updated, Sets.<Folder>newHashSet()),
+					MoreObjects.firstNonNull(removed, Sets.<Folder>newHashSet()),
+					MoreObjects.firstNonNull(lastSync, DateUtils.getEpochPlusOneSecondCalendar().getTime())
 					);
 		}
 	}

@@ -30,10 +30,11 @@
 
 package org.obm.imap.archive.services;
 
-import org.joda.time.DateTime;
+import java.util.Date;
+
 import org.obm.sync.date.DateProvider;
 
 public interface TestingDateProvider extends DateProvider {
 	
-	void setReferenceDate(DateTime referenceDate);
+	void setReferenceDate(Date referenceDate);
 }

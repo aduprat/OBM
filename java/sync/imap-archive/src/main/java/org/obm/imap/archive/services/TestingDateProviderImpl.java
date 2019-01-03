@@ -30,10 +30,12 @@
 
 package org.obm.imap.archive.services;
 
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
-import org.joda.time.DateTime;
-import org.joda.time.Period;
 import org.obm.utils.ObmHelper;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -45,20 +47,20 @@ import com.google.inject.Singleton;
 public class TestingDateProviderImpl implements TestingDateProvider {
 
 	private final ObmHelper obmHelper;
-	private Period period;
+	private Duration period;
 
 	@Inject
 	@VisibleForTesting
 	protected TestingDateProviderImpl(ObmHelper obmHelper) {
 		this.obmHelper = obmHelper;
-		this.period = new Period(0l);
+		this.period = Duration.ofMillis(0l);
 	}
 	
 	@Override
 	public Date getDate() {
-		return new DateTime(currentDate())
-				.plus(period)
-				.toDate();
+		return Date.from(ZonedDateTime.ofInstant(currentDate().toInstant(), ZoneId.of(ZoneOffset.UTC.getId()))
+							.plus(period)
+							.toInstant());
 	}
 
 	protected Date currentDate() {
@@ -66,8 +68,8 @@ public class TestingDateProviderImpl implements TestingDateProvider {
 	}
 
 	@Override
-	public void setReferenceDate(DateTime referenceDate) {
+	public void setReferenceDate(Date referenceDate) {
 		Preconditions.checkArgument(referenceDate != null);
-		this.period = new Period(new DateTime(currentDate()), referenceDate); 
+		this.period = Duration.between(currentDate().toInstant(), referenceDate.toInstant()); 
 	}
 }

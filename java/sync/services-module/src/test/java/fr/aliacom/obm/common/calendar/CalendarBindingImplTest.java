@@ -33,6 +33,7 @@ package fr.aliacom.obm.common.calendar;
 
 import static fr.aliacom.obm.ToolBox.mockAccessToken;
 import static fr.aliacom.obm.common.calendar.EventNotificationServiceTestTools.after;
+import static org.apache.commons.lang3.time.DateUtils.addMonths;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createControl;
 import static org.easymock.EasyMock.createMock;
@@ -47,6 +48,10 @@ import static org.easymock.EasyMock.verify;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -57,17 +62,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
-import net.fortuna.ical4j.data.ParserException;
-
 import org.apache.commons.io.IOUtils;
 import org.easymock.IMocksControl;
-import org.joda.time.DateTime;
-import org.joda.time.Months;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.obm.DateUtils;
 import org.obm.configuration.DatabaseConfiguration;
 import org.obm.dbcp.DatabaseConfigurationFixturePostgreSQL;
 import org.obm.dbcp.DatabaseConnectionProvider;
@@ -79,6 +79,7 @@ import org.obm.guice.GuiceRunner;
 import org.obm.icalendar.Ical4jHelper;
 import org.obm.icalendar.Ical4jUser;
 import org.obm.provisioning.dao.exceptions.FindException;
+import org.obm.push.utils.DateUtils;
 import org.obm.service.calendar.CalendarService;
 import org.obm.service.domain.DomainService;
 import org.obm.service.user.UserService;
@@ -137,6 +138,7 @@ import fr.aliacom.obm.common.user.UserLogin;
 import fr.aliacom.obm.services.constant.ObmSyncConfigurationService;
 import fr.aliacom.obm.utils.CalendarRights;
 import fr.aliacom.obm.utils.HelperService;
+import net.fortuna.ical4j.data.ParserException;
 
 @GuiceModule(CalendarBindingImplTest.Env.class)
 @RunWith(GuiceRunner.class)
@@ -1725,7 +1727,7 @@ public class CalendarBindingImplTest {
 		int currentSequence = previousSequence + 1;
 		Event currentEvent = ToolBox.getFakeDailyRecurrentEvent(eventDate, currentSequence,
 				userAttendee, angletonAttendee, dullesAttendee);
-		Date exceptionDate = new DateTime(eventDate).plusMonths(1).toDate();
+		Date exceptionDate = addMonths(eventDate, 1);
 		currentEvent.addException(exceptionDate);
 		currentEvent.setInternalEvent(true);
 
@@ -2023,7 +2025,7 @@ public class CalendarBindingImplTest {
 
 		Date timeCreate = DateUtils.date("1974-09-04T14:00:00");
 		Date lastSync = DateUtils.date("1973-09-04T14:00:00");
-		Date syncDateFromDao = new DateTime(lastSync).plusSeconds(5).toDate();
+		Date syncDateFromDao = Date.from(lastSync.toInstant().plus(5, ChronoUnit.SECONDS));
 
 		DeletedEvent deletedEvent1 = DeletedEvent.builder().eventObmId(1).eventExtId("deleted event 1").build();
 		DeletedEvent deletedEvent2 = DeletedEvent.builder().eventObmId(2).eventExtId("deleted event 2").build();
@@ -2098,7 +2100,7 @@ public class CalendarBindingImplTest {
 
 		Date timeCreate = DateUtils.date("1974-09-04T14:00:00");
 		Date lastSync = DateUtils.date("1973-09-04T14:00:00");
-		Date syncDateFromDao = new DateTime(lastSync).plusSeconds(5).toDate();
+		Date syncDateFromDao = Date.from(lastSync.toInstant().plus(5, ChronoUnit.SECONDS));
 
 		DeletedEvent deletedEvent1 = DeletedEvent.builder().eventObmId(1).eventExtId("deleted event 1").build();
 		DeletedEvent deletedEvent2 = DeletedEvent.builder().eventObmId(2).eventExtId("deleted event 2").build();
@@ -2162,7 +2164,7 @@ public class CalendarBindingImplTest {
 
 		Date timeCreate = DateUtils.date("1974-09-04T14:00:00");
 		Date lastSync = DateUtils.date("1973-09-04T14:00:00");
-		Date syncDateFromDao = new DateTime(lastSync).plusSeconds(5).toDate();
+		Date syncDateFromDao = Date.from(lastSync.toInstant().plus(5, ChronoUnit.SECONDS));
 
 		DeletedEvent deletedEvent1 = DeletedEvent.builder().eventObmId(1).eventExtId("deleted event 1").build();
 
@@ -2226,7 +2228,7 @@ public class CalendarBindingImplTest {
 
 		Date timeCreate = DateUtils.date("1974-09-04T14:00:00");
 		Date lastSync = DateUtils.date("1973-09-04T14:00:00");
-		Date syncDateFromDao = new DateTime(lastSync).plusSeconds(5).toDate();
+		Date syncDateFromDao = Date.from(lastSync.toInstant().plus(5, ChronoUnit.SECONDS));
 
 		DeletedEvent deletedEvent1 = DeletedEvent.builder().eventObmId(1).eventExtId("deleted event 1").build();
 
@@ -2286,7 +2288,7 @@ public class CalendarBindingImplTest {
 
 		Date timeCreate = DateUtils.date("1974-09-04T14:00:00");
 		Date lastSync = DateUtils.date("1973-09-04T14:00:00");
-		Date syncDateFromDao = new DateTime(lastSync).plusSeconds(5).toDate();
+		Date syncDateFromDao = Date.from(lastSync.toInstant().plus(5, ChronoUnit.SECONDS));
 
 		DeletedEvent deletedEvent1 = DeletedEvent.builder().eventObmId(1).eventExtId("deleted event 1").build();
 
@@ -2353,9 +2355,9 @@ public class CalendarBindingImplTest {
 					.identity(UserIdentity.builder().firstName("Obm").lastName("User").build())
 					.build();
 
-		Date timeCreate = new DateTime(1974, Calendar.SEPTEMBER, 4, 14, 0).toDate();
-		Date lastSync = new DateTime(1973, Calendar.SEPTEMBER, 4, 14, 0).toDate();
-		Date syncDateFromDao = new DateTime(lastSync).plusSeconds(5).toDate();
+		Date timeCreate = Date.from(ZonedDateTime.of(1974, 8, 4, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant());
+		Date lastSync = Date.from(ZonedDateTime.of(1973, 8, 4, 14, 0, 0, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant());
+		Date syncDateFromDao = Date.from(ZonedDateTime.of(1973, 8, 4, 14, 0, 5, 0, ZoneId.of(ZoneOffset.UTC.getId())).toInstant());
 
 		Event simpleConfidentialEvent = new Event();
 		simpleConfidentialEvent.setUid(new EventObmId(4));
@@ -2551,14 +2553,14 @@ public class CalendarBindingImplTest {
 
 	@Test
 	public void testInheritsParticipationOnExceptions() {
-		DateTime eventDate = DateTime.now();
+		ZonedDateTime eventDate = ZonedDateTime.now();
 		List<Attendee> expectedAttendeesException = createOrganiserAndContactAttendees(Participation.declined());
 		Event before = createEvent(createOrganiserAndContactAttendees(Participation.accepted()));
 		Event after = createEvent(createOrganiserAndContactAttendees(Participation.accepted()));
-		Event afterException = createEventException(createOrganiserAndContactAttendees(Participation.declined()), eventDate.plusDays(1).toDate());
+		Event afterException = createEventException(createOrganiserAndContactAttendees(Participation.declined()), eventDate.plusDays(1));
 		CalendarBindingImpl calendarBinding = new CalendarBindingImpl(null, null, null, null, null, null, null, null, null, null, attendeeService, null, null);
 
-		before.addEventException(createEventException(expectedAttendeesException, eventDate.plusDays(1).toDate()));
+		before.addEventException(createEventException(expectedAttendeesException, eventDate.plusDays(1)));
 		before.setExtId(new EventExtId("Event"));
 		after.addEventException(afterException);
 		after.setExtId(new EventExtId("Event"));
@@ -2570,20 +2572,20 @@ public class CalendarBindingImplTest {
 
 	@Test
 	public void testInheritsParticipationOnExceptionsMultipleExceptions() {
-		DateTime eventDate = DateTime.now();
+		ZonedDateTime eventDate = ZonedDateTime.now();
 		List<Attendee> expectedAttendeesException_1 = createOrganiserAndContactAttendees(Participation.declined());
 		List<Attendee> expectedAttendeesException_2 = createOrganiserAndContactAttendees(Participation.needsAction());
 		List<Attendee> expectedAttendeesException_3 = createOrganiserAndContactAttendees(Participation.tentative());
 		Event before = createEvent(createOrganiserAndContactAttendees(Participation.accepted()));
-		Event afterException_1 = createEventException(createOrganiserAndContactAttendees(Participation.declined()), eventDate.plusDays(1).toDate());
-		Event afterException_2 = createEventException(createOrganiserAndContactAttendees(Participation.needsAction()), eventDate.plusDays(2).toDate());
-		Event afterException_3 = createEventException(createOrganiserAndContactAttendees(Participation.tentative()), eventDate.plusDays(3).toDate());
+		Event afterException_1 = createEventException(createOrganiserAndContactAttendees(Participation.declined()), eventDate.plusDays(1));
+		Event afterException_2 = createEventException(createOrganiserAndContactAttendees(Participation.needsAction()), eventDate.plusDays(2));
+		Event afterException_3 = createEventException(createOrganiserAndContactAttendees(Participation.tentative()), eventDate.plusDays(3));
 		Event after = createEvent(createOrganiserAndContactAttendees(Participation.accepted()));
 		CalendarBindingImpl calendarBinding = new CalendarBindingImpl(null, null, null, null, null, null, null, null, null, null, attendeeService, null, null);
 
-		before.addEventException(createEventException(expectedAttendeesException_1, eventDate.plusDays(1).toDate()));
-		before.addEventException(createEventException(expectedAttendeesException_2, eventDate.plusDays(2).toDate()));
-		before.addEventException(createEventException(expectedAttendeesException_3, eventDate.plusDays(3).toDate()));
+		before.addEventException(createEventException(expectedAttendeesException_1, eventDate.plusDays(1)));
+		before.addEventException(createEventException(expectedAttendeesException_2, eventDate.plusDays(2)));
+		before.addEventException(createEventException(expectedAttendeesException_3, eventDate.plusDays(3)));
 		before.setExtId(new EventExtId("Event"));
 
 		after.addEventException(afterException_1);
@@ -2753,11 +2755,11 @@ public class CalendarBindingImplTest {
 
 	@Test
 	public void testBuildTreeMap() {
-		DateTime eventDate = DateTime.now();
+		ZonedDateTime eventDate = ZonedDateTime.now();
 		List<Attendee> attendees = createOrganiserAndContactAttendees(Participation.accepted());
-		Event firstException = createEventException(attendees, eventDate.plusDays(1).toDate());
-		Event secondException = createEventException(attendees, eventDate.plusDays(2).toDate());
-		Event thirdException = createEventException(attendees, eventDate.plusDays(3).toDate());
+		Event firstException = createEventException(attendees, eventDate.plusDays(1));
+		Event secondException = createEventException(attendees, eventDate.plusDays(2));
+		Event thirdException = createEventException(attendees, eventDate.plusDays(3));
 
 		CalendarBindingImpl calendarBinding = new CalendarBindingImpl(null, null, null, null, null, null, null, null, null, null, attendeeService, null, null);
 		SortedMap<Event, Event> treeMap = calendarBinding.buildSortedMap(ImmutableSet.of(firstException, secondException, thirdException));
@@ -2773,8 +2775,8 @@ public class CalendarBindingImplTest {
 		Collection<Event> expectedEvents = Lists.newArrayList(mockEvent1, mockEvent2);
 
 		Date date = new Date();
-		Date threeMonthsBefore = new org.joda.time.DateTime(date).minus(Months.THREE).toDate();
-		Date sixMonthsAfter = new org.joda.time.DateTime(date).plus(Months.SIX).toDate();
+		Date threeMonthsBefore = addMonths(date, -3);
+		Date sixMonthsAfter = addMonths(date, 6);
 		SyncRange syncRange = new SyncRange(sixMonthsAfter, threeMonthsBefore);
 		CalendarDao mockDao = createMock(CalendarDao.class);
 		ResourceInfo mockResource = createMock(ResourceInfo.class);
@@ -2821,8 +2823,8 @@ public class CalendarBindingImplTest {
 
 		Date date = new Date();
 		SyncRange defaultRange = new SyncRange(
-				new org.joda.time.DateTime(date).plus(Months.SIX).toDate(),
-				new org.joda.time.DateTime(date).minus(Months.THREE).toDate());
+				addMonths(date, 6),
+				addMonths(date, -3));
 		CalendarDao mockDao = createMock(CalendarDao.class);
 		ResourceInfo mockResource = createMock(ResourceInfo.class);
 		expect(mockDao.getResource(resourceEmail)).andReturn(mockResource);
@@ -3003,8 +3005,8 @@ public class CalendarBindingImplTest {
 
 		List<Attendee> attendees = ImmutableList.of(ToolBox.getFakeAttendee(calendar), ToolBox.getFakeAttendee(attendeeEmail), ToolBox.getFakeAttendee(resourceEmail));
 		Event event = createEvent(attendees);
-		Event exception = createEventException(attendees, DateUtils.date("2012-01-01T00:00:00"));
-		Event exception2 = createEventException(ImmutableList.of(ToolBox.getFakeAttendee(calendar)), DateUtils.date("2012-02-01T00:00:00"));
+		Event exception = createEventException(attendees, ZonedDateTime.parse("2012-01-01T00:00:00Z"));
+		Event exception2 = createEventException(ImmutableList.of(ToolBox.getFakeAttendee(calendar)), ZonedDateTime.parse("2012-02-01T00:00:00Z"));
 
 		event.setEntityId(EntityId.valueOf(6));
 		event.setInternalEvent(true);
@@ -3179,8 +3181,8 @@ public class CalendarBindingImplTest {
 
 		List<Attendee> nonTypedAttendees = ImmutableList.of(ToolBox.getFakeAttendee(userEmail), ToolBox.getFakeAttendee(attendeeEmail));
 		Event event = createEvent(nonTypedAttendees);
-		Event exception = createEventException(nonTypedAttendees, DateUtils.date("2012-01-01T00:00:00"));
-		Event exception2 = createEventException(ImmutableList.of(ToolBox.getFakeAttendee(userEmail)), DateUtils.date("2012-02-01T00:00:00"));
+		Event exception = createEventException(nonTypedAttendees, ZonedDateTime.parse("2012-01-01T00:00:00Z"));
+		Event exception2 = createEventException(ImmutableList.of(ToolBox.getFakeAttendee(userEmail)), ZonedDateTime.parse("2012-02-01T00:00:00Z"));
 
 		event.setEntityId(EntityId.valueOf(4));
 		event.setInternalEvent(false);
@@ -3674,10 +3676,10 @@ public class CalendarBindingImplTest {
 		return event;
 	}
 
-	private Event createEventException(List<Attendee> expectedAttendees, Date recurrenceId) {
+	private Event createEventException(List<Attendee> expectedAttendees, ZonedDateTime recurrenceId) {
 		Event exception = createEvent(expectedAttendees);
 
-		exception.setRecurrenceId(recurrenceId);
+		exception.setRecurrenceId(Date.from(recurrenceId.toInstant()));
 
 		return exception;
 	}

@@ -33,9 +33,10 @@ package org.obm.imap.archive.services;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 
+import java.time.ZonedDateTime;
+
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.obm.imap.archive.beans.ArchiveConfiguration;
@@ -62,10 +63,10 @@ public class ArchiveDaoTrackingTest {
 
 	ArchiveTreatmentRunId runId;
 	ObmDomainUuid domain;
-	DateTime scheduledTime;
-	DateTime startTime;
-	DateTime endTime;
-	DateTime higherBoundary;
+	ZonedDateTime scheduledTime;
+	ZonedDateTime startTime;
+	ZonedDateTime endTime;
+	ZonedDateTime higherBoundary;
 
 	IMocksControl mocks;
 	Logger logger;
@@ -79,10 +80,10 @@ public class ArchiveDaoTrackingTest {
 	public void setUp() {
 		runId = ArchiveTreatmentRunId.from("38efaa5c-6d46-419c-97e6-6e6c6d9cbed3");
 		domain = ObmDomainUuid.of("f7d9e710-1863-48dc-af78-bdd59cf6d82f");
-		scheduledTime = DateTime.parse("2024-11-1T01:04Z");
-		startTime = DateTime.parse("2024-11-2T01:04Z");
-		endTime = DateTime.parse("2024-11-5T01:04Z");
-		higherBoundary = DateTime.parse("2024-12-1T01:04Z");
+		scheduledTime = ZonedDateTime.parse("2024-11-01T01:04Z");
+		startTime = ZonedDateTime.parse("2024-11-02T01:04Z");
+		endTime = ZonedDateTime.parse("2024-11-05T01:04Z");
+		higherBoundary = ZonedDateTime.parse("2024-12-01T01:04Z");
 		
 		mocks = EasyMock.createControl();
 		task = mocks.createMock(ArchiveDomainTask.class);
@@ -134,7 +135,7 @@ public class ArchiveDaoTrackingTest {
 	
 	@Test
 	public void eventShouldUpdateWhenTaskStateIsWaitingButFound() throws Exception {
-		DateTime daoScheduledTime = DateTime.parse("2029-09-9T01:04Z");
+		ZonedDateTime daoScheduledTime = ZonedDateTime.parse("2029-09-09T01:04Z");
 		
 		logger.info("Update a task as {} for domain {}, scheduled at {} with id {}", 
 				State.WAITING, domain.get(), scheduledTime, runId);
@@ -165,7 +166,7 @@ public class ArchiveDaoTrackingTest {
 	
 	@Test
 	public void eventShouldUpdateWhenTaskStateIsRunningAndFound() throws Exception {
-		DateTime daoScheduledTime = DateTime.parse("2029-09-9T01:04Z");
+		ZonedDateTime daoScheduledTime = ZonedDateTime.parse("2029-09-09T01:04Z");
 		
 		expect(timeProvider.now()).andReturn(startTime);
 		logger.info("Update a task as {} for domain {}, scheduled at {} with id {}", 
@@ -210,7 +211,7 @@ public class ArchiveDaoTrackingTest {
 
 	@Test
 	public void eventShouldUpdateWhenTaskStateIsFailed() throws Exception {
-		DateTime daoScheduledTime = DateTime.parse("2029-09-9T01:04Z");
+		ZonedDateTime daoScheduledTime = ZonedDateTime.parse("2029-09-09T01:04Z");
 		
 		expect(timeProvider.now()).andReturn(endTime);
 		logger.info("Update a task as {} for domain {}, scheduled at {} with id {}", 
@@ -246,7 +247,7 @@ public class ArchiveDaoTrackingTest {
 
 	@Test
 	public void eventShouldUpdateWhenTaskStateIsSuccess() throws Exception {
-		DateTime daoScheduledTime = DateTime.parse("2029-09-9T01:04Z");
+		ZonedDateTime daoScheduledTime = ZonedDateTime.parse("2029-09-09T01:04Z");
 		
 		expect(timeProvider.now()).andReturn(endTime);
 		logger.info("Update a task as {} for domain {}, scheduled at {} with id {}", 

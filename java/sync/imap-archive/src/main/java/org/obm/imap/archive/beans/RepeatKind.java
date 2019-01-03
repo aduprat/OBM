@@ -31,25 +31,21 @@
 
 package org.obm.imap.archive.beans;
 
-import org.joda.time.Days;
-import org.joda.time.Months;
-import org.joda.time.ReadablePeriod;
-import org.joda.time.Weeks;
-import org.joda.time.Years;
+import java.time.Period;
 
 public enum RepeatKind {
 	DAILY, WEEKLY, MONTHLY, YEARLY;
 	
-	public static ReadablePeriod toPeriod(RepeatKind repeatKind, int period) {
+	public static Period toPeriod(RepeatKind repeatKind, int period) {
 		switch (repeatKind) {
 		case DAILY:
-			return Days.days(period);
+			return Period.ofDays(period);
 		case WEEKLY:
-			return Weeks.weeks(period);
+			return Period.ofWeeks(period);
 		case MONTHLY:
-			return Months.months(period);
+			return Period.ofMonths(period);
 		case YEARLY:
-			return Years.years(period);
+			return Period.ofYears(period);
 		default:
 			throw new IllegalArgumentException("Unknown repeat kind: " + repeatKind);
 		}

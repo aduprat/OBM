@@ -30,7 +30,7 @@
 
 package org.obm.imap.archive.scheduling;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 import com.google.common.collect.ImmutableList;
 import com.linagora.scheduling.Listener;
@@ -43,7 +43,7 @@ public class TestScheduledTask extends ScheduledTask<ArchiveDomainTask> {
 	private ScheduledTask.State state;
 
 	public TestScheduledTask(State state, ArchiveDomainTask task, 
-			Scheduler<ArchiveDomainTask> scheduler, DateTime scheduledTime) {
+			Scheduler<ArchiveDomainTask> scheduler, ZonedDateTime scheduledTime) {
 		super(
 			ScheduledTask.Id.generate(), 
 			scheduledTime,

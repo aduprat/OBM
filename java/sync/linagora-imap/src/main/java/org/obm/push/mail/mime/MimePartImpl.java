@@ -40,6 +40,7 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.james.mime4j.codec.QuotedPrintableInputStream;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -423,7 +424,7 @@ public class MimePartImpl extends AbstractMimePart implements MimePart {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(getClass())
+		return MoreObjects.toStringHelper(getClass())
 			.add("contentType", contentType)
 			.add("idx", idx).toString();
 	}

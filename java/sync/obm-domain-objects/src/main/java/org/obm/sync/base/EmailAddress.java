@@ -36,6 +36,7 @@ import java.io.Serializable;
 import org.obm.push.utils.UserEmailParserUtils;
 import org.obm.sync.book.IMergeable;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -105,7 +106,7 @@ public class EmailAddress implements IMergeable, Serializable {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("login", login)
 			.add("domain", domain)
 			.toString();

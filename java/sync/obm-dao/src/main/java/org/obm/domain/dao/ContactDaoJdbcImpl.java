@@ -50,7 +50,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.obm.annotations.database.AutoTruncate;
 import org.obm.annotations.database.DatabaseEntity;
 import org.obm.configuration.ContactConfiguration;

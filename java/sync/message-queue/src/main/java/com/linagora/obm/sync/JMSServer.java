@@ -38,7 +38,6 @@ import org.obm.sync.LifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -61,7 +60,7 @@ public class JMSServer implements LifecycleListener {
 		try {
 			start();
 		} catch (Exception e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

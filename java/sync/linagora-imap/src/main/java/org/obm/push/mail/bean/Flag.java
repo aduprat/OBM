@@ -35,6 +35,7 @@ package org.obm.push.mail.bean;
 import java.util.Arrays;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -110,7 +111,7 @@ public class Flag {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("value", value)
 			.add("system", system)
 			.toString();

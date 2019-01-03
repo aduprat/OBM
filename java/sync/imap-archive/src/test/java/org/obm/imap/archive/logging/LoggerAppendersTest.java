@@ -59,6 +59,7 @@ public class LoggerAppendersTest {
 	private Appender<ILoggingEvent> fileAppender;
 	private ChunkedOutputAppender chunkedOutputAppender;
 	
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() {
 		runId = ArchiveTreatmentRunId.from("ccb0efbe-7e64-434a-9667-118f17dcad63");

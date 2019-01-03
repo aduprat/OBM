@@ -11,7 +11,6 @@
 	<packaging>jar</packaging>
 	<name>common dao test classes</name>
 	<url>http://www.obm.org/</url>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
@@ -44,8 +43,8 @@
 			<artifactId>DbSetup</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

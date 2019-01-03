@@ -1,4 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
+ * 
  * Copyright (C) 2014  Linagora
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -31,12 +32,11 @@
 package org.obm.imap.archive;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.rules.TemporaryFolder;
 import org.obm.Configuration;
 import org.obm.StaticConfigurationService;
@@ -65,7 +65,6 @@ import org.obm.sync.locators.Locator;
 import org.obm.utils.ObmHelper;
 
 import com.github.restdriver.clientdriver.ClientDriverRule;
-import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -84,15 +83,7 @@ public class TestImapArchiveModules {
 	public static final UUID uuid = UUID.fromString("08c00ba3-fb00-48ac-a077-24b47c123692");
 	public static final UUID uuid2 = UUID.fromString("e72906d1-4b6f-4727-8be8-3e78441623ea");
 	
-	public static final DateTime LOCAL_DATE_TIME = new DateTime()
-		.withZone(DateTimeZone.UTC)
-		.withYear(2014)
-		.withMonthOfYear(6)
-		.withDayOfMonth(18)
-		.withHourOfDay(0)
-		.withMinuteOfHour(0)
-		.withSecondOfMinute(0)
-		.withMillisOfSecond(0);
+	public static final ZonedDateTime LOCAL_DATE_TIME = ZonedDateTime.parse("2014-06-18T00:00:00Z");
 	
 	public static class Simple extends AbstractModule {
 	
@@ -309,23 +300,23 @@ public class TestImapArchiveModules {
 		@Singleton
 		public static class TestDateProvider implements DateTimeProvider, DateProvider {
 
-			private DateTime current;
+			private ZonedDateTime current;
 
 			public TestDateProvider() {
 				this.current = LOCAL_DATE_TIME;
 			}
 			
-			public void setCurrent(DateTime current) {
+			public void setCurrent(ZonedDateTime current) {
 				this.current = current;
 			}
 			
 			@Override
 			public Date getDate() {
-				return current.toDate();
+				return Date.from(current.toInstant());
 			}
 
 			@Override
-			public DateTime now() {
+			public ZonedDateTime now() {
 				return current;
 			}
 			
@@ -342,7 +333,7 @@ public class TestImapArchiveModules {
 
 			@Override
 			protected Date currentDate() {
-				return LOCAL_DATE_TIME.toDate();
+				return Date.from(LOCAL_DATE_TIME.toInstant());
 			}
 		}
 	}
@@ -395,8 +386,7 @@ public class TestImapArchiveModules {
 				loggerFileName = temporaryFolder.getRoot().getAbsolutePath() + "/" + runId.serialize() + ".log";
 				return loggerFileName;
 			} catch (IOException e) {
-				Throwables.propagate(e);
-				return null;
+				throw new RuntimeException(e);
 			}
 		}
 

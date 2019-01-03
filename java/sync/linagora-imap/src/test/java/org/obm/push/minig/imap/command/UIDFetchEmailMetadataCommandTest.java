@@ -32,7 +32,7 @@
 package org.obm.push.minig.imap.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.obm.DateUtils.date;
+import static org.obm.push.utils.DateUtils.date;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;

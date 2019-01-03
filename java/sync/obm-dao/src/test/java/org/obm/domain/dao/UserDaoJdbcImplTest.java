@@ -39,7 +39,6 @@ import java.util.Set;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.obm.DateUtils;
 import org.obm.dao.utils.DaoTestModule;
 import org.obm.dao.utils.H2InMemoryDatabase;
 import org.obm.dao.utils.H2InMemoryDatabaseRule;
@@ -53,6 +52,7 @@ import org.obm.provisioning.dao.ProfileDao;
 import org.obm.provisioning.dao.ProfileDaoJdbcImpl;
 import org.obm.provisioning.dao.exceptions.DomainNotFoundException;
 import org.obm.provisioning.dao.exceptions.UserNotFoundException;
+import org.obm.push.utils.DateUtils;
 import org.obm.sync.dao.EntityId;
 import org.obm.sync.host.ObmHost;
 

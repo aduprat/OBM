@@ -31,6 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.push.mail.bean;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class UIDEnvelope {
@@ -68,7 +69,7 @@ public class UIDEnvelope {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("uid", uid)
 			.add("envelope", envelope)
 			.toString();

@@ -36,6 +36,7 @@ import java.util.Set;
 import org.obm.provisioning.ProfileId;
 import org.obm.provisioning.ProfileName;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -151,10 +152,10 @@ public class Profile {
 			Preconditions.checkState(domain != null);
 			Preconditions.checkState(level != null);
 
-			managePeers = Objects.firstNonNull(managePeers, false);
-			accessRestriction = Objects.firstNonNull(accessRestriction, AccessRestriction.ALLOW_ALL);
-			maxMailQuota = Objects.firstNonNull(maxMailQuota, 0);
-			defaultMailQuota = Objects.firstNonNull(defaultMailQuota, 0);
+			managePeers = MoreObjects.firstNonNull(managePeers, false);
+			accessRestriction = MoreObjects.firstNonNull(accessRestriction, AccessRestriction.ALLOW_ALL);
+			maxMailQuota = MoreObjects.firstNonNull(maxMailQuota, 0);
+			defaultMailQuota = MoreObjects.firstNonNull(defaultMailQuota, 0);
 
 			return new Profile(id, name, domain, timecreate, timeupdate, level, managePeers, accessRestriction, accessExceptions,
 					adminRealms.build(), maxMailQuota, defaultMailQuota, defaultCheckBoxStates.build());
@@ -273,7 +274,7 @@ public class Profile {
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(this)
 				.add("id", id)
 				.add("name", name)

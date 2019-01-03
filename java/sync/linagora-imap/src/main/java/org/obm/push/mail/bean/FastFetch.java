@@ -34,6 +34,7 @@ package org.obm.push.mail.bean;
 import java.util.Date;
 import java.util.Set;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 
@@ -166,7 +167,7 @@ public class FastFetch {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("uid", uid)
 			.add("internalDate", internalDate)
 			.add("flags", flags)

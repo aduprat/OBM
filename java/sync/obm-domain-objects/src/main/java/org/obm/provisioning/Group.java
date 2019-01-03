@@ -3,6 +3,7 @@ package org.obm.provisioning;
 import java.util.Date;
 import java.util.Set;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -186,8 +187,8 @@ public class Group {
         public Group build() {
             Preconditions.checkState(uid != null || extId != null);
 
-            privateGroup = Objects.firstNonNull(privateGroup, false);
-            archive = Objects.firstNonNull(archive, false);
+            privateGroup = MoreObjects.firstNonNull(privateGroup, false);
+            archive = MoreObjects.firstNonNull(archive, false);
 
             return new Group(uid, gid, extId, name, email, description, users.build(), subgroups.build(),
             		privateGroup, archive, timecreate, timeupdate);
@@ -298,7 +299,7 @@ public class Group {
 
     @Override
     public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(this)
 				.add("uid", uid)
 				.add("gid", gid)

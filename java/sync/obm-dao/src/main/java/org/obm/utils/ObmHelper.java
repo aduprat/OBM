@@ -46,7 +46,6 @@ import org.obm.push.utils.JDBCUtils;
 import org.obm.sync.dao.EntityId;
 import org.obm.sync.date.DateProvider;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -219,7 +218,7 @@ public class ObmHelper implements DateProvider {
 			return selectNow(con);
 		}
 		catch (Exception e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		} finally {
 			cleanup(con, null, null);
 		}

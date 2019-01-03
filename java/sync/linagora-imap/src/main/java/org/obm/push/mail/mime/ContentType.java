@@ -33,6 +33,7 @@ package org.obm.push.mail.mime;
 
 import java.util.Collection;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -189,7 +190,7 @@ public class ContentType {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("primaryType", primaryType)
 			.add("subType", subType)
 			.add("bodyParams", bodyParams)

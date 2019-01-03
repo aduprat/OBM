@@ -35,6 +35,7 @@ import org.obm.imap.archive.scheduling.ArchiveSchedulerBus.Events.TaskStatusChan
 import org.obm.imap.archive.scheduling.ArchiveSchedulerBus.Events.TaskStatusChanged.Factory;
 import org.obm.imap.archive.services.ImapArchiveProcessing;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.linagora.scheduling.ScheduledTask;
 import com.linagora.scheduling.Task;
@@ -87,7 +88,7 @@ public class ArchiveDomainTask implements Task {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("configuration", configuration)
 			.toString();
 	}

@@ -30,6 +30,8 @@
 
 package org.obm.imap.archive.resources.testing;
 
+import java.text.SimpleDateFormat;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
@@ -37,9 +39,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.obm.imap.archive.services.TestingDateProvider;
+import org.obm.push.utils.DateUtils;
 
 @Singleton
 @Path("/date")
@@ -50,12 +51,13 @@ public class TestingResource {
 	
 	@PUT
 	public Response setDate(String referenceDate) {
-		testingDateProvider.setReferenceDate(DateTime.parse(referenceDate));
+		testingDateProvider.setReferenceDate(DateUtils.date(referenceDate));
 		return Response.noContent().build();
 	}
 	
 	@GET
 	public String getDate() {
-		return new DateTime(testingDateProvider.getDate(), DateTimeZone.UTC).toString();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+		return dateFormat.format(testingDateProvider.getDate());
 	}
 }

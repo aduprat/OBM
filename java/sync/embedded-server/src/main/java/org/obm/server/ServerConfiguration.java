@@ -33,6 +33,7 @@ package org.obm.server;
 
 import org.obm.push.utils.jvm.VMArgumentsUtils;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class ServerConfiguration {
@@ -47,7 +48,7 @@ public class ServerConfiguration {
 	
 	public static class ServerConfigurationBuilder {
 
-		private static final int DEFAULT_THREADPOOL_SIZE = Objects.firstNonNull( 
+		private static final int DEFAULT_THREADPOOL_SIZE = MoreObjects.firstNonNull( 
 				VMArgumentsUtils.integerArgumentValue("threadPoolSize"), 200);
 		private static final String DEFAULT_CONTEXT_PATH = "/";
 		private static final boolean DEFAULT_REQUEST_LOGGER = false;
@@ -170,7 +171,7 @@ public class ServerConfiguration {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("contextPath", contextPath)
 			.add("port", port)
 			.add("requestLogger", requestLoggerEnabled)

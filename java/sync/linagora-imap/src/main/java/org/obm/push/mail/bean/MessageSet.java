@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -265,7 +266,7 @@ public class MessageSet implements Serializable, Iterable<Long> {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("ranges", ranges)
 			.toString();
 	}

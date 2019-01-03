@@ -30,13 +30,14 @@
 
 package org.obm.imap.archive.beans;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+
 import org.obm.imap.archive.logging.LoggerAppenders;
 
-import ch.qos.logback.classic.Logger;
-
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
+import ch.qos.logback.classic.Logger;
 import fr.aliacom.obm.common.domain.ObmDomain;
 import fr.aliacom.obm.common.domain.ObmDomainUuid;
 
@@ -44,14 +45,14 @@ public class ArchiveConfiguration {
 	
 	private final Logger logger;
 	private final LoggerAppenders loggerAppenders;
-	private final DateTime when;
-	private final DateTime higherBoundary;
+	private final ZonedDateTime when;
+	private final ZonedDateTime higherBoundary;
 	private final ArchiveTreatmentRunId runId;
 	private final boolean recurrent;
 	private final DomainConfiguration configuration;
 	
 	public ArchiveConfiguration(DomainConfiguration configuration,
-			DateTime when, DateTime higherBoundary, ArchiveTreatmentRunId runId, Logger logger, LoggerAppenders loggerAppenders, 
+			ZonedDateTime when, ZonedDateTime higherBoundary, ArchiveTreatmentRunId runId, Logger logger, LoggerAppenders loggerAppenders, 
 			boolean recurrent) {
 		this.configuration = configuration;
 		this.when = when;
@@ -74,11 +75,11 @@ public class ArchiveConfiguration {
 		return configuration.getDomain();
 	}
 	
-	public DateTime getWhen() {
+	public ZonedDateTime getWhen() {
 		return when;
 	}
 	
-	public DateTime getHigherBoundary() {
+	public ZonedDateTime getHigherBoundary() {
 		return higherBoundary;
 	}
 
@@ -118,7 +119,7 @@ public class ArchiveConfiguration {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("domainConfiguration", configuration)
 			.add("when", when)
 			.add("recurrent", recurrent)

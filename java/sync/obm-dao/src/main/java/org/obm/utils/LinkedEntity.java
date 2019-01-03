@@ -33,6 +33,7 @@ package org.obm.utils;
 
 import org.obm.sync.dao.EntityId;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -103,7 +104,7 @@ public class LinkedEntity {
 
 	@Override
 	public String toString() {
-		return Objects
+		return MoreObjects
 				.toStringHelper(this)
 				.add("linkId", linkId)
 				.add("entityId", entityId)

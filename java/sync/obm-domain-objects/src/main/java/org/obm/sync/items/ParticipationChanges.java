@@ -39,6 +39,7 @@ import org.obm.sync.calendar.EventExtId;
 import org.obm.sync.calendar.EventObmId;
 import org.obm.sync.calendar.RecurrenceId;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -142,7 +143,7 @@ public final class ParticipationChanges implements Serializable {
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("eventId", eventId)
 			.add("eventExtId", eventExtId)
 			.add("recurrenceId", recurrenceId)

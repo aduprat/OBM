@@ -31,6 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package fr.aliacom.obm.common.user;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class UserWork {
@@ -137,7 +138,7 @@ public class UserWork {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("service", service)
 			.add("title", title)
 			.add("company", company)

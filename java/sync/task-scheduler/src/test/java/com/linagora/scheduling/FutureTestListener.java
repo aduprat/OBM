@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Queues;
 import com.linagora.scheduling.ScheduledTask.State;
 
@@ -62,7 +61,7 @@ class FutureTestListener<T extends Task> implements Listener<T> {
 		try {
 			states.put(state);
 		} catch (InterruptedException e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 

@@ -36,8 +36,6 @@ import org.apache.shiro.guice.web.ShiroWebModule;
 import org.apache.shiro.realm.Realm;
 import org.obm.imap.archive.ImapArchiveModule.ImapArchiveServletModule;
 
-import com.google.common.base.Throwables;
-
 public class AuthorizationModule extends ShiroWebModule {
 
 	public AuthorizationModule(ServletContext servletContext) {
@@ -52,7 +50,7 @@ public class AuthorizationModule extends ShiroWebModule {
 		} catch (SecurityException e) {
 			throw e;
 		} catch (NoSuchMethodException e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 		
 		bind(Realm.class).to(ImapArchiveAuthorizingRealm.class);

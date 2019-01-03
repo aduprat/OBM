@@ -34,11 +34,12 @@ package org.obm.icalendar.ical4jwrapper;
 import java.util.Collection;
 import java.util.Date;
 
-import net.fortuna.ical4j.model.Recur;
-import net.fortuna.ical4j.model.WeekDayList;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+
+import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.Recur.Frequency;
+import net.fortuna.ical4j.model.WeekDayList;
 
 public class ICalendarRecur {
 
@@ -50,7 +51,7 @@ public class ICalendarRecur {
 		this.recur = recur;
 	}
 	
-	public String frequency() {
+	public Frequency frequency() {
 		return recur.getFrequency();
 	}
 

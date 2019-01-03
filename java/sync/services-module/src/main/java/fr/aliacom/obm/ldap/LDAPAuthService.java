@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -100,7 +99,7 @@ public class LDAPAuthService implements IAuthentificationService {
 		} catch (AuthenticationException e) {
 			throw new AuthFault(e);
 		} catch (Exception e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		} finally {
 			closeQuietly(lookup);
 			closeQuietly(bind);

@@ -31,8 +31,10 @@
 
 package org.obm.imap.archive.beans;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -43,28 +45,28 @@ public class SchedulingDates {
 	}
 	
 	public static class Builder {
-		private DateTime nextTreatmentDate;
+		private ZonedDateTime nextTreatmentDate;
 		
 		private Builder() {}
 		
-		public Builder nextTreatmentDate(DateTime nextTreatmentDate) {
+		public Builder nextTreatmentDate(ZonedDateTime nextTreatmentDate) {
 			this.nextTreatmentDate = nextTreatmentDate;
 			return this;
 		}
 		
 		public SchedulingDates build() {
 			Preconditions.checkState(nextTreatmentDate != null);
-			return new SchedulingDates(nextTreatmentDate);
+			return new SchedulingDates(Date.from(nextTreatmentDate.toInstant()));
 		}
 	}
 	
-	private final DateTime nextTreatmentDate;
+	private final Date nextTreatmentDate;
 
-	private SchedulingDates(DateTime nextTreatmentDate) {
+	private SchedulingDates(Date nextTreatmentDate) {
 		this.nextTreatmentDate = nextTreatmentDate;
 	}
 	
-	public DateTime getNextTreatmentDate() {
+	public Date getNextTreatmentDate() {
 		return nextTreatmentDate;
 	}
 
@@ -84,7 +86,7 @@ public class SchedulingDates {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("nextTreatmentDate", nextTreatmentDate)
 			.toString();
 	}

@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -151,7 +152,7 @@ public class Samba implements Serializable {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("sid", sid)
 			.add("profile", profile)
 			.add("home", home)

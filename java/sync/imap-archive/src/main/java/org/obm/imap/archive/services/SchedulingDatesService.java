@@ -31,35 +31,38 @@
 
 package org.obm.imap.archive.services;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
+
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.obm.imap.archive.beans.RepeatKind;
 import org.obm.imap.archive.beans.SchedulingConfiguration;
-import org.obm.sync.date.DateProvider;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Singleton;
+import com.linagora.scheduling.DateTimeProvider;
 
 @Singleton
 public class SchedulingDatesService {
 
-	private final DateProvider dateProvider;
+	private final DateTimeProvider dateProvider;
 
 	@Inject
-	@VisibleForTesting SchedulingDatesService(DateProvider dateProvider) {
+	@VisibleForTesting SchedulingDatesService(DateTimeProvider dateProvider) {
 		this.dateProvider = dateProvider;
 	}
 	
-	public DateTime nextTreatmentDate(SchedulingConfiguration schedulingConfiguration) {
-		DateTime currentDateTime = new DateTime(dateProvider.getDate());
-		DateTime currentDateWithScheduledTime = currentDateTime
-				.withZone(DateTimeZone.UTC)
-				.withHourOfDay(schedulingConfiguration.getHour())
-				.withMinuteOfHour(schedulingConfiguration.getMinute())
-				.withSecondOfMinute(0)
-				.withMillisOfSecond(0);
+	public ZonedDateTime nextTreatmentDate(SchedulingConfiguration schedulingConfiguration) {
+		ZonedDateTime currentDateTime = dateProvider.now();
+		ZonedDateTime currentDateWithScheduledTime = currentDateTime
+				.withZoneSameInstant(ZoneId.of(ZoneOffset.UTC.getId()))
+				.withHour(schedulingConfiguration.getHour())
+				.withMinute(schedulingConfiguration.getMinute())
+				.withSecond(0)
+				.withNano(0);
 
 		switch (schedulingConfiguration.getRepeatKind()) {
 		case DAILY:
@@ -79,7 +82,7 @@ public class SchedulingDatesService {
 		}
 	}
 
-	private DateTime dailyNextTreatmentDate(DateTime currentDateTime, DateTime currentDateWithScheduledTime) {
+	private ZonedDateTime dailyNextTreatmentDate(ZonedDateTime currentDateTime, ZonedDateTime currentDateWithScheduledTime) {
 		if (currentDateWithScheduledTime.isAfter(currentDateTime)) {
 			return currentDateWithScheduledTime;
 		}
@@ -87,9 +90,9 @@ public class SchedulingDatesService {
 				.plusDays(1);
 	}
 
-	private DateTime weeklyNextTreatmentDate(SchedulingConfiguration schedulingConfiguration, DateTime currentDateTime, DateTime currentDateWithScheduledTime) {
-		DateTime dayOfWeek = currentDateWithScheduledTime
-				.withDayOfWeek(schedulingConfiguration.getDayOfWeek().getSpecificationValue());
+	private ZonedDateTime weeklyNextTreatmentDate(SchedulingConfiguration schedulingConfiguration, ZonedDateTime currentDateTime, ZonedDateTime currentDateWithScheduledTime) {
+		ZonedDateTime dayOfWeek = currentDateWithScheduledTime
+				.with(ChronoField.DAY_OF_WEEK, schedulingConfiguration.getDayOfWeek().getSpecificationValue());
 		if (dayOfWeek.isAfter(currentDateTime)) {
 			return dayOfWeek;
 		}
@@ -97,7 +100,7 @@ public class SchedulingDatesService {
 				.plusWeeks(1);
 	}
 
-	private DateTime monthlyNextTreatmentDate(SchedulingConfiguration schedulingConfiguration, DateTime currentDateTime, DateTime currentDateWithScheduledTime) {
+	private ZonedDateTime monthlyNextTreatmentDate(SchedulingConfiguration schedulingConfiguration, ZonedDateTime currentDateTime, ZonedDateTime currentDateWithScheduledTime) {
 		if (schedulingConfiguration.isLastDayOfMonth()) {
 			return nextTreatmentDateOnLastDayOfMonth(currentDateTime, currentDateWithScheduledTime);
 		}
@@ -105,8 +108,8 @@ public class SchedulingDatesService {
 		return nextTreatmentDateCommonDayOfMonth(schedulingConfiguration, currentDateTime, currentDateWithScheduledTime);
 	}
 
-	private DateTime nextTreatmentDateOnLastDayOfMonth(DateTime currentDateTime, DateTime currentDateWithScheduledTime) {
-		DateTime dayOfMonth = lastDayOfMonth(currentDateWithScheduledTime);
+	private ZonedDateTime nextTreatmentDateOnLastDayOfMonth(ZonedDateTime currentDateTime, ZonedDateTime currentDateWithScheduledTime) {
+		ZonedDateTime dayOfMonth = lastDayOfMonth(currentDateWithScheduledTime);
 		
 		if (dayOfMonth.isAfter(currentDateTime)) {
 			return dayOfMonth;
@@ -115,15 +118,15 @@ public class SchedulingDatesService {
 		return lastDayOfMonth(currentDateWithScheduledTime.plusMonths(1));
 	}
 
-	private DateTime lastDayOfMonth(DateTime currentDateWithScheduledTime) {
+	private ZonedDateTime lastDayOfMonth(ZonedDateTime currentDateWithScheduledTime) {
 		return currentDateWithScheduledTime
 			.plusMonths(1)
 			.withDayOfMonth(1)
 			.minusDays(1);
 	}
 
-	private DateTime nextTreatmentDateCommonDayOfMonth(SchedulingConfiguration schedulingConfiguration,DateTime currentDateTime, DateTime currentDateWithScheduledTime) {
-		DateTime dayOfMonth = currentDateWithScheduledTime
+	private ZonedDateTime nextTreatmentDateCommonDayOfMonth(SchedulingConfiguration schedulingConfiguration, ZonedDateTime currentDateTime, ZonedDateTime currentDateWithScheduledTime) {
+		ZonedDateTime dayOfMonth = currentDateWithScheduledTime
 			.withDayOfMonth(schedulingConfiguration.getDayOfMonth().getDayIndex());
 		
 		if (dayOfMonth.isAfter(currentDateTime)) {
@@ -133,8 +136,8 @@ public class SchedulingDatesService {
 				.plusMonths(1);
 	}
 
-	private DateTime yearlyNextTreatmentDate(SchedulingConfiguration schedulingConfiguration, DateTime currentDateTime, DateTime currentDateWithScheduledTime) {
-		DateTime dayOfYear = currentDateWithScheduledTime
+	private ZonedDateTime yearlyNextTreatmentDate(SchedulingConfiguration schedulingConfiguration, ZonedDateTime currentDateTime, ZonedDateTime currentDateWithScheduledTime) {
+		ZonedDateTime dayOfYear = currentDateWithScheduledTime
 			.withDayOfYear(schedulingConfiguration.getDayOfYear().getDayOfYear());
 		if (dayOfYear.isAfter(currentDateTime)) {
 			return dayOfYear;
@@ -143,8 +146,11 @@ public class SchedulingDatesService {
 				.plusYears(1);
 	}
 	
-	public DateTime higherBoundary(DateTime treatmentDate, RepeatKind repeatKind) {
+	public ZonedDateTime higherBoundary(ZonedDateTime treatmentDate, RepeatKind repeatKind) {
 		return treatmentDate.minus(RepeatKind.toPeriod(repeatKind, 1))
-				.withTime(23, 59, 59, 999);
+				.withHour(23)
+				.withMinute(59)
+				.withSecond(59)
+				.withNano(999999999);
 	}
 }

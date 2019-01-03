@@ -14,7 +14,6 @@
 	<packaging>war</packaging>
 	<name>autoconf</name>
 	<url>http://www.obm.org/</url>
-	<version>3.2.2-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
@@ -32,7 +31,6 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>0.9.18</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -49,13 +47,13 @@
 			<version>4.3</version>
 		</dependency>
 		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

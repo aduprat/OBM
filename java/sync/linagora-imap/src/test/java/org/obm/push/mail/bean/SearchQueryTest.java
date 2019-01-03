@@ -35,8 +35,8 @@ package org.obm.push.mail.bean;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.guava.api.Assertions.assertThat;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
+import org.obm.push.utils.DateUtils;
 
 
 public class SearchQueryTest {
@@ -77,7 +77,7 @@ public class SearchQueryTest {
 	public void builderShouldThwoWhenBetweenAndNullAfter() {
 		SearchQuery.builder()
 			.between(true)
-			.beforeExclusive(DateTime.parse("2014-01-01").toDate())
+			.beforeExclusive(DateUtils.date("2014-01-01T00:00:00Z"))
 			.build();
 	}
 	
@@ -85,8 +85,8 @@ public class SearchQueryTest {
 	public void builderShouldBuildWhenBetween() {
 		SearchQuery searchQuery = SearchQuery.builder()
 			.between(true)
-			.beforeExclusive(DateTime.parse("2014-01-01").toDate())
-			.afterInclusive(DateTime.parse("2015-01-01").toDate())
+			.beforeExclusive(DateUtils.date("2014-01-01T00:00:00Z"))
+			.afterInclusive(DateUtils.date("2015-01-01T00:00:00Z"))
 			.build();
 		assertThat(searchQuery.isBetween()).isTrue();
 	}

@@ -33,7 +33,8 @@ package org.obm.imap.archive.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+
 import org.junit.Test;
 
 
@@ -89,7 +90,7 @@ public class ProcessedFolderTest {
 		ProcessedFolder.builder()
 			.runId(ArchiveTreatmentRunId.from("1fa66563-926c-4600-a7a3-f56877f38737"))
 			.folder(ImapFolder.from("user/usera/Test@mydomain.org"))
-			.start(DateTime.parse("2014-07-23T08:21:00.000Z"))
+			.start(ZonedDateTime.parse("2014-07-23T08:21:00.000Z"))
 			.build();
 	}
 
@@ -98,8 +99,8 @@ public class ProcessedFolderTest {
 		ProcessedFolder processedFolder = ProcessedFolder.builder()
 			.runId(ArchiveTreatmentRunId.from("1fa66563-926c-4600-a7a3-f56877f38737"))
 			.folder(ImapFolder.from("user/usera/Test@mydomain.org"))
-			.start(DateTime.parse("2014-07-23T08:21:00.000Z"))
-			.end(DateTime.parse("2014-07-23T08:21:03.000Z"))
+			.start(ZonedDateTime.parse("2014-07-23T08:21:00.000Z"))
+			.end(ZonedDateTime.parse("2014-07-23T08:21:03.000Z"))
 			.build();
 		
 		assertThat(processedFolder.getStatus()).isEqualTo(ArchiveStatus.ERROR);
@@ -109,8 +110,8 @@ public class ProcessedFolderTest {
 	public void builderShouldBuildWhenEveryThingIsProvided() {
 		ArchiveTreatmentRunId archiveTreatmentRunId = ArchiveTreatmentRunId.from("1fa66563-926c-4600-a7a3-f56877f38737");
 		ImapFolder imapFolder = ImapFolder.from("user/usera/Test@mydomain.org");
-		DateTime start = DateTime.parse("2014-07-23T08:21:00.000Z");
-		DateTime end = DateTime.parse("2014-07-23T08:21:03.000Z");
+		ZonedDateTime start = ZonedDateTime.parse("2014-07-23T08:21:00.000Z");
+		ZonedDateTime end = ZonedDateTime.parse("2014-07-23T08:21:03.000Z");
 		ArchiveStatus status = ArchiveStatus.SUCCESS;
 		
 		ProcessedFolder processedFolder = ProcessedFolder.builder()

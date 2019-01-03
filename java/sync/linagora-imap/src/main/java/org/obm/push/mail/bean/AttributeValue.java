@@ -33,6 +33,7 @@ package org.obm.push.mail.bean;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -135,7 +136,7 @@ public class AttributeValue {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("attributeSuffix", attributeSuffix)
 			.add("value", value)
 			.toString();

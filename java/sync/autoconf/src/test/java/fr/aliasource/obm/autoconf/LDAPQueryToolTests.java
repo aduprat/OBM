@@ -45,6 +45,7 @@ import fr.aliasource.obm.autoconf.impl.AutoconfTestCase;
 @Ignore(value="Failing test")
 public class LDAPQueryToolTests extends AutoconfTestCase {
 
+	@SuppressWarnings("unchecked")
 	public void testQuery() throws LDAPException {
 		LDAPQueryTool lq = new LDAPQueryTool(dc);
 		LDAPAttributeSet atts = lq.getLDAPInformations();
