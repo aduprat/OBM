@@ -30,7 +30,7 @@
 
 package org.obm.imap.archive.startup;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.obm.imap.archive.DBData.admin;
 import static org.obm.imap.archive.DBData.domain;

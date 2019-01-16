@@ -30,7 +30,7 @@
 
 package org.obm.imap.archive.resources.testing;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
 import javax.ws.rs.core.Response.Status;

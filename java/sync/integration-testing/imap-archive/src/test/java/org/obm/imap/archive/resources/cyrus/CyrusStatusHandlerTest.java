@@ -30,7 +30,7 @@
 
 package org.obm.imap.archive.resources.cyrus;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.obm.imap.archive.DBData.admin;
 import static org.obm.imap.archive.DBData.usera;
 

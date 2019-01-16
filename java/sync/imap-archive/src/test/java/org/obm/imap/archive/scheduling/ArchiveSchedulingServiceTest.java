@@ -117,7 +117,6 @@ public class ArchiveSchedulingServiceTest {
 				.build());
 	}
 
-	@SuppressWarnings("unchecked")
 	private void testSchedule(DomainConfiguration config) throws DaoException {
 		ZonedDateTime when = ZonedDateTime.parse("2024-01-01T05:04Z");
 		ZonedDateTime higherBoundary = ZonedDateTime.parse("2024-02-01T05:04Z");
@@ -210,7 +209,6 @@ public class ArchiveSchedulingServiceTest {
 		mocks.verify();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void expectScheduleByConfig(DomainConfiguration config) {
 		ZonedDateTime when = ZonedDateTime.parse("2024-01-01T05:04Z");
 		ZonedDateTime higherBoundary = ZonedDateTime.parse("2024-02-01T05:04Z");

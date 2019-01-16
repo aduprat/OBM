@@ -38,13 +38,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.EqualsVerifierApi;
+import nl.jqno.equalsverifier.Warning;
 
 public class EqualsVerifierUtils {
 
@@ -60,7 +61,7 @@ public class EqualsVerifierUtils {
 		}
 	}
 
-	public static EqualsVerifier<?> createEqualsVerifier(Class<?> clazz) {
+	public static EqualsVerifierApi<?> createEqualsVerifier(Class<?> clazz) {
 		return EqualsVerifier.forClass(clazz)
 				.suppress(Warning.NONFINAL_FIELDS, Warning.STRICT_INHERITANCE);
 	}
@@ -85,6 +86,7 @@ public class EqualsVerifierUtils {
 		private final Map<Class<?>, RedBlack<?>> prefabValues;
 		private final List<Class<?>> classes;
 		private boolean withSuperClass;
+		private Warning[] warnings;
 		
 		private EqualsVerifierBuilder() {
 			prefabValues = Maps.newHashMap();
@@ -117,10 +119,18 @@ public class EqualsVerifierUtils {
 			return this;
 		}
 	
+		public EqualsVerifierBuilder suppress(Warning... warnings) {
+			this.warnings = warnings;
+			return this;
+		}
+
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		public void verify() {
 			for (Class<?> clazz : classes) {
-				EqualsVerifier<?> verifier = createEqualsVerifier(clazz);
+				EqualsVerifierApi<?> verifier = createEqualsVerifier(clazz);
+				if (warnings != null) {
+					verifier.suppress(warnings);
+				}
 				for (Entry<Class<?>, RedBlack<?>> prefabValue : prefabValues.entrySet()) {
 					RedBlack value = prefabValue.getValue();
 					addPrefab(verifier, (Class) prefabValue.getKey(), value);
@@ -132,7 +142,7 @@ public class EqualsVerifierUtils {
 			}
 		}
 
-		private <T> void addPrefab(EqualsVerifier<T> verifier, Class<T> key, RedBlack<T> value) {
+		private <T> void addPrefab(EqualsVerifierApi<T> verifier, Class<T> key, RedBlack<T> value) {
 			verifier.withPrefabValues(key, value.red, value.black);
 		}
 	}

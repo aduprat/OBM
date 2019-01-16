@@ -47,11 +47,17 @@ public class BeansTest {
     @Test
     public void test() {
         equalsVerifierUtilsTest.test(Batch.class,
-                Operation.class,
                 Request.class,
                 ObmDomainEntry.class,
                 ProfileEntry.class,
                 LinkedEntity.class);
     }
 
+    @Test
+    public void testOperations() {
+    	EqualsVerifierUtils
+    		.createEqualsVerifier(Operation.class)
+    		.withIgnoredFields("timecreate")
+    		.verify();
+    }
 }

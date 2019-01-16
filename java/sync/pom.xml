@@ -28,18 +28,18 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<hornetq.version>2.3.1.Final</hornetq.version>
-		<junit.version>4.11</junit.version>
-		<easymock.version>3.1</easymock.version>
+		<junit.version>4.12</junit.version>
+		<easymock.version>4.0.2</easymock.version>
 		<assertj.version>3.11.1</assertj.version>
 		<guava.version>27.0.1-jre</guava.version>
-		<powermock.version>1.5.1</powermock.version>
+		<powermock.version>2.0.0</powermock.version>
 		<httpclient.version>4.3</httpclient.version>
 		<commons-io.version>2.4</commons-io.version>
 		<commons-validator.version>1.4.0</commons-validator.version>
 		<jms.version>1.1</jms.version>
 		<netty.version>3.7.0.Final</netty.version>
 		<javaee-api.version>8.0</javaee-api.version>
-		<jetty.version>9.1.2.v20140210</jetty.version>
+		<jetty.version>9.4.14.v20181114</jetty.version>
 		<commons-lang3.version>3.8.1</commons-lang3.version>
 		<slf4j.version>1.7.5</slf4j.version>
 		<tomcat-slf4j.version>1.5.8</tomcat-slf4j.version>
@@ -52,24 +52,24 @@
 		<apache-solr.version>1.4.1</apache-solr.version>
 		<btm.version>2.1.4</btm.version>
 		<parboiled.version>1.2.0</parboiled.version>
-		<jersey.version>1.17.1</jersey.version>
+		<jersey.version>1.19.4</jersey.version>
 		<cglib.version>3.0</cglib.version>
 		<asm.version>7.0</asm.version>
 		<shiro.version>1.2.2</shiro.version>
 		<version.shrinkwrap.resolvers>2.0.0</version.shrinkwrap.resolvers>
-		<arquillian.version>1.1.1.Final</arquillian.version>
-		<arquillian.jetty.version>6.1.12</arquillian.jetty.version>
-		<arquillian.tomcat.version>1.0.0.CR5</arquillian.tomcat.version>
+		<arquillian.version>1.4.1.Final</arquillian.version>
+		<arquillian.tomcat.version>1.1.0.Final</arquillian.tomcat.version>
 		<logback.version>1.0.13</logback.version>
 		<plugin.jar.version>2.4</plugin.jar.version>
 		<plugin.war.version>2.3</plugin.war.version>
 		<plugin.surefire.version>2.15</plugin.surefire.version>
 		<plugin.compiler.version>3.0</plugin.compiler.version>
 		<plugin.eclipse.version>2.9</plugin.eclipse.version>
-		<plugin.dependency.version>2.6</plugin.dependency.version>
-		<cucumber.version>1.1.7</cucumber.version>
-		<dbsetup.version>1.3.0</dbsetup.version>
+		<plugin.dependency.version>3.1.1</plugin.dependency.version>
+		<cucumber.version>4.2.1</cucumber.version>
+		<dbsetup.version>2.1.0</dbsetup.version>
 		<jackson.version>2.9.8</jackson.version>
+		<glassfish.version>2.27</glassfish.version>
 	</properties>
 
 	<repositories>
@@ -590,6 +590,11 @@ org.eclipse.jdt.core.compiler.source=1.8
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
 				<artifactId>jackson-datatype-guava</artifactId>
 				<version>${jackson.version}</version>
@@ -602,7 +607,7 @@ org.eclipse.jdt.core.compiler.source=1.8
 			<dependency>
 				<groupId>com.github.rest-driver</groupId>
 				<artifactId>rest-client-driver</artifactId>
-				<version>1.1.37</version>
+				<version>2.0.0</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -630,12 +635,12 @@ org.eclipse.jdt.core.compiler.source=1.8
 				<groupId>com.google.inject.extensions</groupId>
 				<artifactId>guice-servlet</artifactId>
 				<version>${guice.version}</version>
- 	  		</dependency>
-	                <dependency>
+			</dependency>
+			<dependency>
 				<groupId>com.github.jnr</groupId>
-	                        <artifactId>jnr-netdb</artifactId>
+				<artifactId>jnr-netdb</artifactId>
 				<version>1.1.4</version>
-	                </dependency>
+			</dependency>
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
@@ -643,15 +648,15 @@ org.eclipse.jdt.core.compiler.source=1.8
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.jayway.awaitility</groupId>
+				<groupId>org.awaitility</groupId>
 				<artifactId>awaitility</artifactId>
-				<version>1.7.0</version>
+				<version>3.1.5</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.jayway.restassured</groupId>
+				<groupId>io.rest-assured</groupId>
 				<artifactId>rest-assured</artifactId>
-				<version>2.3.1</version>
+				<version>3.3.0</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -707,19 +712,19 @@ org.eclipse.jdt.core.compiler.source=1.8
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>info.cukes</groupId>
+				<groupId>io.cucumber</groupId>
 				<artifactId>cucumber-guice</artifactId>
 				<version>${cucumber.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>info.cukes</groupId>
+				<groupId>io.cucumber</groupId>
 				<artifactId>cucumber-java</artifactId>
 				<version>${cucumber.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>info.cukes</groupId>
+				<groupId>io.cucumber</groupId>
 				<artifactId>cucumber-junit</artifactId>
 				<version>${cucumber.version}</version>
 				<scope>test</scope>
@@ -777,7 +782,7 @@ org.eclipse.jdt.core.compiler.source=1.8
 			<dependency>
 				<groupId>nl.jqno.equalsverifier</groupId>
 				<artifactId>equalsverifier</artifactId>
-				<version>1.3.1</version>
+				<version>3.1.4</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -908,22 +913,27 @@ org.eclipse.jdt.core.compiler.source=1.8
 			<dependency>
 				<groupId>org.glassfish.jersey.core</groupId>
 				<artifactId>jersey-client</artifactId>
-				<version>2.9.1</version>
+				<version>${glassfish.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.glassfish.jersey.core</groupId>
 				<artifactId>jersey-server</artifactId>
-				<version>2.9.1</version>
+				<version>${glassfish.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.glassfish.jersey.containers</groupId>
 				<artifactId>jersey-container-servlet</artifactId>
-				<version>2.9.1</version>
+				<version>${glassfish.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.inject</groupId>
+				<artifactId>jersey-hk2</artifactId>
+				<version>${glassfish.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-json-jackson</artifactId>
-				<version>2.9.1</version>
+				<version>${glassfish.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hornetq</groupId>
@@ -1068,7 +1078,7 @@ org.eclipse.jdt.core.compiler.source=1.8
 			<dependency>
 				<groupId>xmlunit</groupId>
 				<artifactId>xmlunit</artifactId>
-				<version>1.5</version>
+				<version>1.6</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>

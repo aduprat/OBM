@@ -30,7 +30,7 @@
 
 package org.obm.imap.archive.treatment;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
@@ -46,9 +46,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.junit.rules.TemporaryFolder;
 import org.obm.dao.utils.H2Destination;
 import org.obm.dao.utils.H2InMemoryDatabase;
+import org.obm.imap.archive.CucumberModule;
 import org.obm.imap.archive.DatabaseOperations;
 import org.obm.imap.archive.Expectations;
 import org.obm.imap.archive.TestImapArchiveModules;
@@ -69,7 +69,8 @@ import org.obm.server.WebServer;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.icegreen.greenmail.imap.AuthorizationException;
 import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.store.MailFolder;
@@ -77,26 +78,28 @@ import com.icegreen.greenmail.store.SimpleStoredMessage;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
-import com.jayway.restassured.config.RedirectConfig;
-import com.jayway.restassured.config.RestAssuredConfig;
-import com.jayway.restassured.http.ContentType;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.Operations;
 
+import cucumber.api.guice.CucumberModules;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import fr.aliacom.obm.common.user.UserExtId;
+import io.restassured.config.RedirectConfig;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.http.ContentType;
 
+@ScenarioScoped
 public class TreatmentStepdefs {
 	
-	@Inject WebServer server;
-	@Inject GreenMail imapServer;
-	@Inject H2InMemoryDatabase db;
-	@Inject TemporaryFolder temporaryFolder;
-	@Inject ClientDriverRule driver;
+	private WebServer server;
+	private GreenMail imapServer;
+	private H2InMemoryDatabase db;
+	private ClientDriverRule driver;
 
 	private Expectations expectations;
 	private DomainConfiguration.Builder configurationBuilder;
@@ -104,9 +107,15 @@ public class TreatmentStepdefs {
 	private List<GreenMailUser> users;
 	private MailFolder imapFolder;
 	private MailFolder sharedMailbox;
-	
+
 	@Before
 	public void setup() throws Exception {
+		Injector injector = Guice.createInjector(CucumberModules.createScenarioModule(), new CucumberModule());
+		server = injector.getInstance(WebServer.class);
+		imapServer = injector.getInstance(GreenMail.class);
+		db = injector.getInstance(H2InMemoryDatabase.class);
+		driver = injector.getInstance(ClientDriverRule.class);
+		
 		configurationBuilder = DomainConfiguration.builder()
 				.domain(domain)
 				.archiveMainFolder("arChive");
@@ -151,17 +160,17 @@ public class TreatmentStepdefs {
 		for (GreenMailUser user : users) {
 			user.delete();
 		}
-		imapServer.stop();
+//		imapServer.stop();
 		
 		db.closeConnections();
 	}
 	
-	@Given("configuration state is \"(.*?)\"")
+	@Given("^configuration state is \"([^\"]*)\"$")
 	public void configurationState(String state) {
 		configurationBuilder.state(ConfigurationState.valueOf(state));
 	}
 
-	@Given("configuration repeat kind is set to \"(.*?)\" at (\\d+):(\\d+)")
+	@Given("^configuration repeat kind is set to \"([^\"]*)\" at (\\d+):(\\d+)$")
 	public void configurationRepeatKind(String repeatKind, int hour, int minute) {
 		configurationBuilder.schedulingConfiguration(SchedulingConfiguration.builder()
 				.recurrence(ArchiveRecurrence.builder()
@@ -174,30 +183,30 @@ public class TreatmentStepdefs {
 				.build());
 	}
 
-	@Given("move feature is enabled")
+	@Given("^move feature is enabled$")
 	public void configurationMove() {
 		configurationBuilder.moveEnabled(true);
 	}
 	
-	@Given("configuration excludes users?")
+	@Given("^configuration excludes users?$")
 	public void configurationExcludeUsers(Map<String, String> users) {
 		configurationBuilder.scopeUsersIncludes(false)
 			.scopeUsers(usersMapToScopeUserList(users));
 	}
 	
-	@Given("configuration includes users?")
+	@Given("^configuration includes users?$")
 	public void configurationIncludeUsers(Map<String, String> users) {
 		configurationBuilder.scopeUsersIncludes(true)
 			.scopeUsers(usersMapToScopeUserList(users));
 	}
 	
-	@Given("configuration excludes shared mailboxes?")
+	@Given("^configuration excludes shared mailboxes?$")
 	public void configurationExcludeSharedMailboxes(Map<String, Integer> sharedMailboxes) {
 		configurationBuilder.scopeSharedMailboxesIncludes(false)
 			.scopeSharedMailboxes(usersMapToScopeSharedMailboxList(sharedMailboxes));
 	}
 	
-	@Given("configuration includes shared mailboxes?")
+	@Given("^configuration includes shared mailboxes?$")
 	public void configurationIncludeSharedMailboxes(Map<String, Integer> sharedMailboxes) {
 		configurationBuilder.scopeSharedMailboxesIncludes(true)
 			.scopeSharedMailboxes(usersMapToScopeSharedMailboxList(sharedMailboxes));
@@ -231,31 +240,31 @@ public class TreatmentStepdefs {
 		}).values());
 	}
 	
-	@Given("a user \"(.*?)\" with \"(.*?)\" imap folders?")
-	public void createUserWithFolder(String user, List<String> imapFolders) throws Exception {
+	@Given("^a user \"([^\"]*)\" with \"([^\"]*)\" imap folders?$")
+	public void createUserWithFolder(String user, String imapFolders) throws Exception {
 		GreenMailUser greenMailUser = createUser(user, user);
 		users.add(greenMailUser);
 		
-		for (String imapFolder : imapFolders) {
+		for (String imapFolder : imapFolders.split(", ")) {
 			this.imapFolder = imapServer.getManagers().getImapHostManager().createMailbox(greenMailUser, imapFolder);
 		}
 	}
 	
-	@Given("a shared mailbox \"(.*?)\" without imap folder")
+	@Given("^a shared mailbox \"([^\"]*)\" without imap folder$")
 	public void createSharedMailbox(String sharedMailboxName) throws Exception {
 		sharedMailbox = createRootMailbox(sharedMailboxName);
 	}
 	
-	@Given("a shared mailbox \"(.*?)\" with \"(.*?)\" imap folders?")
-	public void createSharedMailboxWithFolder(String sharedMailboxName, List<String> imapFolders) throws Exception {
+	@Given("^a shared mailbox \"([^\"]*)\" with \"([^\"]*)\" imap folders?$")
+	public void createSharedMailboxWithFolder(String sharedMailboxName, String imapFolders) throws Exception {
 		sharedMailbox = createRootMailbox(sharedMailboxName);
 		
-		for (String imapFolder : imapFolders) {
+		for (String imapFolder : imapFolders.split(", ")) {
 			this.imapFolder = imapServer.getManagers().getImapHostManager().createMailbox(adminUser, imapFolder);
 		}
 	}
 
-	@Given("this user has (\\d+) mails? at \"(.*?)\" in this folder with subject \"(.*?)\"")
+	@Given("^this user has (\\d+) mails? at \"([^\"]*)\" in this folder with subject \"([^\"]*)\"$")
 	public void appendMails(int numberOfMails, String internalDate, String subject) throws Exception {
 		for (int i = 0; i < numberOfMails; i++) {
 			imapFolder.store(GreenMailUtil.buildSimpleMessage("from@" + domain.getName(), subject, "message", imapServer.getSmtp().getServerSetup()), 
@@ -263,7 +272,7 @@ public class TreatmentStepdefs {
 		}
 	}
 
-	@Given("this shared mailbox has (\\d+) mails? at \"(.*?)\" in this folder with subject \"(.*?)\"")
+	@Given("^this shared mailbox has (\\d+) mails? at \"([^\"]*)\" in this folder with subject \"([^\"]*)\"$")
 	public void appendMailsInSharedMailboxFolder(int numberOfMails, String internalDate, String subject) throws Exception {
 		for (int i = 0; i < numberOfMails; i++) {
 			imapFolder.store(GreenMailUtil.buildSimpleMessage("from@" + domain.getName(), subject, "message", imapServer.getSmtp().getServerSetup()), 
@@ -271,7 +280,7 @@ public class TreatmentStepdefs {
 		}
 	}
 
-	@Given("this shared mailbox has (\\d+) mails? at \"(.*?)\" with subject \"(.*?)\"")
+	@Given("^this shared mailbox has (\\d+) mails? at \"([^\"]*)\" with subject \"([^\"]*)\"$")
 	public void appendMailsToSharedMailbox(int numberOfMails, String internalDate, String subject) throws Exception {
 		for (int i = 0; i < numberOfMails; i++) {
 			sharedMailbox.store(GreenMailUtil.buildSimpleMessage("from@" + domain.getName(), subject, "message", imapServer.getSmtp().getServerSetup()), 
@@ -279,7 +288,7 @@ public class TreatmentStepdefs {
 		}
 	}
 
-	@Given("current date is \"(.*?)\"")
+	@Given("^current date is \"([^\"]*)\"$")
 	public void currentDate(String currentDate) {
 		given()
 			.port(server.getHttpPort())
@@ -290,7 +299,7 @@ public class TreatmentStepdefs {
 			.put("/imap-archive/testing/date");
 	}
 
-	@When("admin launches an immediate treatment")
+	@When("^admin launches an immediate treatment$")
 	public void adminLaunchesAnImmediateTreatment() throws Exception {
 		expectations
 			.expectTrustedLogin(domain)
@@ -323,6 +332,7 @@ public class TreatmentStepdefs {
 			.config(RestAssuredConfig.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)))
 			.port(server.getHttpPort())
 			.auth().basic("admin@" + domain.getName(), "trust3dToken")
+			.contentType(ContentType.JSON)
 			.queryParam("archive_treatment_kind", ArchiveTreatmentKind.REAL_RUN).
 		expect()
 			.header("Location", containsString("/imap-archive/service/v1/domains/" + domain.getUuid().get() + "/treatments/" + expectedRunId.toString()))
@@ -345,7 +355,7 @@ public class TreatmentStepdefs {
 			.get("/imap-archive/service/v1/domains/" + domain.getUuid().get() + "/treatments/" + expectedRunId.toString() + "/logs");
 	}
 	
-	@Then("(\\d+) mails? should be archived in the \"(.*?)\" imap folder with subject \"(.*?)\"")
+	@Then("^(\\d+) mails? should be archived in the \"([^\"]*)\" imap folder with subject \"([^\"]*)\"$")
 	public void mailsShouldBeArchivedInFolder(int numberOfArchivedEmails, String archiveFolderName, String subject) throws Exception {
 		List<SimpleStoredMessage> messages = mailsShouldBeInFolder(numberOfArchivedEmails, archiveFolderName);
 		for (SimpleStoredMessage message : messages) {
@@ -353,7 +363,7 @@ public class TreatmentStepdefs {
 		}
 	}
 	
-	@Then("(\\d+) mails? should be in the \"(.*?)\" imap folder")
+	@Then("^(\\d+) mails? should be in the \"([^\"]*)\" imap folder$")
 	public List<SimpleStoredMessage> mailsShouldBeInFolder(int numberOfArchivedEmails, String folderName) throws Exception {
 		MailFolder archivedFolder = imapServer.getManagers().getImapHostManager().getFolder(adminUser, folderName);
 		assertThat(archivedFolder).isNotNull();
@@ -363,13 +373,13 @@ public class TreatmentStepdefs {
 		return messages;
 	}
 	
-	@Then("this user imap folders should contain (\\d+) mails?")
+	@Then("^this user imap folders should contain (\\d+) mails?$")
 	public void userHasMails(int numberOfEmails) {
 		List<SimpleStoredMessage> messages = imapServer.getManagers().getImapHostManager().getAllMessages(adminUser);
 		assertThat(messages).hasSize(numberOfEmails);
 	}
 	
-	@Then("an archive treatment has been processed by the scheduler after (\\d+) second")
+	@Then("^an archive treatment has been processed by the scheduler after (\\d+) second$")
 	public void processShouldBeFired(int sleepTimeInSeconds) throws Exception {
 		expectations
 			.expectTrustedLogin(domain)
@@ -381,7 +391,7 @@ public class TreatmentStepdefs {
 		waitForTheEnd(expectedRunId, sleepTimeInSeconds);
 	}
 	
-	@Then("^imap folder \"(.*?)\" doesn't exists$")
+	@Then("^imap folder \"([^\"]*)\" doesn't exists$$")
 	public void imapFolderDoesntExists(String folderName) throws Exception {
 		MailFolder archivedFolder = imapServer.getManagers().getImapHostManager().getFolder(adminUser, folderName);
 		assertThat(archivedFolder).isNull();

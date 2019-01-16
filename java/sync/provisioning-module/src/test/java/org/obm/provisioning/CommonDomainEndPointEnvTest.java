@@ -97,7 +97,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.util.Modules;
-import com.jayway.restassured.RestAssured;
 import com.linagora.obm.sync.JMSClient;
 
 import fr.aliacom.obm.common.domain.ObmDomain;
@@ -112,6 +111,7 @@ import fr.aliacom.obm.common.user.UserNomad;
 import fr.aliacom.obm.common.user.UserPassword;
 import fr.aliacom.obm.common.user.UserPhones;
 import fr.aliacom.obm.common.user.UserWork;
+import io.restassured.RestAssured;
 
 public abstract class CommonDomainEndPointEnvTest {
 

@@ -39,6 +39,8 @@ import org.obm.sync.bean.EqualsVerifierUtils.EqualsVerifierBuilder;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
+import nl.jqno.equalsverifier.Warning;
+
 
 public class BeansTest {
 
@@ -54,6 +56,7 @@ public class BeansTest {
 			.equalsVerifiers(list)
 			.hasCharsetField()
 			.prefabValue(Optional.class, Optional.absent(), Optional.of(5))
+			.suppress(Warning.REFERENCE_EQUALITY)
 			.verify();
 	}
 	

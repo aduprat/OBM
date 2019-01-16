@@ -107,6 +107,8 @@ public class DatabaseConnectionProviderImplTest {
 		Connection connection = control.createMock(Connection.class);
 		expect(connection.prepareStatement(anyObject(String.class)))
 			.andReturn(preparedStatement);
+		preparedStatement.close();
+		expectLastCall();
 		boolean readOnly = true;
 		expect(connection.isReadOnly())
 			.andReturn(readOnly);

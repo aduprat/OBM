@@ -30,7 +30,7 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

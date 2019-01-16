@@ -31,7 +31,6 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.servlet.filter.qos;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.obm.servlet.filter.qos.QoSContinuationSupportJettyUtils.QoSContinuationImpl;
 import org.obm.servlet.filter.qos.handlers.KeyRequestsInfo;
@@ -40,16 +39,19 @@ import org.obm.sync.bean.EqualsVerifierUtils;
 
 public class BeansTest {
 
-	private EqualsVerifierUtils equalsVerifierUtilsTest;
-	
-	@Before
-	public void init() {
-		equalsVerifierUtilsTest = new EqualsVerifierUtils();
+	@Test
+	public void testQoSContinuationImpls() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(QoSContinuationImpl.class)
+			.withIgnoredFields("continuation")
+			.verify();
 	}
 	
 	@Test
-	public void test() {
-		equalsVerifierUtilsTest.test(KeyRequestsInfo.class, QoSContinuationImpl.class);
+	public void testKeyRequestsInfos() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(KeyRequestsInfo.class)
+			.withIgnoredFields("timestamp")
+			.verify();
 	}
-	
 }

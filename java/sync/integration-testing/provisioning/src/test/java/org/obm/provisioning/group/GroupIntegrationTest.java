@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.group;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.obm.provisioning.ProvisioningIntegrationTestUtils.getAdminUserJson;
 import static org.obm.provisioning.ProvisioningIntegrationTestUtils.groupUrl;
@@ -55,10 +55,10 @@ import org.obm.server.WebServer;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.http.ContentType;
 
 import fr.aliacom.obm.common.domain.ObmDomainUuid;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 
 public class GroupIntegrationTest {
 
@@ -461,7 +461,7 @@ public class GroupIntegrationTest {
 				
 		given()
 			.auth().basic("admin0@global.virt", "admin0")
-			.content(body).contentType(ContentType.JSON).
+			.body(body).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode()).
 		when()
@@ -509,7 +509,7 @@ public class GroupIntegrationTest {
 
 		given()
 			.auth().basic("admin0@global.virt", "admin0")
-			.content(body).contentType(ContentType.JSON).
+			.body(body).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode()).
 		when()
@@ -553,7 +553,7 @@ public class GroupIntegrationTest {
 				
 		given()
 			.auth().basic("admin0@global.virt", "admin0")
-			.content(body).contentType(ContentType.JSON).
+			.body(body).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode()).
 		when()

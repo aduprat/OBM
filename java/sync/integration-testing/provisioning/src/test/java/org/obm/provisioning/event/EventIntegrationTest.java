@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.event;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.obm.provisioning.ProvisioningIntegrationTestUtils.commitBatch;
@@ -72,7 +72,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.jayway.restassured.http.ContentType;
 import com.linagora.obm.sync.JMSServer;
 
 import fr.aliacom.obm.common.domain.ObmDomain;
@@ -80,6 +79,7 @@ import fr.aliacom.obm.common.domain.ObmDomainUuid;
 import fr.aliacom.obm.common.resource.Resource;
 import fr.aliacom.obm.common.user.ObmUser;
 import fr.aliacom.obm.common.user.UserLogin;
+import io.restassured.http.ContentType;
 
 public class EventIntegrationTest {
 

@@ -54,7 +54,6 @@ public class ArchiveSchedulerBusTest {
 	ArchiveSchedulerBus testee;
 	ScheduledTask<ArchiveDomainTask> scheduledTask;
 
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
 		mocks = EasyMock.createControl();
@@ -63,7 +62,6 @@ public class ArchiveSchedulerBusTest {
 		testee = new ArchiveSchedulerBus(bus);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void scheduledShouldPostAsTaskStatusChanged() {
 		ScheduledTask<ArchiveDomainTask> task = mocks.createMock(ScheduledTask.class);
@@ -72,7 +70,7 @@ public class ArchiveSchedulerBusTest {
 			.andReturn(new RealRunTaskStatusChanged(State.WAITING, archiveDomainTask));
 		expect(task.task()).andReturn(archiveDomainTask);
 		expect(task.state()).andReturn(State.WAITING);
-		Capture<TaskStatusChanged> postTaskCapture = new Capture<>();
+		Capture<TaskStatusChanged> postTaskCapture = Capture.newInstance();
 		
 		bus.post(capture(postTaskCapture));
 		expectLastCall();
@@ -85,7 +83,6 @@ public class ArchiveSchedulerBusTest {
 		assertThat(postTaskCapture.getValue().state()).isEqualTo(State.WAITING);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void runningShouldPostAsTaskStatusChanged() {
 		ScheduledTask<ArchiveDomainTask> task = mocks.createMock(ScheduledTask.class);
@@ -94,7 +91,7 @@ public class ArchiveSchedulerBusTest {
 			.andReturn(new RealRunTaskStatusChanged(State.RUNNING, archiveDomainTask));
 		expect(task.task()).andReturn(archiveDomainTask);
 		expect(task.state()).andReturn(State.RUNNING);
-		Capture<TaskStatusChanged> postTaskCapture = new Capture<>();
+		Capture<TaskStatusChanged> postTaskCapture = Capture.newInstance();
 		
 		bus.post(capture(postTaskCapture));
 		expectLastCall();
@@ -107,7 +104,6 @@ public class ArchiveSchedulerBusTest {
 		assertThat(postTaskCapture.getValue().state()).isEqualTo(State.RUNNING);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void terminatedShouldPostAsTaskStatusChanged() {
 		ScheduledTask<ArchiveDomainTask> task = mocks.createMock(ScheduledTask.class);
@@ -116,7 +112,7 @@ public class ArchiveSchedulerBusTest {
 			.andReturn(new RealRunTaskStatusChanged(State.TERMINATED, archiveDomainTask));
 		expect(task.task()).andReturn(archiveDomainTask);
 		expect(task.state()).andReturn(State.TERMINATED);
-		Capture<TaskStatusChanged> postTaskCapture = new Capture<>();
+		Capture<TaskStatusChanged> postTaskCapture = Capture.newInstance();
 		
 		bus.post(capture(postTaskCapture));
 		expectLastCall();
@@ -129,7 +125,6 @@ public class ArchiveSchedulerBusTest {
 		assertThat(postTaskCapture.getValue().state()).isEqualTo(State.TERMINATED);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void failedShouldPostAsTaskStatusChanged() {
 		Throwable exception = new IllegalStateException();
@@ -139,7 +134,7 @@ public class ArchiveSchedulerBusTest {
 			.andReturn(new RealRunTaskStatusChanged(State.FAILED, archiveDomainTask));
 		expect(task.task()).andReturn(archiveDomainTask);
 		expect(task.state()).andReturn(State.FAILED);
-		Capture<TaskStatusChanged> postTaskCapture = new Capture<>();
+		Capture<TaskStatusChanged> postTaskCapture = Capture.newInstance();
 		
 		bus.post(capture(postTaskCapture));
 		expectLastCall();
@@ -152,7 +147,6 @@ public class ArchiveSchedulerBusTest {
 		assertThat(postTaskCapture.getValue().state()).isEqualTo(State.FAILED);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void cancelShouldPostAsTaskStatusChanged() {
 		ScheduledTask<ArchiveDomainTask> task = mocks.createMock(ScheduledTask.class);
@@ -161,7 +155,7 @@ public class ArchiveSchedulerBusTest {
 			.andReturn(new RealRunTaskStatusChanged(State.CANCELED, archiveDomainTask));
 		expect(task.task()).andReturn(archiveDomainTask);
 		expect(task.state()).andReturn(State.CANCELED);
-		Capture<TaskStatusChanged> postTaskCapture = new Capture<>();
+		Capture<TaskStatusChanged> postTaskCapture = Capture.newInstance();
 		
 		bus.post(capture(postTaskCapture));
 		expectLastCall();
@@ -174,7 +168,6 @@ public class ArchiveSchedulerBusTest {
 		assertThat(postTaskCapture.getValue().state()).isEqualTo(State.CANCELED);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void eventsAreImmutable() {
 		ScheduledTask<ArchiveDomainTask> task = mocks.createMock(ScheduledTask.class);
@@ -187,8 +180,8 @@ public class ArchiveSchedulerBusTest {
 			.andReturn(archiveDomainTask).times(2);
 		expect(task.state()).andReturn(State.WAITING);
 		expect(task.state()).andReturn(State.CANCELED);
-		Capture<TaskStatusChanged> scheduledTaskCapture = new Capture<>();
-		Capture<TaskStatusChanged> canceledTaskCapture = new Capture<>();
+		Capture<TaskStatusChanged> scheduledTaskCapture = Capture.newInstance();
+		Capture<TaskStatusChanged> canceledTaskCapture = Capture.newInstance();
 		
 		bus.post(capture(scheduledTaskCapture));
 		expectLastCall();

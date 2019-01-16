@@ -30,7 +30,7 @@
 
 package org.obm.imap.archive.resources;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -79,12 +79,13 @@ import com.google.common.base.Stopwatch;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.icegreen.greenmail.util.GreenMail;
-import com.jayway.restassured.config.RedirectConfig;
-import com.jayway.restassured.config.RestAssuredConfig;
-import com.jayway.restassured.http.ContentType;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.Operations;
 import com.ninja_squad.dbsetup.operation.Operation;
+
+import io.restassured.config.RedirectConfig;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.http.ContentType;
 
 public class TreatmentResourceTest {
 

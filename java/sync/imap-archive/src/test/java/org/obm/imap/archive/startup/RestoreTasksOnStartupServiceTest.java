@@ -97,7 +97,6 @@ public class RestoreTasksOnStartupServiceTest {
 		control.verify();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void startingShouldReScheduleWhenScheduledEntry() throws Exception {
 		ZonedDateTime when = ZonedDateTime.parse("2014-12-02T11:35Z");

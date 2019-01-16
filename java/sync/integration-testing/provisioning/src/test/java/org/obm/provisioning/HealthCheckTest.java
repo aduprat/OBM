@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning;
 
-import static com.jayway.restassured.RestAssured.expect;
+import static io.restassured.RestAssured.expect;
 import static org.hamcrest.Matchers.containsString;
 
 import java.net.URL;
@@ -51,7 +51,8 @@ import org.obm.server.WebServer;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.jayway.restassured.RestAssured;
+
+import io.restassured.RestAssured;
 
 public class HealthCheckTest {
 

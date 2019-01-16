@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.json;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.StringContains.containsString;
 
 import javax.ws.rs.core.Response.Status;
@@ -44,7 +44,7 @@ import org.obm.provisioning.CommonDomainEndPointEnvTest;
 import org.obm.provisioning.dao.exceptions.DaoException;
 import org.obm.provisioning.dao.exceptions.DomainNotFoundException;
 
-import com.jayway.restassured.http.ContentType;
+import io.restassured.http.ContentType;
 
 @RunWith(GuiceRunner.class)
 @GuiceModule(CommonDomainEndPointEnvTest.Env.class)
@@ -58,10 +58,10 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("user@domain", "password")
-			.content(obmUserToJsonString()).contentType(ContentType.JSON).
+			.body(obmUserToJsonString()).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode())
-			.content(containsString(obmUserToJsonStringWithoutGroup())).
+			.body(containsString(obmUserToJsonStringWithoutGroup())).
 		when()
 			.post("/do/tests/on/serialization/of/user");
 		
@@ -76,10 +76,10 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("user@domain", "password")
-			.content(obmUserJsonStringWithNullValue()).contentType(ContentType.JSON).
+			.body(obmUserJsonStringWithNullValue()).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode())
-			.content(containsString(obmUserJsonStringWithNullValueAfterDeserialization())).
+			.body(containsString(obmUserJsonStringWithNullValueAfterDeserialization())).
 		when()
 			.post("/do/tests/on/serialization/of/user");
 		
@@ -94,7 +94,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 
 		given()
 			.auth().basic("user@domain", "password")
-			.content(minimalObmUserJsonString()).contentType(ContentType.JSON).
+			.body(minimalObmUserJsonString()).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode()).
 		when()
@@ -111,7 +111,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 
 		given()
 			.auth().basic("user@domain", "password")
-			.content(obmUserJsonStringWithoutLastName()).contentType(ContentType.JSON).
+			.body(obmUserJsonStringWithoutLastName()).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.INTERNAL_SERVER_ERROR.getStatusCode()).
 		when()
@@ -128,7 +128,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 
 		given()
 			.auth().basic("user@domain", "password")
-			.content(obmUserJsonStringWithoutProfile()).contentType(ContentType.JSON).
+			.body(obmUserJsonStringWithoutProfile()).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.INTERNAL_SERVER_ERROR.getStatusCode()).
 		when()
@@ -145,7 +145,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("user@domain", "password")
-			.content(
+			.body(
 					"{" +
 						"\"id\":\"groupExtId\"," +
 						"\"name\":\"null\"," +
@@ -155,7 +155,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 			.contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode())
-			.content(containsString(
+			.body(containsString(
 					"{" +
 						"\"id\":\"groupExtId\"," +
 						"\"name\":\"null\"," +
@@ -181,7 +181,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("user@domain", "password")
-			.content(
+			.body(
 					"{" +
 						"\"id\":\"groupExtId\"," +
 						"\"name\":\"group1\"," +
@@ -191,7 +191,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 			.contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode())
-			.content(containsString(
+			.body(containsString(
 					"{" +
 						"\"id\":\"groupExtId\"," +
 						"\"name\":\"group1\"," +
@@ -217,14 +217,14 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("user@domain", "password")
-			.content(
+			.body(
 					"{" +
 						"\"id\":\"groupExtId\"" +
 					"}")
 			.contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode())
-			.content(containsString(
+			.body(containsString(
 					"{" +
 						"\"id\":\"groupExtId\"," +
 						"\"name\":null," +
@@ -252,7 +252,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 			.auth().basic("user@domain", "password").
 		expect()
 			.statusCode(Status.INTERNAL_SERVER_ERROR.getStatusCode())
-			.content(containsString(
+			.body(containsString(
 					"{" +
 						"\"message\":\"foo\"," +
 						"\"type\":\"java.lang.IllegalStateException\"" +
@@ -273,7 +273,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 			.auth().basic("user@domain", "password").
 		expect()
 			.statusCode(Status.INTERNAL_SERVER_ERROR.getStatusCode())
-			.content(containsString(
+			.body(containsString(
 					"{" +
 						"\"message\":\"foo\"," +
 						"\"type\":\"java.lang.Exception\"" +
@@ -292,7 +292,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("user@domain", "password")
-			.content(
+			.body(
 					"{"
 						+ "\"name\":\"the name\","
 						+ "\"role\":\"PRIMARY\""
@@ -300,7 +300,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 			.contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode())
-			.content(containsString(
+			.body(containsString(
 					"{"
 						+ "\"name\":\"the name\","
 						+ "\"role\":\"PRIMARY\""
@@ -319,7 +319,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("user@domain", "password")
-			.content(
+			.body(
 					"{"
 						+ "\"name\":\"the name\","
 						+ "\"role\":\"collected\","
@@ -331,7 +331,7 @@ public class SerializerDeserializerTest extends CommonDomainEndPointEnvTest {
 			.contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode())
-			.content(containsString(
+			.body(containsString(
 					"{"
 						+ "\"name\":\"the name\","
 						+ "\"role\":\"COLLECTED\","

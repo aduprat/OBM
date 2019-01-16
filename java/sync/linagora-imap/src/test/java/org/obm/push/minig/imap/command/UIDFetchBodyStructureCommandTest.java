@@ -72,7 +72,7 @@ public class UIDFetchBodyStructureCommandTest {
 	@Test
 	public void testHandleResponses() {
 		BodyStructureParser resultCallback = createMock(BodyStructureParser.class);
-		Capture<String> result = new Capture<String>(CaptureType.FIRST);
+		Capture<String> result = Capture.newInstance(CaptureType.FIRST);
 		MimeMessageImpl.Builder mimeMessageBuilder = createNiceMock(MimeMessageImpl.Builder.class);
 		expect(mimeMessageBuilder.uid(anyLong())).andReturn(mimeMessageBuilder);
 		expect(mimeMessageBuilder.size(anyInt())).andReturn(mimeMessageBuilder);
@@ -91,7 +91,7 @@ public class UIDFetchBodyStructureCommandTest {
 	@Test
 	public void testHandleMultipleResponsesWithOnlyOneCorresponding() {
 		BodyStructureParser resultCallback = createMock(BodyStructureParser.class);
-		Capture<String> result = new Capture<String>(CaptureType.FIRST);
+		Capture<String> result = Capture.newInstance(CaptureType.FIRST);
 		MimeMessageImpl.Builder mimeMessageBuilder = createNiceMock(MimeMessageImpl.Builder.class);
 		expect(mimeMessageBuilder.uid(anyLong())).andReturn(mimeMessageBuilder);
 		expect(mimeMessageBuilder.size(anyInt())).andReturn(mimeMessageBuilder);

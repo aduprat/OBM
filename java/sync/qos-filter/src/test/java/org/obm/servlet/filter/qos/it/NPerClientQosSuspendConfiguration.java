@@ -50,7 +50,6 @@ public abstract class NPerClientQosSuspendConfiguration extends AbstractModule {
 	
 	protected abstract int getN();
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void configure() {
 		IMocksControl control = createStrictControl();

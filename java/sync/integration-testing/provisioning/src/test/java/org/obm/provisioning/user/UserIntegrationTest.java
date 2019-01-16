@@ -32,7 +32,7 @@
 package org.obm.provisioning.user;
 
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.obm.provisioning.ProvisioningIntegrationTestUtils.getAdminUserJsonWithGroup;
 import static org.obm.provisioning.ProvisioningIntegrationTestUtils.userUrl;
@@ -55,9 +55,9 @@ import org.obm.server.WebServer;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.jayway.restassured.RestAssured;
 
 import fr.aliacom.obm.common.domain.ObmDomainUuid;
+import io.restassured.RestAssured;
 
 public class UserIntegrationTest {
 

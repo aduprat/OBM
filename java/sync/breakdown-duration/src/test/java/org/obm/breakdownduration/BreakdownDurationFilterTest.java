@@ -32,6 +32,7 @@
 package org.obm.breakdownduration;
 
 import static org.easymock.EasyMock.anyInt;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createControl;
 import static org.easymock.EasyMock.expectLastCall;
 
@@ -55,13 +56,15 @@ public class BreakdownDurationFilterTest {
 	private BreakdownDurationFilter testee;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		mocks = createControl();
 		
 		loggerService = mocks.createMock(BreakdownDurationLoggerService.class);
 		request = mocks.createMock(ServletRequest.class);
 		response = mocks.createMock(ServletResponse.class);
 		chain = mocks.createMock(FilterChain.class);
+		chain.doFilter(anyObject(ServletRequest.class), anyObject(ServletResponse.class));
+		expectLastCall().anyTimes();
 		
 		testee = new BreakdownDurationFilter(loggerService);
 	}

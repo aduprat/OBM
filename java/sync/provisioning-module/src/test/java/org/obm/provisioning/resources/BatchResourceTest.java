@@ -29,7 +29,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.resources;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
@@ -51,7 +51,8 @@ import org.obm.provisioning.processing.BatchProcessor;
 import org.obm.provisioning.processing.BatchTracker;
 
 import com.google.inject.Inject;
-import com.jayway.restassured.http.ContentType;
+
+import io.restassured.http.ContentType;
 
 @RunWith(GuiceRunner.class)
 @GuiceModule(CommonDomainEndPointEnvTest.Env.class)
@@ -401,7 +402,7 @@ public class BatchResourceTest extends CommonDomainEndPointEnvTest {
 			.auth().basic("username@domain", "password").
 		expect()
 			.statusCode(Status.OK.getStatusCode())
-			.content(containsString(  "{"
+			.body(containsString(  "{"
 						+ "\"message\":\"Not commiting batch 13 in status SUCCESS.\","
 						+ "\"type\":\"org.obm.provisioning.resources.BatchAlreadyCommitedException\""
 					+ "}")).
@@ -420,10 +421,10 @@ public class BatchResourceTest extends CommonDomainEndPointEnvTest {
 
 		given()
 			.auth().basic("username@domain", "password")
-			.content(obmUserToJsonString()).contentType(ContentType.JSON).
+			.body(obmUserToJsonString()).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.CONFLICT.getStatusCode())
-			.content(containsString(  "{"
+			.body(containsString(  "{"
 					+ "\"message\":\"Not adding operation to batch 13 in status SUCCESS.\","
 					+ "\"type\":\"org.obm.provisioning.resources.BatchAlreadyCommitedException\""
 				+ "}")).

@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.junit.Test;
 import org.obm.imap.archive.mailbox.MailboxPaths;
+import org.obm.sync.bean.EqualsVerifierUtils;
 import org.obm.sync.bean.EqualsVerifierUtils.EqualsVerifierBuilder;
 import org.slf4j.LoggerFactory;
 
@@ -56,11 +57,6 @@ public class BeansTest {
 				PersistedResult.class,
 				SchedulingConfiguration.class,
 				SchedulingDates.class,
-				ArchiveConfiguration.class,
-				ArchiveTreatment.class,
-				ArchiveScheduledTreatment.class,
-				ArchiveRunningTreatment.class,
-				ArchiveTerminatedTreatment.class,
 				ArchiveTreatmentRunId.class,
 				ImapFolder.class,
 				ProcessedFolder.class,
@@ -70,8 +66,47 @@ public class BeansTest {
 				ScopeUser.class,
 				Mailing.class,
 				MailboxPaths.class,
-				MappedMessageSets.class,
 				SharedMailbox.class
 			).verify();
 	}	
+	
+	@Test
+	public void testArchiveTreatments() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(ArchiveTreatment.class)
+			.withIgnoredFields("scheduledTime")
+			.verify();
+	}
+	
+	@Test
+	public void testArchiveScheduledTreatments() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(ArchiveScheduledTreatment.class)
+			.withIgnoredFields("scheduledTime")
+			.verify();
+	}
+	
+	@Test
+	public void testArchiveRunningTreatments() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(ArchiveRunningTreatment.class)
+			.withIgnoredFields("scheduledTime")
+			.verify();
+	}
+	
+	@Test
+	public void testArchiveTerminatedTreatments() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(ArchiveTerminatedTreatment.class)
+			.withIgnoredFields("scheduledTime")
+			.verify();
+	}
+	
+	@Test
+	public void testMappedMessageSets() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(MappedMessageSets.class)
+			.withIgnoredFields("originUidsToDestinationUids")
+			.verify();
+	}
 }

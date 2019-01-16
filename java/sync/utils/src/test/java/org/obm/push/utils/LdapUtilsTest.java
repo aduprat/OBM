@@ -70,7 +70,6 @@ public class LdapUtilsTest {
 	private SearchResult searchResult;
 	private Attributes attributes;
 
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
 		control = createControl();

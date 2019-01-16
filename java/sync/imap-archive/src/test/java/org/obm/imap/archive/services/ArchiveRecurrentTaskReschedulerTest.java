@@ -67,7 +67,6 @@ public class ArchiveRecurrentTaskReschedulerTest {
 	ArchiveRecurrentTaskRescheduler testee;
 	ArchiveConfiguration archiveConfiguration;
 
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
 		logger = LoggerFactory.getLogger(ArchiveRecurrentTaskRescheduler.class);

@@ -29,7 +29,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.resources;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -44,10 +44,10 @@ import org.obm.guice.GuiceRunner;
 import org.obm.provisioning.CommonDomainEndPointEnvTest;
 
 import com.google.common.collect.ImmutableList;
-import com.jayway.restassured.RestAssured;
 
 import fr.aliacom.obm.ToolBox;
 import fr.aliacom.obm.common.domain.ObmDomain;
+import io.restassured.RestAssured;
 
 @RunWith(GuiceRunner.class)
 @GuiceModule(CommonDomainEndPointEnvTest.Env.class)

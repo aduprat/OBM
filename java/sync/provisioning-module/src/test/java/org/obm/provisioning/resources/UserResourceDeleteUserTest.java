@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.resources;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.easymock.EasyMock.expectLastCall;
 
 import javax.ws.rs.core.Response.Status;
@@ -66,7 +66,7 @@ public class UserResourceDeleteUserTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("username@domain", "password")
-			.parameter("expunge", true).
+			.param("expunge", true).
 		expect()
 			.statusCode(Status.OK.getStatusCode()).
 		when()
@@ -90,7 +90,7 @@ public class UserResourceDeleteUserTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("username@domain", "password")
-			.parameter("expunge", false).
+			.param("expunge", false).
 		expect()
 			.statusCode(Status.OK.getStatusCode()).
 		when()

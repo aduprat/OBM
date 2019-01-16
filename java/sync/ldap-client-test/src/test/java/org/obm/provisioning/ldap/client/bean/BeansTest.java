@@ -31,35 +31,25 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.ldap.client.bean;
 
-import org.junit.Before;
+import org.apache.directory.api.ldap.model.name.Dn;
 import org.junit.Test;
-import org.obm.sync.bean.EqualsVerifierUtils;
-
-import com.google.common.collect.ImmutableList;
+import org.obm.sync.bean.EqualsVerifierUtils.EqualsVerifierBuilder;
 
 
 public class BeansTest {
 
-	private EqualsVerifierUtils equalsVerifierUtilsTest;
-	
-	@Before
-	public void init() {
-		equalsVerifierUtilsTest = new EqualsVerifierUtils();
-	}
-	
 	@Test
-	public void test() {
-		ImmutableList<Class<?>> list = 
-				ImmutableList.<Class<?>>builder()
-					.add(LdapGroup.class)
-					.add(LdapGroup.Cn.class)
-					.add(LdapUser.class)
-					.add(LdapUser.Uid.class)
-					.add(LdapUserMembership.class)
-					.add(LdapDomain.class)
-					.add(NTLMPassword.class)
-					.build();
-		equalsVerifierUtilsTest.test(list);
+	public void test() throws Exception {
+		EqualsVerifierBuilder.builder()
+			.prefabValue(Dn.class, new Dn(), new Dn())
+			.equalsVerifiers(
+						LdapGroup.class,
+						LdapGroup.Cn.class,
+						LdapUser.class,
+						LdapUser.Uid.class,
+						LdapUserMembership.class,
+						LdapDomain.class,
+						NTLMPassword.class);
 	}
 	
 }

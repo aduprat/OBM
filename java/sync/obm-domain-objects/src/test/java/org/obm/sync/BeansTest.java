@@ -33,10 +33,10 @@ package org.obm.sync;
 
 import java.util.Date;
 
-import nl.jqno.equalsverifier.Warning;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.obm.provisioning.Group;
+import org.obm.provisioning.Group.Id;
 import org.obm.sync.addition.CommitedElement;
 import org.obm.sync.addition.CommitedOperation;
 import org.obm.sync.auth.Credentials;
@@ -55,7 +55,6 @@ import org.obm.sync.book.Contact;
 import org.obm.sync.book.DeletedContact;
 import org.obm.sync.book.InstantMessagingId;
 import org.obm.sync.book.Phone;
-import org.obm.sync.calendar.ContactAttendee;
 import org.obm.sync.calendar.DeletedEvent;
 import org.obm.sync.calendar.Event;
 import org.obm.sync.calendar.EventExtId;
@@ -63,9 +62,8 @@ import org.obm.sync.calendar.EventObmId;
 import org.obm.sync.calendar.EventRecurrence;
 import org.obm.sync.calendar.RecurrenceDays;
 import org.obm.sync.calendar.RecurrenceId;
-import org.obm.sync.calendar.ResourceAttendee;
+import org.obm.sync.calendar.RecurrenceKind;
 import org.obm.sync.calendar.SyncRange;
-import org.obm.sync.calendar.UserAttendee;
 import org.obm.sync.dao.EntityId;
 import org.obm.sync.dao.Tracking;
 import org.obm.sync.host.ObmHost;
@@ -93,6 +91,7 @@ import fr.aliacom.obm.common.user.UserLogin;
 import fr.aliacom.obm.common.user.UserPassword;
 import fr.aliacom.obm.common.user.UserPhones;
 import fr.aliacom.obm.common.user.UserWork;
+import nl.jqno.equalsverifier.Warning;
 
 
 public class BeansTest {
@@ -108,22 +107,14 @@ public class BeansTest {
 	public void test() {
 		equalsVerifierUtilsTest.test(
 				Credentials.class,
-				ObmDomain.class,
-				Event.class,
 				DeletedEvent.class,
-				EventRecurrence.class,
-				EventChanges.class,
 				Contact.class,
 				TrustToken.class,
-				Login.class,
 				SyncRange.class,
 				EventExtId.class,
 				EventObmId.class,
-				EventRecurrence.class,
 				RecurrenceId.class,
 				Resource.class,
-				UserAttendee.class, ContactAttendee.class, ResourceAttendee.class,
-				EmailAddress.class,
 				EmailLogin.class,
 				DomainName.class,
 				Address.class,
@@ -136,10 +127,8 @@ public class BeansTest {
 				ObmHost.class,
 				ObmDomainUuid.class,
 				ObmSystemUser.class,
-				AddressBook.class,
 				AddressBookReference.class,
 				ModuleCheckBoxStates.class,
-				Profile.class,
 				EntityId.class,
 				UserLogin.class,
 				UserIdentity.class,
@@ -148,10 +137,87 @@ public class BeansTest {
 				UserWork.class,
 				UserPassword.class,
 				Samba.class,
-				DeletedContact.class,
-				Tracking.class);
+				DeletedContact.class);
+	}
+
+	@Test
+	public void testTrackings() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(Tracking.class)
+			.withIgnoredFields("token")
+			.verify();
 	}
 	
+	@Test
+	public void testProfiles() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(Profile.class)
+			.withIgnoredFields("timecreate", "timeupdate")
+			.verify();
+	}
+	
+	@Test
+	public void testAddressBooks() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(AddressBook.class)
+			.withIgnoredFields("timecreate", "timeupdate")
+			.verify();
+	}
+	
+	@Test
+	public void testEmailAddresses() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(EmailAddress.class)
+			.withIgnoredFields("loginAtDomain")
+			.verify();
+	}
+	
+	@Test
+	public void testLogins() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(Login.class)
+			.withIgnoredFields("fullLogin")
+			.verify();
+	}
+	
+	@Test
+	public void testObmDomains() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(ObmDomain.class)
+			.withIgnoredFields("hosts", "mailChooserHookId")
+			.verify();
+	}
+	
+	@Test
+	public void testEvents() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(Event.class)
+			.withPrefabValues(EventRecurrence.class,
+					new EventRecurrence(RecurrenceKind.daily),
+					new EventRecurrence(RecurrenceKind.monthlybydate))
+			.verify();
+	}
+
+	@Test
+	public void testEventChanges() {
+		EqualsVerifierUtils
+			.createEqualsVerifier(EventChanges.class)
+			.withPrefabValues(EventRecurrence.class,
+					new EventRecurrence(RecurrenceKind.daily),
+					new EventRecurrence(RecurrenceKind.monthlybydate))
+			.verify();
+	}
+
+	@Test
+	public void testEventRecurrences() {
+		Event event = new Event();
+		event.setTitle("myTitle");
+		EqualsVerifierUtils
+			.createEqualsVerifier(EventRecurrence.class)
+			.withPrefabValues(Event.class, new Event(), event)
+			.verify();
+	}
+
 	@Test
 	public void testUserEmails() {
 		EqualsVerifierUtils
@@ -159,6 +225,7 @@ public class BeansTest {
 			.withPrefabValues(ImmutableList.class,
 				ImmutableList.of("addr1", "addr2"),
 				ImmutableList.of("addr3", "addr4"))
+			.withIgnoredFields("domain")
 			.verify();
 	}
 	
@@ -193,6 +260,13 @@ public class BeansTest {
 							.build())
 						.domain(ibmDotComDomain)
 						.build())
+			.withPrefabValues(Group.class,
+					Group.builder()
+						.uid(Id.valueOf(1))
+						.build(),
+					Group.builder()
+						.uid(Id.valueOf(2))
+						.build())
 			.withPrefabValues(UserEmails.class,
 					UserEmails.builder()
 						.addAddress("createdBy@obm.org")
@@ -202,6 +276,7 @@ public class BeansTest {
 						.addAddress("updatedBy@ibm.com")
 						.domain(ibmDotComDomain)
 						.build())
+			.withIgnoredFields("timeCreate", "timeUpdate")
 			.verify();
 	}
 	
@@ -216,6 +291,7 @@ public class BeansTest {
 	@Test
 	public void testWithOptionalDate() {
 		EqualsVerifierBuilder.builder()
+			.suppress(Warning.REFERENCE_EQUALITY)
 			.prefabValue(Optional.class, Optional.absent(), Optional.of(new Date(54)))
 			.equalsVerifiers(
 				CommitedElement.class,
@@ -226,6 +302,7 @@ public class BeansTest {
 	@Test
 	public void testAddressBookCreation() {
 		EqualsVerifierBuilder.builder()
+			.suppress(Warning.REFERENCE_EQUALITY)
 			.prefabValue(Optional.class, Optional.absent(), Optional.of(new AddressBookReference("ref", "origin")))
 			.equalsVerifiers(
 				AddressBookCreation.class

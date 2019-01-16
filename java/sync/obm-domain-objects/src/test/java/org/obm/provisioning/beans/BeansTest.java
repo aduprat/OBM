@@ -38,7 +38,11 @@ import org.obm.provisioning.ProfileName;
 import org.obm.sync.bean.EqualsVerifierUtils;
 import org.obm.sync.book.Website;
 
+import fr.aliacom.obm.common.domain.ObmDomain;
 import fr.aliacom.obm.common.domain.ObmDomainUuid;
+import fr.aliacom.obm.common.user.ObmUser;
+import fr.aliacom.obm.common.user.UserEmails;
+import fr.aliacom.obm.common.user.UserLogin;
 import fr.aliacom.obm.common.user.UserNomad;
 
 
@@ -54,7 +58,6 @@ public class BeansTest {
 	@Test
 	public void test() {
 		equalsVerifierUtilsTest.test(
-				Group.class,
 				GroupExtId.class,
 				ProfileId.class,
 				ProfileName.class,
@@ -63,4 +66,41 @@ public class BeansTest {
 				Website.class);
 	}
 
+	@Test
+	public void testGroups() {
+		ObmDomain obmDotOrgDomain = ObmDomain.builder()
+				.id(3)
+				.name("obm.org")
+				.build();
+			ObmDomain ibmDotComDomain = ObmDomain.builder()
+				.id(5)
+				.name("ibm.com")
+				.build();
+		EqualsVerifierUtils
+			.createEqualsVerifier(Group.class)
+			.withIgnoredFields("timecreate", "timeupdate")
+			.withPrefabValues(ObmUser.class, 
+					ObmUser.builder()
+						.login(UserLogin.valueOf("creator"))
+						.uid(1)
+						.emails(UserEmails.builder()
+							.addAddress("createdBy@obm.org")
+							.domain(obmDotOrgDomain)
+							.build())
+						.domain(obmDotOrgDomain)
+						.build(), 
+					ObmUser.builder()
+						.login(UserLogin.valueOf("updater"))
+						.uid(1)
+						.emails(UserEmails.builder()
+							.addAddress("updatedBy@ibm.com")
+							.domain(ibmDotComDomain)
+							.build())
+						.domain(ibmDotComDomain)
+						.build())
+			.withPrefabValues(Group.class,
+					Group.builder().uid(Group.Id.valueOf(1)).build(),
+					Group.builder().uid(Group.Id.valueOf(2)).build())
+			.verify();
+	}
 }

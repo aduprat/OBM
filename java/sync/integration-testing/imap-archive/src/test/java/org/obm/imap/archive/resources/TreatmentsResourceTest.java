@@ -30,8 +30,8 @@
 
 package org.obm.imap.archive.resources;
 
-import static com.jayway.awaitility.Awaitility.await;
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -50,6 +50,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.ws.rs.core.Response.Status;
 
+import org.awaitility.Duration;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
@@ -87,13 +88,13 @@ import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.store.MailFolder;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
-import com.jayway.awaitility.Duration;
-import com.jayway.restassured.config.RedirectConfig;
-import com.jayway.restassured.config.RestAssuredConfig;
-import com.jayway.restassured.http.ContentType;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.Operations;
 import com.ninja_squad.dbsetup.operation.Operation;
+
+import io.restassured.config.RedirectConfig;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.http.ContentType;
 
 public class TreatmentsResourceTest {
 
@@ -223,6 +224,7 @@ public class TreatmentsResourceTest {
 		given()
 			.port(server.getHttpPort())
 			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue())
+			.contentType(ContentType.JSON)
 			.queryParam("archive_treatment_kind", ArchiveTreatmentKind.REAL_RUN).
 		expect()
 			.statusCode(Status.NOT_FOUND.getStatusCode()).
@@ -243,6 +245,7 @@ public class TreatmentsResourceTest {
 		given()
 			.port(server.getHttpPort())
 			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue())
+			.contentType(ContentType.JSON)
 			.queryParam("archive_treatment_kind", ArchiveTreatmentKind.REAL_RUN).
 		expect()
 			.statusCode(Status.CONFLICT.getStatusCode()).
@@ -265,6 +268,7 @@ public class TreatmentsResourceTest {
 			.config(RestAssuredConfig.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)))
 			.port(server.getHttpPort())
 			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue())
+			.contentType(ContentType.JSON)
 			.queryParam("archive_treatment_kind", ArchiveTreatmentKind.REAL_RUN).
 		expect()
 			.header("Location", containsString("/imap-archive/service/v1/domains/" + domainId.get() + "/treatments/" + expectedRunId.toString()))
@@ -287,6 +291,7 @@ public class TreatmentsResourceTest {
 		given()
 			.port(server.getHttpPort())
 			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue())
+			.contentType(ContentType.JSON)
 			.queryParam("archive_treatment_kind", ArchiveTreatmentKind.REAL_RUN).
 		expect()
 			.contentType(ContentType.JSON)
@@ -310,7 +315,8 @@ public class TreatmentsResourceTest {
 		given()
 			.config(RestAssuredConfig.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)))
 			.port(server.getHttpPort())
-			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue()).
+			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue())
+			.contentType(ContentType.JSON).
 		expect()
 			.header("Location", containsString("/imap-archive/service/v1/domains/" + domainId.get() + "/treatments/" + expectedRunId.toString()))
 			.statusCode(Status.SEE_OTHER.getStatusCode()).
@@ -349,6 +355,7 @@ public class TreatmentsResourceTest {
 			.config(RestAssuredConfig.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)))
 			.port(server.getHttpPort())
 			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue())
+			.contentType(ContentType.JSON)
 			.queryParam("archive_treatment_kind", ArchiveTreatmentKind.DRY_RUN).
 		expect()
 			.header("Location", containsString("/imap-archive/service/v1/domains/" + domainId.get() + "/treatments/" + expectedRunId.toString()))
@@ -381,6 +388,7 @@ public class TreatmentsResourceTest {
 			.config(RestAssuredConfig.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)))
 			.port(server.getHttpPort())
 			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue())
+			.contentType(ContentType.JSON)
 			.queryParam("archive_treatment_kind", ArchiveTreatmentKind.REAL_RUN).
 		expect()
 			.header("Location", containsString("/imap-archive/service/v1/domains/" + domainId.get() + "/treatments/" + expectedRunId.toString()))
@@ -398,6 +406,7 @@ public class TreatmentsResourceTest {
 			.config(RestAssuredConfig.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)))
 			.port(server.getHttpPort())
 			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue())
+			.contentType(ContentType.JSON)
 			.queryParam("archive_treatment_kind", ArchiveTreatmentKind.REAL_RUN).
 		expect()
 			.header("Location", containsString("/imap-archive/service/v1/domains/" + domainId.get() + "/treatments/" + expectedRunId2.toString()))
@@ -560,7 +569,8 @@ public class TreatmentsResourceTest {
 		given()
 			.config(RestAssuredConfig.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)))
 			.port(server.getHttpPort())
-			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue()).
+			.auth().basic(admin.getLogin() + "@" + domain.getName(), admin.getPassword().getStringValue())
+			.contentType(ContentType.JSON).
 		expect()
 			.header("Location", containsString("/imap-archive/service/v1/domains/" + domainId.get() + "/treatments/" + expectedRunId.toString()))
 			.statusCode(Status.SEE_OTHER.getStatusCode()).

@@ -1,6 +1,6 @@
 package org.obm.provisioning.processing.impl;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -73,6 +73,7 @@ import fr.aliacom.obm.common.user.UserIdentity;
 import fr.aliacom.obm.common.user.UserLogin;
 import fr.aliacom.obm.common.user.UserNomad;
 import fr.aliacom.obm.common.user.UserPassword;
+import io.restassured.http.ContentType;
 
 @RunWith(GuiceRunner.class)
 @GuiceModule(BatchProcessorImplUserTest.Env.class)
@@ -746,6 +747,7 @@ public class BatchProcessorImplUserTest extends BatchProcessorImplTestEnv {
 	private void createBatchWithOneUserAndCommit() {
 		given().auth().basic("username@domain", "password").post("/batches/");
 		given().auth().basic("username@domain", "password")
+				.body(inputObmUserToJsonString()).contentType(ContentType.JSON)
 				.post("/batches/1/users");
 		given().auth().basic("username@domain", "password").put("/batches/1");
 	}

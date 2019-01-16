@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.resources;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.easymock.EasyMock.expectLastCall;
 
 import javax.ws.rs.core.Response.Status;
@@ -46,8 +46,8 @@ import org.obm.provisioning.beans.HttpVerb;
 import org.obm.provisioning.dao.exceptions.DaoException;
 
 import com.google.common.collect.ImmutableMap;
-import com.jayway.restassured.http.ContentType;
 
+import io.restassured.http.ContentType;
 
 @RunWith(GuiceRunner.class)
 @GuiceModule(CommonDomainEndPointEnvTest.Env.class)
@@ -68,7 +68,7 @@ public class UserResourceModifyUserTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("username@domain", "password")
-			.content(inputObmUserToJsonString()).contentType(ContentType.JSON).
+			.body(inputObmUserToJsonString()).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode()).
 		when()
@@ -92,7 +92,7 @@ public class UserResourceModifyUserTest extends CommonDomainEndPointEnvTest {
 		
 		given()
 			.auth().basic("username@domain", "password")
-			.content(inputObmUserToJsonString()).contentType(ContentType.JSON).
+			.body(inputObmUserToJsonString()).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.INTERNAL_SERVER_ERROR.getStatusCode()).
 		when()

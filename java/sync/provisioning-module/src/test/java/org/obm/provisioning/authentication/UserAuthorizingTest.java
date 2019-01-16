@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.provisioning.authentication;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 
@@ -50,6 +50,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import fr.aliacom.obm.common.user.UserExtId;
+import io.restassured.http.ContentType;
 
 @RunWith(GuiceRunner.class)
 @GuiceModule(CommonDomainEndPointEnvTest.Env.class)
@@ -243,13 +244,14 @@ public class UserAuthorizingTest extends CommonDomainEndPointEnvTest {
 		expectSuccessfulAuthentication("username", "password");
 		expectAuthorizingReturns("username", ImmutableSet.of(domainAwarePerm("users:create")));
 		batchDao.addOperation(batch,
-				operation(BatchEntityType.USER, "/batches/1/users", "", HttpVerb.POST,
+				operation(BatchEntityType.USER, "/batches/1/users", obmUserToJsonString(), HttpVerb.POST,
 						ImmutableMap.<String, String>of("domain", "a3443822-bb58-4585-af72-543a287f7c0e", "batchId", "1")));
 		expectLastCall();
 		mocksControl.replay();
 		
 		given()
-			.auth().basic("username@domain", "password").
+			.auth().basic("username@domain", "password")
+			.body(inputObmUserToJsonString()).contentType(ContentType.JSON).
 		expect()
 			.statusCode(Status.OK.getStatusCode()).
 		when()

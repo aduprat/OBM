@@ -62,7 +62,6 @@ public class RejectCeilRequestHandlerTest {
 	private String key;
 	private QoSContinuationSupport continuationSupport;
 
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() {
 		control = createStrictControl();
@@ -150,7 +149,6 @@ public class RejectCeilRequestHandlerTest {
 		assertThat(actual).isEqualTo(QoSAction.SUSPEND);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void rejectFourthRequest() {
 		HttpServletRequest fourthRequest = control.createMock(HttpServletRequest.class);
