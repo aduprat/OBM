@@ -278,9 +278,7 @@ public class ContactUpdateCommand extends ContactCommand {
 			Collection<Object> values) {
 		if (values != null && !values.isEmpty()) {
 			SolrInputField sif = new SolrInputField(field);
-			for (Object v : values) {
-				sif.addValue(v, 1);
-			}
+			sif.addValue(values);
 			sid.put(field, sif);
 		}
 	}

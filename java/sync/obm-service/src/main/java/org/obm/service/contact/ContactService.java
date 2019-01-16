@@ -31,6 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.service.contact;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
@@ -41,9 +42,8 @@ import java.util.Set;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.obm.domain.dao.AddressBookDao;
@@ -188,7 +188,7 @@ public class ContactService {
 
 		if (addrBooks.size() > 0) {
 			SolrHelper solrHelper = solrHelperFactory.createClient(token);
-			CommonsHttpSolrServer solrServer = solrHelper.getSolrContact();
+			HttpSolrClient solrServer = solrHelper.getSolrContact();
 			StringBuilder sb = new StringBuilder();
 			sb.append("-is:archive ");
 			sb.append("+addressbookId:(");
@@ -232,10 +232,10 @@ public class ContactService {
 					Map<String, Object> payload = doc.getFieldValueMap();
 					contactIds.add((Integer) payload.get("id"));
 				}
-			} catch (SolrServerException e) {
+			} catch (SolrServerException | IOException e) {
 				logger.error("Error querying server for '" + sb.toString()
 						+ " url: "
-						+ ClientUtils.toQueryString(params, false), e);
+						+ params.toQueryString(), e);
 			}
 		}
 		

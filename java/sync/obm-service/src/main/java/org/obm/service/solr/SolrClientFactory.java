@@ -29,12 +29,12 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.service.solr;
 
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 
 import fr.aliacom.obm.common.domain.ObmDomain;
 
 public interface SolrClientFactory {
 
-	public abstract CommonsHttpSolrServer create(SolrService service, ObmDomain domain);
+	public abstract HttpSolrClient create(SolrService service, ObmDomain domain);
 
 }

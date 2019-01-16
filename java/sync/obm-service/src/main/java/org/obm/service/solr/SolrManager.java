@@ -41,7 +41,7 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.obm.configuration.ConfigurationService;
 import org.obm.locator.LocatorClientException;
 import org.obm.service.solr.jms.Command;
@@ -67,7 +67,7 @@ public class SolrManager implements LifecycleListener {
 	private boolean solrAvailable;
 	private Timer checker;
 	private int solrCheckingInterval;
-	private CommonsHttpSolrServer failingSolrServer;
+	private HttpSolrClient failingSolrServer;
 	private final SolrClientFactory solrClientFactory;
 
 	private final Connection jmsConnection;
@@ -195,14 +195,13 @@ public class SolrManager implements LifecycleListener {
 				// This is handled directly in the MessageListener to not cause deadlocks if called from multiple threads 
 				if (!isSolrAvailable()) {
 					session.rollback();
-					jmsConnection.stop();
 					
 					return;
 				}
 				
 				request = (SolrRequest) ((ObjectMessage) message).getObject();
 
-				CommonsHttpSolrServer solrClient = null;
+				HttpSolrClient solrClient = null;
 				try {
 					solrClient = solrClientFactory.create(request.getSolrService(), request.getDomain());
 					request.run(solrClient);

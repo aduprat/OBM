@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.obm.service.solr.SolrClientFactory;
@@ -48,14 +48,15 @@ import fr.aliacom.obm.common.domain.ObmDomain;
 
 public class SolrModuleUtils {
 
-	public static class DummyCommonsHttpSolrServer extends CommonsHttpSolrServer {
+	public static class DummyCommonsHttpSolrServer extends HttpSolrClient {
 		
 		public Integer deleteByIdCount = 0; 
 		public Integer addCount = 0; 
 		public Integer commitCount = 0; 
 		
+		@SuppressWarnings("deprecation")
 		public DummyCommonsHttpSolrServer() throws MalformedURLException {
-			super("http://localhost:8983/solr/");
+			super("http://localhost:8983/solr/", null, null, false);
 		}
 		
 		@Override
@@ -88,7 +89,7 @@ public class SolrModuleUtils {
 				bind(SolrClientFactory.class).toInstance(new SolrClientFactory() {
 					
 					@Override
-					public CommonsHttpSolrServer create(SolrService service, ObmDomain domain) {
+					public HttpSolrClient create(SolrService service, ObmDomain domain) {
 						return solrServer;
 					}
 				});

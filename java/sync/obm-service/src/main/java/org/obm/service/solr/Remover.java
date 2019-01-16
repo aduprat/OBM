@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.service.solr;
 
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 
 import fr.aliacom.obm.common.domain.ObmDomain;
 
@@ -48,7 +48,7 @@ public class Remover extends SolrRequest {
 	}
 
 	@Override
-	public void run(CommonsHttpSolrServer server) throws Exception {
+	public void run(HttpSolrClient server) throws Exception {
 		server.deleteById(id);
 		server.commit();
 		logger.info("id {} removed from SOLR index", id);

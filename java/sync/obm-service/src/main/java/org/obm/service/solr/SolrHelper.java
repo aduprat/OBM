@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.service.solr;
 
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.obm.service.solr.jms.ContactDeleteCommand;
 import org.obm.service.solr.jms.ContactUpdateCommand;
 import org.obm.service.solr.jms.EventDeleteCommand;
@@ -102,7 +102,7 @@ public class SolrHelper {
 		
 	}
 
-	public CommonsHttpSolrServer getSolrContact() {
+	public HttpSolrClient getSolrContact() {
 		return solrClientFactory.create(SolrService.CONTACT_SERVICE, at.getDomain());
 	}
 	

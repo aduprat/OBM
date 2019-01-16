@@ -33,7 +33,7 @@ import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createControl;
 import static org.easymock.EasyMock.expect;
 
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.easymock.IMocksControl;
 import org.hornetq.core.config.Configuration;
 import org.hornetq.jms.server.config.JMSConfiguration;
@@ -100,7 +100,7 @@ public class SolrHelperFactoryTest {
  		accessToken = ToolBox.mockAccessToken(control);
  		solrClientFactory = control.createMock(SolrClientFactoryImpl.class);
  		configurationService = control.createMock(ConfigurationService.class);
- 		CommonsHttpSolrServer solrClient = control.createMock(CommonsHttpSolrServer.class);
+ 		HttpSolrClient solrClient = control.createMock(HttpSolrClient.class);
  		ContactUpdateCommand.Factory contactCommandFactory = control.createMock(ContactUpdateCommand.Factory.class);
  		EventUpdateCommand.Factory eventCommandFactory = control.createMock(EventUpdateCommand.Factory.class);
   		

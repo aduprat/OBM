@@ -31,7 +31,7 @@ package org.obm.service.solr;
 
 import java.io.Serializable;
 
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public abstract class SolrRequest implements Serializable {
 		this.solrService = solrService;
 	}
 
-	public abstract void run(CommonsHttpSolrServer server) throws Exception;
+	public abstract void run(HttpSolrClient server) throws Exception;
 
 	/**
 	 * Gets called after processing of this {@link SolrRequest} is done.<br />

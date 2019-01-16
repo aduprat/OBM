@@ -29,7 +29,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.obm.service.solr;
 
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -46,7 +46,7 @@ public class SolrDocumentIndexer extends SolrRequest {
 	}
 
 	@Override
-	public void run(CommonsHttpSolrServer server) throws Exception {
+	public void run(HttpSolrClient server) throws Exception {
 		server.add(document);
 		server.commit();
 	}

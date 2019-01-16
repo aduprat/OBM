@@ -151,7 +151,7 @@ public class EventUpdateCommand extends EventCommand {
 		SolrInputField solrInputField = new SolrInputField(field);
 		for (Object value: values) {
 			if (value != null) {
-				solrInputField.addValue(value, 1);
+				solrInputField.addValue(value);
 			}
 		}
 		if (solrInputField.getValueCount() >= 1) {

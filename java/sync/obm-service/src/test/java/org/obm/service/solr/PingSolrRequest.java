@@ -32,9 +32,7 @@ package org.obm.service.solr;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.obm.service.solr.SolrRequest;
-import org.obm.service.solr.SolrService;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 
 import fr.aliacom.obm.common.domain.ObmDomain;
 
@@ -49,7 +47,7 @@ public class PingSolrRequest extends SolrRequest {
 	}
 
 	@Override
-	public void run(CommonsHttpSolrServer server) throws Exception {
+	public void run(HttpSolrClient server) throws Exception {
 		server.ping();
 	}
 

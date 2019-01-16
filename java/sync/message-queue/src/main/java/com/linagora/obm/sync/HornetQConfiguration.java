@@ -34,6 +34,7 @@ package com.linagora.obm.sync;
 import java.util.List;
 import java.util.Map;
 
+import org.hornetq.api.core.SimpleString;
 import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.api.jms.JMSFactoryType;
 import org.hornetq.core.config.Configuration;
@@ -125,6 +126,9 @@ public class HornetQConfiguration {
 		
 		private static final long DEFAULT_MAX_SIZE_BEFORE_PAGING = 10485760L;
 		private static final long DEFAULT_PAGING_SIZE = 1048576L;
+		private static final String WILDCARD = "#";
+		private static final int DEFAULT_MAX_DELIVERY_ATTEMPTS = 3;
+		private static final int DEFAULT_REDELIVERY_DELAY = 1000;
 		private Boolean persistenceEnabled;
 		private Boolean securityEnabled;
 		private final List<TransportConfiguration> connectors;
@@ -210,7 +214,10 @@ public class HornetQConfiguration {
 				AddressSettings addressSettings = new AddressSettings();
 				addressSettings.setMaxSizeBytes(DEFAULT_MAX_SIZE_BEFORE_PAGING);
 				addressSettings.setPageSizeBytes(DEFAULT_PAGING_SIZE);
-				configurationImpl.setAddressesSettings(ImmutableMap.of("#", addressSettings));
+				addressSettings.setDeadLetterAddress(SimpleString.toSimpleString(WILDCARD));
+				addressSettings.setMaxDeliveryAttempts(DEFAULT_MAX_DELIVERY_ATTEMPTS);
+				addressSettings.setRedeliveryDelay(DEFAULT_REDELIVERY_DELAY);
+				configurationImpl.setAddressesSettings(ImmutableMap.of(WILDCARD, addressSettings));
 			}
 			configurationImpl.setConnectorConfigurations(listAsMap(connectors));
 			configurationImpl.setAcceptorConfigurations(ImmutableSet.copyOf(acceptors));

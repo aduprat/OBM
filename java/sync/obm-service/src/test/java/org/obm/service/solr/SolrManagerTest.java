@@ -43,7 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.jms.JMSException;
 
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 import org.easymock.IMocksControl;
 import org.hornetq.core.config.Configuration;
@@ -68,7 +68,7 @@ import fr.aliacom.obm.common.domain.Samba;
 
 public class SolrManagerTest {
 
-	private CommonsHttpSolrServer server;
+	private HttpSolrClient server;
 	private SolrManager manager;
 	private PingSolrRequest pingRequest;
 	private Command<Integer> pingCommand;
@@ -84,6 +84,7 @@ public class SolrManagerTest {
 				.journalDirectory("target/jms-journal")
 				.connector(HornetQConfiguration.Connector.HornetQInVMCore)
 				.acceptor(HornetQConfiguration.Acceptor.HornetQInVMCore)
+				.pagingDirectory("#")
 				.build();
 	}
 	
@@ -110,7 +111,7 @@ public class SolrManagerTest {
 		
 		configurationService = control.createMock(ConfigurationService.class);
 		solrClientFactory = control.createMock(SolrClientFactoryImpl.class);
-		server = control.createMock(CommonsHttpSolrServer.class);
+		server = control.createMock(HttpSolrClient.class);
 		
 		expect(configurationService.solrCheckingInterval()).andReturn(10).anyTimes();
 		expect(solrClientFactory.create(SolrService.CONTACT_SERVICE, domain)).andReturn(server).anyTimes();
@@ -225,7 +226,7 @@ public class SolrManagerTest {
 
 	@Test
 	public void requestShouldBeProcessedWhenSolrIsUpAgain() throws Exception {
-		expect(server.ping()).andThrow(new IOException()); // This will make SolR unavailable at first request
+		expect(server.ping()).andThrow(new IOException("Expected exception")); // This will make SolR unavailable at first request
 		expect(server.ping()).andReturn(null); // SolR should be back up at the second check
 		expect(server.ping()).andReturn(null); // This one's for the actual request that must be processed once SolR is back up
 		control.replay();

@@ -33,10 +33,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.obm.locator.LocatorClientException;
 import org.obm.locator.store.LocatorService;
 
@@ -49,24 +50,24 @@ import fr.aliacom.obm.common.domain.ObmDomain;
 @Singleton
 public class SolrClientFactoryImpl implements SolrClientFactory {
 
-	private HttpClient httpClient;
+	private HttpClientConnectionManager httpConnectionManager;
 	private LocatorService locatorService;
 
 	@Inject
 	@VisibleForTesting
 	SolrClientFactoryImpl(LocatorService locatorService) {
 		this.locatorService = locatorService;
-		this.httpClient = buildHttpClient();
+		this.httpConnectionManager = buildHttpConnectionManager();
 	}
 
-	private HttpClient buildHttpClient() {
-		MultiThreadedHttpConnectionManager cnxManager = new MultiThreadedHttpConnectionManager();
-		cnxManager.getParams().setDefaultMaxConnectionsPerHost(10);
-		cnxManager.getParams().setMaxTotalConnections(100);
-		return new HttpClient(cnxManager);
+	private HttpClientConnectionManager buildHttpConnectionManager() {
+		PoolingHttpClientConnectionManager cnxManager = new PoolingHttpClientConnectionManager();
+		cnxManager.setDefaultMaxPerRoute(10);
+		cnxManager.setMaxTotal(100);
+		return cnxManager;
 	}
 
-	public CommonsHttpSolrServer create(SolrService service, ObmDomain domain) {
+	public HttpSolrClient create(SolrService service, ObmDomain domain) {
 		try {
 			URI uri = new URIBuilder()
 			.setScheme("http")
@@ -74,7 +75,12 @@ public class SolrClientFactoryImpl implements SolrClientFactory {
 			.setPort(8080)
 			.setPath('/' + service.getName())
 			.build();
-			return new CommonsHttpSolrServer(uri.toURL(), httpClient);
+			return new HttpSolrClient.Builder()
+					.withBaseSolrUrl(uri.toURL().toString())
+					.withHttpClient(HttpClientBuilder.create()
+							.setConnectionManager(httpConnectionManager)
+							.build())
+					.build();
 		} catch (MalformedURLException e) {
 			throw new LocatorClientException(e);
 		} catch (URISyntaxException e) {
